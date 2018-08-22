@@ -12,6 +12,13 @@
           <router-link class="name" :to="{path:'/my',query:{}}">我的</router-link>
           <router-link :to="{path:'/recharge',query:{}}">我的金币</router-link>
         </header>
+        <swiper loop auto dots-position="center" dots-class="dots_item" :index="bannerIndex"
+                @on-index-change="onIndexChange">
+          <swiper-item v-for="banner in banners" :key="Math.random()">
+            <img :src="banner.slide_pic" alt="">
+          </swiper-item>
+        </swiper>
+        <p>{{bannerIndex}}</p>
         <p v-for="i in 60">placeholder {{i}}</p>
         <p v-show="scrollStatus.pullupStatus === 'disabled'" class="no-more">没有更多房间了哟~</p>
       </div>
@@ -38,7 +45,7 @@
 </template>
 
 <script>
-  import {Scroller, LoadMore} from "vux";
+  import {Scroller, LoadMore, Swiper, SwiperItem} from "vux";
   import api from "../../../api/BaseService";
 
   export default {
@@ -50,7 +57,9 @@
           pullupStatus: 'default',
           pulldownStatus: 'default',
           pullupText: '拼命加载中'
-        }
+        },
+        bannerIndex: 0,
+        banners: []
       }
     },
     mounted() {
@@ -61,11 +70,12 @@
       // this._getCategory();
     },
     methods: {
-      async  _getBanner() {
+      async _getBanner() {
         let result = await api.getBanner();
-        console.log(result);
+        this.banners = result.slide;
+        console.log(result.slide);
       },
-      async  _getCategory() {
+      async _getCategory() {
         let result = await api.getCategory();
         console.log(result);
       },
@@ -82,24 +92,43 @@
           console.log("没有更多房间了哟");
           this.$refs.scrollerEvent.disablePullup();
         }, 3000)
+      },
+      onIndexChange() {
+        console.log(1)
       }
     },
     components: {
-      Scroller, LoadMore
+      Scroller, LoadMore, Swiper, SwiperItem
     }
   }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
   @import "../../../assets/style/index.less";
 
   .name {
-    .font-dpr(16px);
+    font-size: 14px;
   }
 
-  [data-dpr="2"] .name {
-    font-size: 20px;
+  .vux-swiper{
+    .vux-swiper-item {
+      img {
+        width: 100%;
+      }
+    }
   }
+  .dots_item {
+    .vux-icon-dot {
+      width: 10px !important;
+      height: 10px !important;
+      border-radius: 20px !important;
+      &.active {
+        width: 20px !important;
+        background-color: #ff8dac !important;
+      }
+    }
+  }
+
 
   .loadmore {
     margin: 0 auto 5px !important;

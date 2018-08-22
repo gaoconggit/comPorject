@@ -1,7 +1,7 @@
 <template>
   <div class="home-wrapper">
     <keep-alive>
-      <router-view></router-view>
+      <router-view @changeTab="changeTab"></router-view>
     </keep-alive>
     <tabbar class="tab_bar"
             iconClass="icon_img"
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import {Tabbar, TabbarItem, Group, Cell} from 'vux'
+  import {Tabbar, TabbarItem} from 'vux'
 
   export default {
     name: "HomeFragment",
@@ -42,15 +42,56 @@
         tabIndex: 0,      //默认选中的底部菜单
       }
     },
+    created() {
+      let path = this.$route.path;
+      switch (path) {
+        case '/home/index':
+          this.tabIndex = 0;
+          break;
+        case '/home/zxww':
+          this.tabIndex = 1;
+          break;
+        case '/home/niu':
+          this.tabIndex = 2;
+          break;
+        case '/home/xzww':
+          this.tabIndex = 3;
+          break;
+        case '/home/earn':
+          this.tabIndex = 4;
+          break;
+        default:
+          this.tabIndex = 0;
+      }
+    },
     methods: {
       onIndexChange(index) {
         this.tabIndex = index;
       },
+      changeTab(index) {
+        this.tabIndex = index;
+        switch (index) {
+          case 0:
+            this.$router.push({path: '/home/index'});
+            break;
+          case 1:
+            this.$router.push({path: '/home/zxww'});
+            break;
+          case 2:
+            this.$router.push({path: '/home/niu'});
+            break;
+          case 3:
+            this.$router.push({path: '/home/score'});
+            break;
+          case 4:
+            this.$router.push({path: '/home/earn'});
+            break;
+        }
+      }
     },
-    computed: {
-    },
+    computed: {},
     components: {
-      Tabbar, TabbarItem, Group, Cell
+      Tabbar, TabbarItem
     }
   }
 </script>
