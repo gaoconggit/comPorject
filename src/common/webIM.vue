@@ -160,7 +160,7 @@
         //     $("#video_sms_list").children(":first").remove();
         //     for (var i = 0; i < maxDisplayMsgCount; i++) {
         //       opacity = opacityStep * (i + 1) + 0.2;
-        //       $('#video_sms_list').children().eq(i).css("opacity", opacity);
+        //       $('#video_sms_list').children().eq(i).style("opacity", opacity);
         //     }
         //   }
         //   li = document.createElement("li");

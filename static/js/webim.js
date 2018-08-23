@@ -2616,7 +2616,7 @@ var webim = { // namespace object webim
             callback();
         },function(){
             callback();
-        }); 
+        });
     };
     // REST API calls
     //上线

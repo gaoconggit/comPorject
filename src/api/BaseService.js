@@ -6,9 +6,11 @@
 import axios from "axios";
 import {baseUrl} from "../config/config";
 import Vue from "vue";
-import {ToastPlugin } from 'vux';
+import {ToastPlugin} from 'vux';
+import store from '../store';
 
-Vue.use(ToastPlugin );
+Vue.use(ToastPlugin);
+let {state} = store;
 
 let vm = new Vue();
 
@@ -94,13 +96,18 @@ axios.interceptors.response.use(response => {
 //设置默认超时毫秒
 axios.defaults.timeout = 10000;
 
+//常用请求地址
+const apiData = {
+  public: "api/public/?service=",
+};
+
 export default {
   //get请求
   getAxiosAction(url, params) {
     return new Promise((resolve, reject) => {
       axios({
         method: 'get',
-        url,
+        url: baseUrl + url,
         params,
         cancelToken: new CancelToken(c => {
           cancel = c;
@@ -115,30 +122,54 @@ export default {
     return new Promise((resolve, reject) => {
       axios({
         method: 'post',
-        url,
+        url: baseUrl + url,
         data: params,
         cancelToken: new CancelToken(c => {
           cancel = c
         })
       }).then(res => {
-        res = res.data;
-        if (res.code != 1) {
-          reject(res.msg);
-        } else {
-          resolve(res.data);
+        if (res.data != null) {
+          res = res.data;
+          if (res.code != 1) {
+            reject(res.msg);
+          } else {
+            resolve(res.data);
+          }
         }
       })
     })
   },
   
+  //获取个人信息
+  getBaseInfo() {
+    let url = `${apiData.public}User.getBaseInfo`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
   //获取banner
   getBanner() {
-    let url = `${baseUrl}api/public/?service=Home.getHot`;
+    let url = `${apiData.public}Home.getHot`;
     return this.postAxiosAction(url);
   },
   //获取娃娃分类
   getCategory() {
-    let url = `${baseUrl}api/public/?service=Home.wawaCategory`;
-    return this.postAxiosAction(url);
+    let url = `${apiData.public}Home.wawaCategory`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
   },
+  //获取娃娃列表
+  getWawaList(type, page = 1) {
+    let url = `${apiData.public}Home.wawaList`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    formData.append("category", type);
+    formData.append("page", page);
+    formData.append("size", 10);
+    return this.postAxiosAction(url, formData);
+  }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="home-wrapper">
     <keep-alive>
-      <router-view @changeTab="changeTab"></router-view>
+      <router-view @changeTab="changeTab" :tabHeight="tabHeight"></router-view>
     </keep-alive>
     <tabbar class="tab_bar"
             iconClass="icon_img"
@@ -40,6 +40,7 @@
       return {
         back: false,
         tabIndex: 0,      //默认选中的底部菜单
+        tabHeight: -40,
       }
     },
     created() {
