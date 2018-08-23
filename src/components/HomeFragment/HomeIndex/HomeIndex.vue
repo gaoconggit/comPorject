@@ -34,6 +34,7 @@
             <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
           </li>
         </ul>
+        <list-content :wawaList="wawaList"></list-content>
       </div>
       <!--下拉刷新-->
       <div slot="pulldown"
@@ -60,6 +61,7 @@
 <script>
   import {mapGetters} from "vuex";
   import {Scroller, LoadMore, Swiper, SwiperItem} from "vux";
+  import ListContent from "./ListContent"
   import api from "api/BaseService";
 
   export default {
@@ -172,7 +174,7 @@
           return true;
         } else {
           this.navIndex = index;
-          this._getWawaList(index);
+          this._getWawaList(this.navs[index].id);
           let arr = this.navs;
           arr.forEach((item, nIndex) => {
             arr[nIndex].is_default = 0;
@@ -186,7 +188,7 @@
       ...mapGetters(['userInfo'])
     },
     components: {
-      Scroller, LoadMore, Swiper, SwiperItem
+      Scroller, LoadMore, Swiper, SwiperItem, ListContent
     }
   }
 </script>
