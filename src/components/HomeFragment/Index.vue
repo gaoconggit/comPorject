@@ -1,9 +1,10 @@
 <template>
   <div class="home-wrapper">
     <keep-alive>
-      <router-view @changeTab="changeTab" :tabHeight="tabHeight"></router-view>
+      <router-view @changeTab="changeTab" @changeZIndex="changeZIndex" :tabHeight="tabHeight"></router-view>
     </keep-alive>
     <tabbar class="tab_bar"
+            :style="{zIndex: tabZIndex}"
             iconClass="icon_img"
             v-model="tabIndex"
             @on-index-change="onIndexChange">
@@ -41,6 +42,7 @@
         back: false,
         tabIndex: 0,      //默认选中的底部菜单
         tabHeight: -40,
+        tabZIndex: 10,
       }
     },
     created() {
@@ -55,7 +57,7 @@
         case '/home/niu':
           this.tabIndex = 2;
           break;
-        case '/home/xzww':
+        case '/home/score':
           this.tabIndex = 3;
           break;
         case '/home/earn':
@@ -63,6 +65,30 @@
           break;
         default:
           this.tabIndex = 0;
+      }
+    },
+    watch: {
+      $route(to, form) {
+        let path = to.path;
+        switch (path) {
+          case '/home/index':
+            this.tabIndex = 0;
+            break;
+          case '/home/zxww':
+            this.tabIndex = 1;
+            break;
+          case '/home/niu':
+            this.tabIndex = 2;
+            break;
+          case '/home/score':
+            this.tabIndex = 3;
+            break;
+          case '/home/earn':
+            this.tabIndex = 4;
+            break;
+          default:
+            this.tabIndex = 0;
+        }
       }
     },
     methods: {
@@ -88,9 +114,12 @@
             this.$router.push({path: '/home/earn'});
             break;
         }
+      },
+      changeZIndex(zIndex) {
+        this.tabZIndex = zIndex;
       }
     },
-    computed: {},
+
     components: {
       Tabbar, TabbarItem
     }

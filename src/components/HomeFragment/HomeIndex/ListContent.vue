@@ -1,13 +1,16 @@
 <template>
   <div class="list-wrapper">
-    <grid :cols="2">
-      <grid-item v-for="item in wawaList" :key="item.giftid" @click="abc(item)">
+    <grid :cols="2" :show-lr-borders="false" :show-vertical-dividers="false">
+      <grid-item
+        v-for="item in wawaList"
+        :key="item.giftid"
+        @on-item-click="joinRoom(item)">
         <img slot="icon" :src="item.gifticon" alt="">
         <div class="tag_left">
-          <img src="~/img/home/tag_1.png" alt="">
+          <img :src="roomType(item)" alt="">
         </div>
         <div class="tag_right">
-          <img src="~/img/home/tag_free.png" alt="">
+          <img :src="roomStatus(Number(item.status))" alt="">
         </div>
         <div class="name">
           <p class="item_name">{{item.giftname}}</p>
@@ -25,55 +28,56 @@
 
 <script>
   import {Grid, GridItem} from "vux";
+  import {showToast} from "../../../common/util/Utils"
 
   export default {
     name: "ListContent",
     props: ['wawaList'],
     data() {
-      return {
-        data: [
-          {
-            gifticon: 'http://p2y1tzpyq.bkt.clouddn.com/20180131_5a7160dd4427a.png',
-            giftid: '8',
-            giftname: 'YBL',
-            is_baosong: '0',
-            is_promotion: '0',
-            is_strong: '1',
-            is_vip_only: '0',
-            spendcoin: '20',
-            status: '0',
-            vip_level: '0'
-          },
-          {
-            gifticon: 'http://p2y1tzpyq.bkt.clouddn.com/20180131_5a7160dd4427a.png',
-            giftid: '9',
-            giftname: 'YBL',
-            is_baosong: '0',
-            is_promotion: '0',
-            is_strong: '1',
-            is_vip_only: '0',
-            spendcoin: '20',
-            status: '0',
-            vip_level: '0'
-          },
-          {
-            gifticon: 'http://p2y1tzpyq.bkt.clouddn.com/20180131_5a7160dd4427a.png',
-            giftid: '10',
-            giftname: 'YBL',
-            is_baosong: '0',
-            is_promotion: '0',
-            is_strong: '1',
-            is_vip_only: '0',
-            spendcoin: '20',
-            status: '0',
-            vip_level: '0'
-          },
-        ]
-      }
+      return {}
     },
     methods: {
-      abc(item) {
-        console.log(item);
+      joinRoom(item) {
+        if (!Number(item.status)) {
+          showToast("房间补货中，去其他的房间玩玩吧~", 'text', 2000, '300px');
+        } else {
+          this.$router.push({path: '/recharge', query: {id: item.giftid}});
+        }
+      },
+      roomType(item) {
+        if (Number(item.is_strong) && Number(item.is_baosong)) {
+          return require('img/home/tag_4.png');
+        } else if (Number(item.is_strong) && Number(item.is_vip)) {
+          return require('img/home/tag_6.png')
+        } else if (Number(item.is_baosong) && Number(item.is_vip)) {
+          return require('img/home/tag_5.png')
+        } else if (Number(item.is_strong)) {
+          return require('img/home/tag_1.png');
+        } else if (Number(item.is_baosong)) {
+          return require('img/home/tag_2.png');
+        } else if (Number(item.is_vip)) {
+          return require('img/home/tag_3.png');
+        } else {
+          return '';
+        }
+      },
+      roomStatus(status) {
+        let img = '';
+        switch (status) {
+          case 1:
+            img = require('img/home/tag_free.png');
+            break;
+          case 2:
+            img = require('img/home/tag_play.png');
+            break;
+          case 3:
+            img = require('img/home/tag_wrong.png');
+            break;
+          default:
+            img = require('img/home/tag_wrong.png');
+            break;
+        }
+        return img;
       }
     },
     components: {
@@ -86,9 +90,18 @@
   @import "~assets/style/index.less";
 
   .list-wrapper {
+    .weui-grids {
+      &::before {
+        border: none !important;
+      }
+    }
     .weui-grid {
       padding: 0;
       color: #FFF;
+      border: none;
+      &::after {
+        border: none;
+      }
       .weui-grid__icon {
         width: 356/2px !important;
         height: 436/2px !important;
@@ -101,10 +114,7 @@
         position: absolute;
         top: 3/2px;
         height: 60/2px;
-        img {
-          width: 100%;
-          height: 100%;
-        }
+        .img-spread;
       }
       .tag_left {
         width: 180/2px;
@@ -139,10 +149,7 @@
           margin-right: 2px;
           width: 36/2px;
           height: 36/2px;
-          img {
-            width: 100%;
-            height: 100%;
-          }
+          .img-spread;
         }
       }
     }

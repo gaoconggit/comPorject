@@ -7,6 +7,10 @@ import routes from './router';
 import store from './store';
 import {routerMode} from "./config/config";
 import FastClick from 'fastClick';
+import { LoadingPlugin, ToastPlugin, AlertPlugin } from 'vux'
+Vue.use(LoadingPlugin);
+Vue.use(ToastPlugin,{position: 'middle'});
+Vue.use(AlertPlugin);
 
 Vue.config.productionTip = false;
 

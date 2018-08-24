@@ -5,14 +5,10 @@
 
 import axios from "axios";
 import {baseUrl} from "../config/config";
-import Vue from "vue";
-import {ToastPlugin} from 'vux';
+import {showToast} from "../common/util/Utils";
 import store from '../store';
 
-Vue.use(ToastPlugin);
 let {state} = store;
-
-let vm = new Vue();
 
 let cancel, promiseArr = {};
 const CancelToken = axios.CancelToken;
@@ -79,11 +75,7 @@ axios.interceptors.response.use(response => {
   } else {
     error.message = "连接服务器失败";
   }
-  vm.$vux.toast.show({
-    type: 'text',
-    position: 'middle',
-    text: error.message,
-  })
+  showToast(error.message);
   return Promise.resolve(error.response);
 });
 
@@ -133,7 +125,7 @@ export default {
           if (res.code != 1) {
             reject(res.msg);
           } else {
-            resolve(res.data);
+            resolve(res);
           }
         }
       })
@@ -171,5 +163,21 @@ export default {
     formData.append("page", page);
     formData.append("size", 10);
     return this.postAxiosAction(url, formData);
-  }
+  },
+  //获取排行榜-日榜
+  getDayRankList() {
+    let url = `${apiData.public}Chart.darenDailyChart`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取排行榜-周榜榜
+  getWeekRankList() {
+    let url = `${apiData.public}Chart.darenWeeklyChart`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
 }

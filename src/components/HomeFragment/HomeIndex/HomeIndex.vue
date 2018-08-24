@@ -1,12 +1,14 @@
 <template>
   <div class="home_index">
     <scroller
-      class="scroller" lock-x use-pullup use-pulldown
+      class="scroller" lock-x use-pullup use-pulldown scrollbarY
       v-model="scrollStatus"
       @on-pulldown-loading="onPulldownLoading"
       @on-pullup-loading="onPullupLoading"
+      @on-scroll-bottom="onScrollBottom"
+      :scroll-bottom-offset="4"
       height="-40"
-      ref="scrollerEvent">
+      ref="scroller">
       <div class="home_content">
         <header>
           <router-link class="user_info" :to="{path:'/my',query:{}}">
@@ -24,6 +26,17 @@
             </div>
           </router-link>
         </header>
+        <div class="btn_wrapper">
+          <div class="btn_item" @click="rechargeBtn">
+            <img src="~/img/home/recharge_btn.png" alt="">
+          </div>
+          <div class="btn_item" @click="sunburnBtn">
+            <img src="~/img/home/sunburn_btn.png" alt="">
+          </div>
+          <div class="btn_item" @click="rankBtn">
+            <img src="~/img/home/rank_btn.png" alt="">
+          </div>
+        </div>
         <swiper loop auto dots-position="center" dots-class="dots_item" index="0">
           <swiper-item v-for="banner in banners" :key="Math.random()" @click.native="swiperItem(banner)">
             <img :src="banner.slide_pic" alt="">
@@ -34,7 +47,8 @@
             <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
           </li>
         </ul>
-        <list-content :wawaList="wawaList"></list-content>
+        <list-content :wawaList="wawaList"/>
+        <p class="bottom-text" v-show="scrollStatus.pullupStatus === 'disabled'">没有更多娃娃了哟~</p>
       </div>
       <!--下拉刷新-->
       <div slot="pulldown"
@@ -55,6 +69,7 @@
           </span>
       </div>
     </scroller>
+    <rank-list v-if="isShowRank" :isShow="isShowRank" @closeRank="closeRank" @changeZIndex="changeZIndex"/>
   </div>
 </template>
 
@@ -62,7 +77,10 @@
   import {mapGetters} from "vuex";
   import {Scroller, LoadMore, Swiper, SwiperItem} from "vux";
   import ListContent from "./ListContent"
+  import RankList from "./RankList";
   import api from "api/BaseService";
+  import {userInfo} from "../../../store/getters";
+  import {baseUrl} from "../../../config/config";
 
   export default {
     name: "HomeIndex",
@@ -78,11 +96,14 @@
         navs: [],                 //导航列表
         navIndex: 0,              //导航选项
         wawaList: [],             //房间列表
+        onFetching: false,        //距离底部时是否加载数据
+        listPage: 1,              //显示页码
+        isShowRank: false,        //是否展示排行榜
       }
     },
     mounted() {
       this.$nextTick(() => {
-        this.$refs.scrollerEvent.reset({top: 0})
+        this.$refs.scroller.reset({top: 0})
       });
       this._getBanner();
       this._getCategory();
@@ -90,11 +111,12 @@
     methods: {
       async _getBanner() {
         let result = await api.getBanner();
-        this.banners = result.slide;
-        console.log(result.slide);
+        this.banners = result.data.slide;
+        console.log(result.data.slide);
       },
       async _getCategory() {
         let result = await api.getCategory();
+        result = result.data;
         result.forEach((item, index) => {
           if (Number(item.is_default)) {
             this.navIndex = index;
@@ -105,25 +127,54 @@
         console.log(result);
       },
       async _getWawaList(type, isRefresh = false, page = 1) {
-
         let result = await api.getWawaList(type, page);
-        this.wawaList = result;
         console.log(result);
-        if (isRefresh) {
-          this.$refs.scrollerEvent.enablePullup();
-          this.$refs.scrollerEvent.donePulldown();
+        if (result.data.length) {
+          if (page === 1) {
+            this.wawaList = result.data;
+          } else {
+            this.wawaList = this.wawaList.concat(result.data);
+          }
+          this.$refs.scroller.donePullup();
+        } else if (page > 1) {
+          console.log(1);
+          this.onFetching = false;
+          this.$refs.scroller.disablePullup();
+          console.log("没有更多娃娃了1");
+        } else {
+          console.log(2)
+          this.wawaList = [];
+          this.onFetching = false;
+          this.$refs.scroller.disablePullup();
+          console.log("没有更多娃娃了2");
         }
+        this.$nextTick(() => {
+          //上拉刷新更新数据
+          if (isRefresh) {
+            this.listPage = 1;
+            this.$refs.scroller.reset({top: 0});
+            this.$refs.scroller.enablePullup();
+            this.$refs.scroller.donePulldown();
+          } else {
+            this.$refs.scroller.reset()
+          }
+        })
       },
       onPulldownLoading() {
         console.log(2)
-        this._getWawaList(this.navs[this.navIndex], true);
+        this._getWawaList(this.navs[this.navIndex].id, true);
       },
       onPullupLoading() {
-        console.log(3)
-        setTimeout(() => {
-          console.log("没有更多房间了哟");
-          this.$refs.scrollerEvent.disablePullup();
-        }, 3000)
+        console.log("上拉刷新函数");
+        this.listPage += 1;
+        this._getWawaList(this.navs[this.navIndex].id, false, this.listPage);
+      },
+      onScrollBottom() {
+        /*if (!this.onFetching) {
+          // do
+          console.log("执行到底部刷新");
+          this.onFetching = true
+        }*/
       },
       /*点击banner*/
       swiperItem(banner) {
@@ -146,9 +197,9 @@
         let vipLevel = Number(num);
         if (vipLevel) {
           if (vipLevel > 0 && vipLevel < 7) {
-            return require(`../../../assets/img/com_img/vip_${vipLevel}.png`);
+            return require(`img/com_img/vip_${vipLevel}.png`);
           } else {
-            return require(`../../../assets/img/com_img/vip_7.png`);
+            return require(`img/com_img/vip_7.png`);
           }
         } else {
           return "";
@@ -174,6 +225,10 @@
           return true;
         } else {
           this.navIndex = index;
+          this.listPage = 1;
+          this.$refs.scroller.enablePullup();
+          this.$refs.scroller.donePulldown();
+          this.$refs.scroller.reset();
           this._getWawaList(this.navs[index].id);
           let arr = this.navs;
           arr.forEach((item, nIndex) => {
@@ -182,23 +237,45 @@
           })
           this.navs = arr;
         }
+      },
+      /*充值中心*/
+      rechargeBtn() {
+        this.$router.push({path: '/recharge'});
+        console.log("充值中心");
+      },
+      /*晒单*/
+      sunburnBtn() {
+        window.location.href = `${baseUrl}photowall/index.php?base_url=${baseUrl}api/public/&token=${this.userInfo.token}&uid=${this.userInfo.id}`;
+      },
+      /*排行榜*/
+      rankBtn() {
+        this.isShowRank = true;
+        this.$emit('changeZIndex', 0);
+        console.log("排行榜");
+      },
+      changeZIndex(index) {
+        this.$emit('changeZIndex', index);
+      },
+      closeRank() {
+        this.$emit('changeZIndex', 10);
+        this.isShowRank = false;
       }
     },
     computed: {
       ...mapGetters(['userInfo'])
     },
     components: {
-      Scroller, LoadMore, Swiper, SwiperItem, ListContent
+      Scroller, LoadMore, Swiper, SwiperItem, ListContent, RankList
     }
   }
 </script>
 
 <style lang="less">
-  @import "../../../assets/style/index.less";
+  @import "~assets/style/index.less";
 
   .home_index {
     .scroller {
-      background-image: url("../../../assets/img/home/main_bg.png");
+      background-image: url('~img/home/main_bg.png');
       background-size: cover;
     }
     .home_content {
@@ -229,10 +306,10 @@
           }
           .vip_con {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 138/2px;
-            height: 66/2px;
+            bottom: 2px;
+            left: 6px;
+            width: 138/2.5px;
+            height: 66/2.5px;
             z-index: 2;
             img {
               width: 100%;
@@ -265,12 +342,27 @@
             .num {
               position: absolute;
               left: 30px;
-              top: 6px;
+              top: 8px;
+              font-size: 14px;
             }
           }
         }
       }
 
+    }
+    .btn_wrapper {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 94/2px;
+      .btn_item {
+        width: 214/2px;
+        height: 84/2px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
     }
     .nav-wrapper {
       display: flex;
@@ -285,15 +377,19 @@
         }
       }
     }
+    .bottom-text {
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
 
     .vux-slider {
       height: 334/2px;
       .vux-swiper {
         height: 100% !important;
         .vux-swiper-item {
-          img {
-            width: 100%;
-          }
+          .img-spread;
         }
       }
       .dots_item {

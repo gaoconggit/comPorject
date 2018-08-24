@@ -37,10 +37,12 @@
         }, 0)
       },
       async _getBaseInfo() {
-        let result = await api.getBaseInfo();
-        console.log(result);
-        window.localStorage.setItem("wawaji_userInfo", JSON.stringify(result));
-        this.set_userInfo(result);
+        // if (!window.localStorage.getItem("wawaji_userInfo")) {
+          let result = await api.getBaseInfo();
+          console.log(result);
+          window.localStorage.setItem("wawaji_userInfo", JSON.stringify(result.data));
+          this.set_userInfo(result.data);
+        //}
       }
     }
   }
