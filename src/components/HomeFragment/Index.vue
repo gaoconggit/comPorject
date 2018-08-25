@@ -41,7 +41,7 @@
       return {
         back: false,
         tabIndex: 0,      //默认选中的底部菜单
-        tabHeight: -40,
+        tabHeight: 48,
         tabZIndex: 10,
       }
     },

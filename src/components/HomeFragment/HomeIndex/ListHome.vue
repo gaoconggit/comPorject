@@ -1,3 +1,6 @@
+/**
+ *  首页列表
+ */
 <template>
   <div class="list-wrapper">
     <grid :cols="2" :show-lr-borders="false" :show-vertical-dividers="false">
@@ -5,7 +8,7 @@
         v-for="item in wawaList"
         :key="item.giftid"
         @on-item-click="joinRoom(item)">
-        <img slot="icon" :src="item.gifticon" alt="">
+        <img slot="icon" v-lazy="item.gifticon" alt="">
         <div class="tag_left">
           <img :src="roomType(item)" alt="">
         </div>
@@ -33,15 +36,12 @@
   export default {
     name: "ListContent",
     props: ['wawaList'],
-    data() {
-      return {}
-    },
     methods: {
       joinRoom(item) {
         if (!Number(item.status)) {
           showToast("房间补货中，去其他的房间玩玩吧~", 'text', 2000, '300px');
         } else {
-          this.$router.push({path: '/recharge', query: {id: item.giftid}});
+          this.$router.push({path: '/room', query: {id: item.giftid}});
         }
       },
       roomType(item) {

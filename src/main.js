@@ -5,12 +5,21 @@ import VueRouter from 'vue-router'
 import App from './App'
 import routes from './router';
 import store from './store';
-import {routerMode} from "./config/config";
+import { routerMode } from "./config/config";
 import FastClick from 'fastClick';
-import { LoadingPlugin, ToastPlugin, AlertPlugin } from 'vux'
+import VueLazyload from 'vue-lazyload';
+import { LoadingPlugin, ToastPlugin, AlertPlugin } from 'vux';
+
 Vue.use(LoadingPlugin);
-Vue.use(ToastPlugin,{position: 'middle'});
+Vue.use(ToastPlugin, { position: 'middle' });
 Vue.use(AlertPlugin);
+Vue.use(VueLazyload);
+
+Vue.use(VueLazyload, {
+  error: require('./assets/img/home/lazyload.png'),
+  loading: require('./assets/img/home/lazyload.png'),
+  try: 3 // default 1
+})
 
 Vue.config.productionTip = false;
 
@@ -28,7 +37,7 @@ const router = new VueRouter({
       if (from.meta.keepAlive) {
         from.meta.savedPosition = document.body.scrollTop;
       }
-      return {x: 0, y: to.meta.savedPosition || 0}
+      return { x: 0, y: to.meta.savedPosition || 0 }
     }
   }
 });
@@ -37,6 +46,6 @@ const router = new VueRouter({
 new Vue({
   store,
   router,
-  components: {App},
+  components: { App },
   template: '<App/>'
 }).$mount('#app');
