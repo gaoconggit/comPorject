@@ -1,5 +1,10 @@
 <template>
   <div class="home-index">
+    <ul class="nav-wrapper" :class="isNavWrapperTop?'nav-wrapper-top':''" v-if="isNavWrapperTop" ref="navWrapper">
+      <li class="nav-item" v-for="(nav,index) in navs" :key="nav.id" @click="navItem(index)">
+        <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
+      </li>
+    </ul>
     <scroll-view 
     ref="scrollerIndex" 
     :tabHeight="-tabHeight"
@@ -80,7 +85,8 @@ export default {
       wawaList: [], //房间列表
       onFetching: false, //距离底部时是否加载数据
       listPage: 1, //显示页码
-      isShowRank: false //是否展示排行榜
+      isShowRank: false, //是否展示排行榜
+      isNavWrapperTop: false //是否吸顶导航
     };
   },
   created() {
@@ -173,22 +179,12 @@ export default {
         }*/
     },
     onScroll(pos) {
-      // console.log(homeHeight,btnWrapper,swiperHeight)
       if (pos.top > this.homeHeight + this.swiperHeight + this.btnWrapper) {
-        this.navWrapper.style.position = "relative";
-        this.navWrapper.style.top =
-          pos.top -
-          (this.homeHeight + this.swiperHeight + this.btnWrapper) +
-          "px";
-        this.navWrapper.style.zIndex = 10;
-        this.navWrapper.style.backgroundColor = "#EFAAB3";
-        this.navWrapper.style.boxShadow = "2px 2px 6px #888";
+        //添加class
+        this.isNavWrapperTop = true;
       } else {
-        this.navWrapper.style.position = "relative";
-        this.navWrapper.style.top = 0;
-        this.navWrapper.style.zIndex = 1;
-        this.navWrapper.style.backgroundColor = "";
-        this.navWrapper.style.boxShadow = "";
+        //删除class
+        this.isNavWrapperTop = false;
       }
     },
     /*点击banner*/
@@ -400,6 +396,15 @@ export default {
     display: flex;
     justify-content: center;
     height: 130/2px;
+    transition: all 0.3s;
+    &.nav-wrapper-top {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 12;
+      background-color: #FFA9B4;
+      box-shadow: 2px 2px 6px #888;
+    }
     .nav-item {
       width: 130/2px;
       height: 130/2;

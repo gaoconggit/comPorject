@@ -1,13 +1,22 @@
+/**
+ *  邮件中心
+ *
+ */
 <template>
     <div>
-      <title-bar title="充值中心" />
+        <title-bar title="消息" :isWhiteBack="false" headerStyle="background-color:#FFF" />
     </div>
 </template>
 
 <script>
 import TitleBar from "@/common/TitleBar";
+
 export default {
-  name: "CoinsIndex",
+  name: "MainIndex",
+  data() {
+    return {};
+  },
+  methods: {},
   components: {
     TitleBar
   }
@@ -16,3 +25,5 @@ export default {
 
 <style scoped lang="less">
 </style>
+
+

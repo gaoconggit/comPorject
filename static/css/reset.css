@@ -20,7 +20,6 @@ time, mark, audio, video {
   padding: 0;
   border: 0;
   font-size: 100%;
-  font: inherit;
   vertical-align: baseline;
 }
 *{
@@ -30,6 +29,7 @@ time, mark, audio, video {
   -moz-user-select:none;/*火狐*/
   -ms-user-select:none; /*IE10*/
   user-select:none;
+  font-family: '微软雅黑','Microsoft YaHei','Arial','黑体','宋体',sans-serif;
 }
 input,textarea {
   -webkit-user-select:auto; /*webkit浏览器*/

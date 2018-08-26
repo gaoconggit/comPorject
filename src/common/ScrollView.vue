@@ -88,7 +88,6 @@ export default {
       this.$emit("on-scroll", pos);
     },
     reset(param, duration, easing) {
-      console.log("reset:", param, duration, easing);
       this.$refs.scroller.reset(param, duration, easing);
     },
     donePullup() {

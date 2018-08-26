@@ -25,90 +25,82 @@
 </template>
 
 <script>
-  export default {
-    name: "VHeader",
-    props: {
-      title: {
-        type: String,
-        default: "掌上抓娃娃"
-      },
-      preventGoBack: {
-        type: Boolean,
-        default: false
-      },
-      headerStyle: Object,
-      isWhiteBack: {
-        type: Boolean,
-        default: true,
-      },
+export default {
+  name: "VHeader",
+  props: {
+    title: {
+      type: String,
+      default: "掌上抓娃娃"
     },
-    data() {
-      return {}
+    preventGoBack: {
+      type: Boolean,
+      default: false
     },
-    methods: {
-      onClickBack() {
-        if (this.preventGoBack) {
-          console.log(1);
-          this.$emit('on-click-back')
-        } else {
-          this.$router ? this.$router.back() : window.history.back()
-        }
+    headerStyle: String,
+    isWhiteBack: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    onClickBack() {
+      if (this.preventGoBack) {
+        console.log(1);
+        this.$emit("on-click-back");
+      } else {
+        this.$router ? this.$router.back() : window.history.back();
       }
     }
   }
+};
 </script>
 
 <style scoped lang="less">
-  @import "../assets/style/index.less";
+@import "../assets/style/index.less";
 
-  .header {
-    position: relative;
-    padding: 3px 0;
-    box-sizing: border-box;
-    background-color: @mainColor;
+.header {
+  display: flex;
+  align-items: center;
+  padding: 3px 0;
+  box-sizing: border-box;
+  background-color: @mainColor;
 
-    .header-title {
-      line-height: 40px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 400;
-      color: #FFF;
-      margin: 0 88px;
-      height: 40px;
-      width: auto;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      span {
-        display: inline-block;
-      }
+  .header-title {
+    flex: 1;
+    line-height: 40px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+    height: 40px;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    span {
+      margin-right: 60/2px;
     }
+  }
 
-    .header-left {
-      position: absolute;
-      top: 0;
-      left: 0;
+  .header-left {
+    width: 60/2px;
+    height: 60/2px;
+    .header-back {
       display: block;
-      font-size: 14px;
-      line-height: 21px;
-    }
-
-    .header-left {
-      .header-back {
-        position: absolute;
-        top: 0;
-        width: 40px;
-        height: 40px;
-        background-image: url("../assets/img/com_img/icon_bakc.png");
-        background-size: auto 100%;
-        background-repeat: no-repeat;
-        &.black {
-          background-image: url("../assets/img/com_img/icon_bakc_black.png");
-        }
-        &.white {
-          background-image: url("../assets/img/com_img/icon_bakc.png");
-        }
+      &.black {
+        width: 60/2px;
+        height: 60/2px;
+        .background-url("~img/com_img/icon_bakc_black.png");
+      }
+      &.white {
+        width: 80/2px;
+        height: 80/2px;
+        .background-url("~img/com_img/icon_bakc.png");
       }
     }
   }
+}
 </style>

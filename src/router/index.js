@@ -10,6 +10,8 @@ const MineIndex = r => require([], () => r(require('../components/MineFragment/M
 const CoinsIndex = r => require([], () => r(require('../components/CoinsRecharge/CoinsIndex')));
 const RoomIndex = r => require([], () => r(require('../components/RoomFragment/RoomIndex')));
 const FrameContent = r => require([], () => r(require('../common/FrameContent')));
+const VipContent = r => require([], () => r(require('../components/MineFragment/VipContent')));
+const MailIndex = r => require([], () => r(require('../components/MailFragment/MailIndex')));
 
 export default [{
   path: '/',
@@ -34,5 +36,7 @@ export default [{
     { path: '/recharge', name: '充值中心', component: CoinsIndex },
     { path: '/room', name: '娃娃机房间', component: RoomIndex, meta: { keepAlive: true } },
     { path: '/details', name: '内容详情', component: FrameContent, meta: { anima: true } },
+    { path: '/vip', name: 'VIP会员俱乐部', component: VipContent },
+    { path: '/email', name: '邮件中心', component: MailIndex },
   ]
 }];
