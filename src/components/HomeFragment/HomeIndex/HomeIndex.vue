@@ -5,14 +5,13 @@
         <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
       </li>
     </ul>
-    <scroll-view 
-    ref="scrollerIndex" 
+    <scroll-view
+    ref="scrollerIndex"
     :tabHeight="-tabHeight"
     :showBottom="{isShow:true,text:'没有更多娃娃了哟~'}"
     :scrollBottomOffset=4
     @on-pulldown-loading="onPulldownLoading"
     @on-pullup-loading="onPullupLoading"
-    @on-scroll-bottom="onScrollBottom"
     @on-scroll="onScroll">
       <div class="home_content">
         <header ref="homeHeader">
@@ -158,6 +157,9 @@ export default {
         }
       });
     },
+    scrollReset(){
+      this.$refs.scrollerIndex.reset();
+    },
     onPulldownLoading() {
       this.$vux.loading.show({
         text: "加载中.."
@@ -186,6 +188,7 @@ export default {
         //删除class
         this.isNavWrapperTop = false;
       }
+      return pos;
     },
     /*点击banner*/
     swiperItem(banner) {

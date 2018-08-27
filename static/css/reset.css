@@ -65,6 +65,7 @@ table {
 }
 a{
   text-decoration: none;
+  color: #000;
 }
 img[src=""],img:not([src]){
   opacity:0;

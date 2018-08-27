@@ -2,22 +2,13 @@
 @mainColor: #ff8dac;
 @auxColor: #ffc5d1;
 @whiteColor: #FFF;
+@grayColor: #888;
+@warnColor: #FF1A17;
 
-/*字体大小基本尺寸*/
+/*基本尺寸*/
+@titleBarHeight: 46px;
 
 /*常用样式*/
-.font-dpr(@font-size) {
-  font-size: @font-size;
-
-  [data-dpr="2"] & {
-    font-size: @font-size * 2;
-  }
-
-  [data-dpr="3"] & {
-    font-size: @font-size * 3;
-  }
-}
-
 .over-ellip {
   overflow: hidden;
   -ms-text-overflow: ellipsis;
@@ -37,14 +28,15 @@
     height: 100%;
   }
 }
+
 /*清除浮动*/
-.clearfix{
+.clearfix {
   *zoom: 1;
-  &::after,&::before {
-    content:"";
-    display:table;
+  &::after, &::before {
+    content: "";
+    display: table;
   }
-  &::after{
+  &::after {
     clear: both;
   }
 }

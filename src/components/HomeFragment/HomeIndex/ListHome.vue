@@ -1,6 +1,6 @@
 /**
- *  首页列表
- */
+*  首页列表
+*/
 <template>
   <div class="list-wrapper">
     <grid :cols="2" :show-lr-borders="false" :show-vertical-dividers="false">
@@ -8,7 +8,9 @@
         v-for="item in wawaList"
         :key="item.giftid"
         @on-item-click="joinRoom(item)">
-        <img slot="icon" v-lazy="item.gifticon" alt="">
+        <div class="item-icon">
+          <img v-lazy="item.gifticon">
+        </div>
         <div class="tag_left">
           <img :src="roomType(item)" alt="">
         </div>
@@ -30,7 +32,7 @@
 </template>
 
 <script>
-  import {Grid, GridItem} from "vux";
+  import {Grid, GridItem, XImg} from "vux";
   import {showToast} from "../../../common/util/Utils"
 
   export default {
@@ -81,7 +83,7 @@
       }
     },
     components: {
-      Grid, GridItem
+      Grid, GridItem, XImg
     }
   }
 </script>
@@ -109,6 +111,12 @@
           width: 100%;
           height: 100%;
         }
+      }
+      .item-icon {
+        margin: auto;
+        width: 356/2px !important;
+        height: 436/2px !important;
+        .img-spread;
       }
       .tag_left, .tag_right {
         position: absolute;

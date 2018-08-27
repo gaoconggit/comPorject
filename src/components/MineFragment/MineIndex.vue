@@ -9,7 +9,7 @@
                 <div class="mail-icon" @click="mineItem(1)">
                     <img src="~/img/mine/message.png" alt="">
                 </div>
-                <div class="mail-icon-not" @click.stop="mineItem(1)">
+                <div v-if="Number(userInfo.noread)" class="mail-icon-not" @click.stop="mineItem(1)">
                     <img src="~/img/mine/message_unread.png" alt="">
                 </div>
             </header>
@@ -136,7 +136,7 @@ export default {
   }
   .mine-content {
     position: relative;
-    top: 46px;
+    top: @titleBarHeight;
     // height: 468/2px;
     .mine-header {
       position: relative;

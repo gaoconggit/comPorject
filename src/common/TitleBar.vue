@@ -89,15 +89,13 @@ export default {
     width: 60/2px;
     height: 60/2px;
     .header-back {
+      width: 100%;
+      height: 100%;
       display: block;
       &.black {
-        width: 60/2px;
-        height: 60/2px;
         .background-url("~img/com_img/icon_bakc_black.png");
       }
       &.white {
-        width: 80/2px;
-        height: 80/2px;
         .background-url("~img/com_img/icon_bakc.png");
       }
     }

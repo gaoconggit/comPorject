@@ -180,4 +180,12 @@ export default {
     formData.append("uid", state.uid);
     return this.postAxiosAction(url, formData);
   },
+  //获取充值规则
+  getRechargeRuleList() {
+    let url = `${apiData.public}Record.rechargeRuleList`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  }
 }
