@@ -93,6 +93,13 @@
         this.$router.push({path: '/vip'});
       }
     },
+    watch: {
+      /*$route() {
+        if (this.$route.path === '/recharge') {
+          this._getRechargeRuleList();
+        }
+      }*/
+    },
     computed: {
       ...mapGetters(['userInfo']),
     },

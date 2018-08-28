@@ -16,3 +16,7 @@ export const showToast = (text, type = 'text', time = 2000, width = '7.6em', pos
     width,
   })
 };
+
+export const clickSwriperItem = () => {
+
+}

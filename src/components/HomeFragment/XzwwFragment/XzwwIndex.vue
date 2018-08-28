@@ -1,15 +1,22 @@
 <template>
   <div class="xzww-wrapper" :style="'bottom:' + tabHeight + 'px'">
     <frameset>
-      <frame src="https://www.baidu.com" />
+      <frame :src="xzwwURL" />
     </frameset>
   </div>
 </template>
 
 <script>
+import {baseUrl} from "../../../config/config";
+
 export default {
   name: "XzwwIndex",
-  props: ["tabHeight"]
+  props: ["tabHeight"],
+  data(){
+    return {
+      xzwwURL: `${baseUrl}spinning_wawa/index.php`,       //旋转娃娃地址
+    }
+  }
 };
 </script>
 

@@ -22,7 +22,7 @@
         </div>
         <div class="price">
           <div class="icon">
-            <img src="~/img/home/coin_icon.png" alt="">
+            <img src="~/img/com_img/coin_icon.png" alt="">
           </div>
           <p class="item_price">{{item.spendcoin}}</p>
         </div>
@@ -88,7 +88,7 @@
   }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
   @import "~assets/style/index.less";
 
   .list-wrapper {

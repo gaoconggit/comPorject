@@ -2,11 +2,11 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import App from './App'
 import VueLazyload from "vue-lazyload";
-import routes from './router';
-import store from './store';
+import routes from './router/index';
+import store from './store/';
 import {routerMode} from "./config/config";
+import {mapMutations, mapState} from "vuex";
 import FastClick from 'fastClick';
 import {LoadingPlugin, ToastPlugin, AlertPlugin} from 'vux';
 
@@ -31,11 +31,11 @@ FastClick.attach(document.body);
 Vue.use(VueRouter);
 const router = new VueRouter({
   routes,
-  node: routerMode,
+  mode: routerMode,
   strict: process.env.NODE_ENV !== 'production',
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     } else {
       if (from.meta.keepAlive) {
         from.meta.savedPosition = document.body.scrollTop;
@@ -47,8 +47,14 @@ const router = new VueRouter({
 
 /* eslint-disable no-new */
 new Vue({
-  store,
   router,
-  components: {App},
-  template: '<App/>'
+  store,
+  created() {
+  },
+  method: {
+    ...mapMutations(['SET_USERINFO'])
+  },
+  compute: {
+    ...mapState(['userInfo'])
+  },
 }).$mount('#app');

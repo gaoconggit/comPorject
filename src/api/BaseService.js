@@ -14,24 +14,27 @@ let cancel, promiseArr = {};
 const CancelToken = axios.CancelToken;
 //请求拦截器
 axios.interceptors.request.use(config => {
-  
-  if (promiseArr[config.url]) {
+  /*if (promiseArr[config.url]) {
     promiseArr[config.url]('操作取消');
     promiseArr[config.url] = cancel;
   } else {
     promiseArr[config.url] = cancel;
-  }
+  }*/
   return config;
 }, error => {
-  return Promise.reject(error);
+  showToast('请求超时');
+  return Promise.resolve(error);
 });
 
 //响应拦截器即异常处理
 axios.interceptors.response.use(response => {
+  if (response.status && response.status == 200 && response.data.code != '1') {
+    showToast(response.data.msg, 'text', 2000, '300px');
+  }
   return response;
 }, error => {
   if (error && error.response) {
-    switch (error) {
+    switch (error.response.status) {
       case 400:
         error.message = "错误请求";
         break;
@@ -95,7 +98,7 @@ const apiData = {
 
 export default {
   //get请求
-  getAxiosAction(url, params) {
+  getAxiosAction(url, params, isShowError = false) {
     return new Promise((resolve, reject) => {
       axios({
         method: 'get',
@@ -105,12 +108,23 @@ export default {
           cancel = c;
         })
       }).then((res) => {
-        resolve(res.data);
+        if (res != null) {
+          res = res.data;
+          if (isShowError) {
+            resolve(res)
+          } else {
+            if (res.code != 1) {
+              reject(res.msg);
+            } else {
+              resolve(res);
+            }
+          }
+        }
       })
     })
   },
   //post请求
-  postAxiosAction(url, params) {
+  postAxiosAction(url, params, isShowError = false) {
     return new Promise((resolve, reject) => {
       axios({
         method: 'post',
@@ -120,12 +134,16 @@ export default {
           cancel = c
         })
       }).then(res => {
-        if (res.data != null) {
+        if (res != null) {
           res = res.data;
-          if (res.code != 1) {
-            reject(res.msg);
+          if (isShowError) {
+            resolve(res)
           } else {
-            resolve(res);
+            if (res.code != 1) {
+              reject(res.msg);
+            } else {
+              resolve(res);
+            }
           }
         }
       })
@@ -186,6 +204,53 @@ export default {
     let formData = new FormData();
     formData.append("token", state.token);
     formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取进入房间信息
+  getJoinRoom(wawaId, roomId = null) {
+    let url = `${apiData.public}Room.joinRoom`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('room_id', roomId);
+    formData.append('wawa_id', wawaId);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //获取扭蛋列表
+  getNiudanList(page = 1) {
+    let url = `${apiData.public}Niudan.roomList`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('page', page);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
+  },
+  //进入扭蛋房间
+  getJoinNiudan(roomId) {
+    let url = `${apiData.public}Niudan.roomInfo`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('room_id', roomId);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //获取游戏中心列表
+  getGameCenterList(page = 1) {
+    let url = `${apiData.public}GameCenter.getList`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('p', page);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取积分商城地址
+  getScoreUrl(){
+    let url = `${apiData.public}Home.getScoreUrl`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
     return this.postAxiosAction(url, formData);
   }
 }
