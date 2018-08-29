@@ -5,6 +5,7 @@
 <template>
   <grid :cols="2" :show-lr-borders="false" :show-vertical-dividers="false" class="list-wrapper">
     <grid-item
+      class="grid"
       v-for="item in niudanList"
       :key="item.id"
       @on-item-click="joinNiuDan(item)"
@@ -63,7 +64,7 @@
     &::before {
       border: none;
     }
-    .weui-grid {
+    .grid {
       padding: 0;
       color: @whiteColor;
       border: none;
@@ -78,8 +79,8 @@
       }
       .header {
         position: absolute;
-        top: 3px;
-        left: 9px;
+        top: 6px;
+        left: 18px;
         width: 340px;
         height: 60px;
         line-height: 60px;
@@ -88,21 +89,21 @@
       }
       .price {
         position: absolute;
-        bottom: 30px;
-        left: 30px;
+        bottom: 60px;
+        left: 60px;
         background-color: @mainColor;
-        padding: 4px 10px;
-        -webkit-border-radius: 20px;
-        -moz-border-radius: 20px;
-        border-radius: 20px;
+        padding: 8px 20px;
+        -webkit-border-radius: 40px;
+        -moz-border-radius: 40px;
+        border-radius: 40px;
         display: flex;
         align-items: center;
-        font-size: 16px;
+        font-size: @mainFontSize;
         font-weight: 600;
         .coin {
-          margin-right: 6px;
-          width: 36px;
-          height: 36px;
+          margin-right: 12px;
+          width: 72px;
+          height: 72px;
           .img-spread;
         }
       }

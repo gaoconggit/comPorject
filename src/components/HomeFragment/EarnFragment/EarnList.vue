@@ -1,6 +1,6 @@
 <template>
-  <grid :cols="2" :show-lr-borders="false" :show-vertical-dividers="false">
-    <grid-item v-for="item in data" :key="Math.random()" @on-item-click="clickItem(item)">
+  <grid :cols="2" :show-lr-borders="false" :show-vertical-dividers="false" class="grids">
+    <grid-item class="grid" v-for="item in data" :key="Math.random()" @on-item-click="clickItem(item)">
       <div class="item-icon">
         <img v-lazy="item.icon">
       </div>
@@ -35,11 +35,11 @@
 <style scoped lang="less">
   @import "~assets/style/index.less";
 
-  .weui-grids {
+  .grids {
     &::before {
       border: none;
     }
-    .weui-grid {
+    .grid {
       padding: 0;
       color: @whiteColor;
       border: none;
@@ -48,8 +48,8 @@
       }
       .item-icon {
         margin: auto;
-        width: 356/2px !important;
-        height: 436/2px !important;
+        width: 356px;
+        height: 436px;
         .img-spread;
       }
     }

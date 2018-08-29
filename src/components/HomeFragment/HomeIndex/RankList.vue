@@ -130,103 +130,103 @@ export default {
   .box {
     position: relative;
     z-index: 100;
-    width: 640/2px;
-    height: 1090/2px;
+    width: 640px;
+    height: 1090px;
     .background-url("~img/rank/rank_bg.png");
     .close {
       position: absolute;
-      right: -6px;
-      top: 120/2px;
-      width: 60/2px;
-      height: 60/2px;
+      right: -12px;
+      top: 120px;
+      width: 60px;
+      height: 60px;
       .img-spread;
     }
     .rank-nav {
-      padding: 0 40px;
+      padding: 0 80px;
       position: absolute;
-      top: 210/2px;
+      top: 210px;
       width: 100%;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 120/2px;
+      height: 120px;
       z-index: 1;
       box-sizing: border-box;
       .nav-item {
-        width: 180/2px;
-        height: 70/2px;
+        width: 180px;
+        height: 70px;
         &.day-rank {
           .background-url("~img/rank/btn_n2.png");
         }
         &.day-rank.active {
           .background-url("~img/rank/btn_s2.png");
-          height: 80/2px;
+          height: 80px;
         }
         &.week-rank {
           .background-url("~img/rank/btn_n3.png");
         }
         &.week-rank.active {
           .background-url("~img/rank/btn_s3.png");
-          height: 80/2px;
+          height: 80px;
         }
       }
     }
     .rank-list {
-      padding: 0 40/2px;
+      padding: 0 40px;
       position: absolute;
-      top: 320/2px;
+      top: 320px;
       width: 100%;
-      height: 700/2px !important;
+      height: 700px !important;
       box-sizing: border-box;
       overflow: hidden;
       .rank-item {
-        margin: 12/2px 0;
+        margin: 12px 0;
         display: flex;
         align-items: center;
-        width: 560/2px;
-        height: 120/2px;
+        width: 560px;
+        height: 120px;
         .background-url("~img/rank/rank_bg_1.png");
       }
       .num {
-        width: 84/2px;
-        height: 84/2px;
-        line-height: 84/2px;
+        width: 84px;
+        height: 84px;
+        line-height: 84px;
         text-align: center;
         .img-spread;
         .num-text {
-          font-size: 26px;
+          font-size: @maxFontSize;
           color: @mainColor;
           font-weight: 600;
         }
       }
       .avatar {
-        margin: 0 6px;
-        width: 90/2px;
-        height: 90/2px;
-        border-radius: 10px;
-        border: 2px solid #fff;
+        margin: 0 12px;
+        width: 90px;
+        height: 90px;
+        border-radius: 20px;
+        border: 4px solid #fff;
         overflow: hidden;
         .img-spread;
       }
       .name {
         flex: 1;
-        font-size: 14px;
+        font-size: @subFontSize;
         .over-ellip;
       }
       .freq {
         width: 60px;
         text-align: center;
-        font-size: 14px;
-        line-height: 16px;
+        font-size: @subFontSize;
+        line-height: 32px;
         color: #fff;
       }
     }
     .rank-list-empty {
-      padding: 20px 40/2px 0;
+      padding: 40px 40px 0;
       position: absolute;
-      top: 320/2px;
+      top: 320px;
       width: 100%;
-      height: 700/2px !important;
+      height: 700px !important;
       box-sizing: border-box;
       text-align: center;
       .over-ellip;

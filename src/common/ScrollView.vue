@@ -114,13 +114,13 @@
 <style lang="less">
   .scroller {
     .bottom-text {
-      height: 20px;
-      line-height: 20px;
+      height: 40px;
+      line-height: 40px;
       text-align: center;
-      font-size: 14px;
+      font-size: 28px;
     }
     .loadmore {
-      margin: 0 auto 5px !important;
+      margin: 0 auto 10px !important;
       span {
         color: #000;
       }
@@ -136,15 +136,15 @@
       transition: all linear 0.2s;
       -webkit-transition: all linear 0.2s;
       color: #666;
-      font-size: 25px;
+      font-size: 50px;
     }
 
     .xs-plugin-pulldown-down {
       position: absolute;
       width: 100%;
-      height: 30px;
-      line-height: 30px;
-      top: -30px;
+      height: 60px;
+      line-height: 60px;
+      top: -60px;
       text-align: center;
     }
   }

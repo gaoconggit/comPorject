@@ -131,7 +131,7 @@
     width: 100%;
     height: 100%;
     .weui-tabbar__item {
-      padding: 5px 0;
+      padding: 10px 0;
     }
     .tab_bar {
       position: fixed;

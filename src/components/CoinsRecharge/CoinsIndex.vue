@@ -122,12 +122,12 @@
       bottom: 0;
       width: 100%;
       header {
-        width: 750/2px;
-        height: 220/2px;
+        width: 750px;
+        height: 220px;
         .background-url('~img/myCoin/header_bg.png');
         overflow: hidden;
         .my-coin {
-          margin: 40/2px auto 0;
+          margin: 40px auto 0;
           text-align: center;
           font-weight: 600;
           color: @whiteColor;
@@ -136,75 +136,75 @@
       .card-box {
         display: flex;
         justify-content: space-around;
-        margin: 4px 0;
+        margin: 8px 0;
         .card {
           position: relative;
-          width: 376/2px;
-          height: 192/2px;
+          width: 376px;
+          height: 192px;
           font-weight: 600;
           .img-spread;
           & > span {
             position: absolute;
           }
           .extra-rate {
-            top: 10px;
-            left: 98px;
-            padding: 0 6px;
-            height: 16px;
-            line-height: 16px;
+            top: 20px;
+            left: 196px;
+            padding: 0 12px;
+            height: 32px;
+            line-height: 32px;
             color: @whiteColor;
-            font-size: 14px;
+            font-size: @subFontSize;
             font-weight: 600;
             background-color: @warnColor;
             &::before {
               position: absolute;
-              left: -8px;
+              left: -16px;
               content: '';
-              border-width: 8px 8px 8px 0;
+              border-width: 16px 16px 16px 0;
               border-style: solid;
               border-color: transparent @warnColor transparent transparent;
               /*background-color: @warnColor;*/
             }
           }
           .actual-coin {
-            top: 36px;
-            left: 18px;
-            font-size: 18px;
+            top: 72px;
+            left: 36px;
+            font-size: @maxFontSize;
             color: @whiteColor;
           }
           .return-coin {
-            top: 38px;
-            left: 64px;
-            font-size: 16px;
+            top: 76px;
+            left: 108px;
+            font-size: @mainFontSize;
             color: @warnColor;
           }
           .money {
-            top: 63px;
-            left: 14px;
+            top: 126px;
+            left: 28px;
             color: @whiteColor;
           }
           .desc-text {
             position: absolute;
-            top: 176/2px;
-            left: 16px;
-            font-size: 12px;
+            top: 176px;
+            left: 32px;
+            font-size: @minFontSize;
             font-weight: normal;
             color: @grayColor;
           }
           .is-select {
             position: absolute;
-            bottom: 14px;
-            right: 9px;
-            width: 56/2px;
-            height: 72/2px;
+            bottom: 28px;
+            right: 18px;
+            width: 56px;
+            height: 72px;
             .img-spread;
           }
         }
       }
       .goto-vip {
-        margin: 10px auto 6px;
-        width: 736/2px;
-        height: 110/2px;
+        margin: 20px auto 12px;
+        width: 736px;
+        height: 110px;
         .img-spread;
       }
       .coin-list {
@@ -215,9 +215,9 @@
           }
         }
         .item-box {
-          margin: 4px 0;
+          margin: 8px 0;
           border: none;
-          font-size: 14px;
+          font-size: @subFontSize;
           font-weight: 600;
           &::after {
             border: none;
@@ -226,8 +226,8 @@
             margin: 0 auto;
             display: flex;
             align-items: center;
-            width: 350/2px;
-            height: 110/2px;
+            width: 350px;
+            height: 110px;
             color: @mainColor;
             .background-url('~img/myCoin/price_bg_no.png');
             &.active {
@@ -236,24 +236,24 @@
             }
           }
           .icon {
-            margin: 0 16/2px;
-            width: 70/2px;
-            height: 70/2px;
+            margin: 0 16px;
+            width: 70px;
+            height: 70px;
             .img-spread;
           }
           .center {
             flex: 1;
             display: flex;
             flex-direction: column;
-            line-height: 18px;
+            line-height: 36px;
             .give {
               color: @warnColor;
               font-weight: normal;
             }
           }
           .price {
-            padding-right: 10/2px;
-            min-width: 120/2px;
+            padding-right: 10px;
+            min-width: 120px;
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
@@ -270,13 +270,13 @@
         }
       }
       .recharge-wrapper {
-        height: 68px;
+        height: 136px;
         display: flex;
         justify-content: space-around;
         align-items: center;
         .recharges-btn {
-          width: 300/2px;
-          height: 92/2px;
+          width: 300px;
+          height: 92px;
           .img-spread;
         }
       }

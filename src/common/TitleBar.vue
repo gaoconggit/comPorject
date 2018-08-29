@@ -64,30 +64,30 @@ export default {
 .header {
   display: flex;
   align-items: center;
-  padding: 3px 0;
+  padding: 6px 0;
   box-sizing: border-box;
   background-color: @mainColor;
 
   .header-title {
     flex: 1;
-    line-height: 40px;
+    line-height: 80px;
     text-align: center;
-    font-size: 18px;
+    font-size: 32px;
     font-weight: 400;
     color: #fff;
-    height: 40px;
+    height: 80px;
     width: auto;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     span {
-      margin-right: 60/2px;
+      margin-right: 60px;
     }
   }
 
   .header-left {
-    width: 60/2px;
-    height: 60/2px;
+    width: 60px;
+    height: 60px;
     .header-back {
       width: 100%;
       height: 100%;

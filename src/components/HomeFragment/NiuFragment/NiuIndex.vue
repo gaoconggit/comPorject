@@ -107,7 +107,7 @@
     .niu-header {
       display: flex;
       width: 100%;
-      height: 88/2px;
+      height: 88px;
       justify-content: center;
       align-items: center;
       .img-decorate,
@@ -115,12 +115,12 @@
         .img-spread;
       }
       .img-decorate {
-        width: 90/2px;
-        height: 28/2px;
+        width: 90px;
+        height: 28px;
       }
       .img-text {
-        width: 400/2px;
-        height: 38/2px;
+        width: 400px;
+        height: 38px;
       }
     }
     .niu-content {

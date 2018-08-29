@@ -176,7 +176,7 @@
     .video-wrapper {
       position: relative;
       width: 100%;
-      height: 1030/2px;
+      height: 1030px;
       overflow: hidden;
       .video-wrap-main {
         position: absolute;
@@ -189,11 +189,11 @@
       .header {
         display: flex;
         align-items: center;
-        height: 98/2px;
+        height: 98px;
         .back, .fix {
-          margin: 10px;
-          width: 50/2px;
-          height: 50/2px;
+          margin: 20px;
+          width: 50px;
+          height: 50px;
           .img-spread;
         }
         .now-player {
@@ -203,8 +203,8 @@
             align-items: center;
             .now-avatar {
               position: relative;
-              width: 78/2px;
-              height: 78/2px;
+              width: 78px;
+              height: 78px;
               -webkit-border-radius: 50%;
               -moz-border-radius: 50%;
               border-radius: 50%;
@@ -214,18 +214,18 @@
             }
             .now-user {
               margin-left: -24px;
-              padding: 3.5px 0 3.5px 30px;
-              width: 100px;
+              padding: 7px 0 7px 60px;
+              width: 200px;
               background-color: rgba(0, 0, 0, .4);
-              border-top-right-radius: 32px;
-              border-bottom-right-radius: 32px;
+              border-top-right-radius: 64px;
+              border-bottom-right-radius: 64px;
               p {
-                padding-right: 10px;
+                padding-right: 20px;
                 color: @whiteColor;
-                font-size: 14px;
+                font-size: @subFontSize;
                 width: 100%;
-                height: 16px;
-                line-height: 16px;
+                height: 32px;
+                line-height: 32px;
                 .over-ellip;
               }
             }
@@ -236,12 +236,12 @@
           align-items: center;
           .now-total {
             color: @whiteColor;
-            margin-right: 8px;
+            margin-right: 16px;
           }
           .item-user {
-            margin-left: -10px;
-            width: 60/2px;
-            height: 60/2px;
+            margin-left: -20px;
+            width: 60px;
+            height: 60px;
             -webkit-border-radius: 50%;
             -moz-border-radius: 50%;
             border-radius: 50%;

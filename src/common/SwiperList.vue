@@ -39,11 +39,11 @@
     }
     .dots_item {
       .vux-icon-dot {
-        width: 10px !important;
-        height: 10px !important;
-        border-radius: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        border-radius: 40px !important;
         &.active {
-          width: 20px !important;
+          width: 40px !important;
           background-color: #ff8dac !important;
         }
       }

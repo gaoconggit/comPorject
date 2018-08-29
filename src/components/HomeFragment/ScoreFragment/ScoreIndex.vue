@@ -29,8 +29,10 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+  @import "~assets/style/index.less";
+
   .score-wrapper {
-    padding-bottom: 48px
+    padding-bottom: @tabBarHeight;
   }
 </style>

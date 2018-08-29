@@ -311,7 +311,7 @@
     .home_content {
       header {
         display: flex;
-        padding: 4px 10px 0;
+        padding: 8px 20px 0;
         align-items: center;
         a {
           flex: 1;
@@ -319,13 +319,13 @@
         }
         .user_info {
           position: relative;
-          height: 70px;
+          height: 140px;
           .avatar {
             position: absolute;
-            width: 60px;
-            height: 60px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            border: 2px solid @auxColor;
+            border: 4px solid @auxColor;
             overflow: hidden;
             background-color: #000;
             z-index: 1;
@@ -336,10 +336,10 @@
           }
           .vip_con {
             position: absolute;
-            bottom: 2px;
-            left: 6px;
-            width: 138/2.5px;
-            height: 66/2.5px;
+            bottom: 4px;
+            left: 10px;
+            width: 138*0.8px;
+            height: 66*0.8px;
             z-index: 2;
             img {
               width: 100%;
@@ -347,33 +347,33 @@
             }
           }
           .name {
-            padding: 0 10px;
-            height: 30px;
-            width: 110px;
-            line-height: 30px;
+            padding: 0 20px;
+            height: 60px;
+            width: 220px;
+            line-height: 60px;
             position: absolute;
-            left: 60px;
-            top: 16px;
-            font-size: 16px;
+            left: 120px;
+            top: 32px;
+            font-size: @mainFontSize;
             background-color: #fff;
-            border-top-right-radius: 30px;
-            border-bottom-right-radius: 30px;
+            border-top-right-radius: 60px;
+            border-bottom-right-radius: 60px;
             .over-ellip;
           }
         }
         .coin_num {
           position: absolute;
-          right: 6px;
+          right: 12px;
           .wrapper {
-            width: 178/2px;
-            height: 66/2px;
+            width: 178px;
+            height: 66px;
             background-image: url(../../../assets/img/home/coin_bg.png);
             background-size: 100% 100%;
             .num {
               position: absolute;
-              left: 30px;
-              top: 8px;
-              font-size: 14px;
+              left: 60px;
+              top: 16px;
+              font-size: @subFontSize;
             }
           }
         }
@@ -383,10 +383,10 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 94/2px;
+      height: 94px;
       .btn_item {
-        width: 214/2px;
-        height: 84/2px;
+        width: 214px;
+        height: 84px;
         img {
           width: 100%;
           height: 100%;
@@ -394,10 +394,10 @@
       }
     }
     .nav-wrapper {
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: center;
-      height: 130/2px;
+      height: 130px;
       transition: all 0.3s;
       &.nav-wrapper-top {
         position: absolute;
@@ -405,11 +405,11 @@
         width: 100%;
         z-index: 12;
         background-color: #FFA9B4;
-        box-shadow: 2px 2px 6px #888;
+        box-shadow: 4px 4px 12px #888;
       }
       .nav-item {
-        width: 130/2px;
-        height: 130/2;
+        width: 130px;
+        height: 130px;
         .nav-icon {
           width: 100%;
           height: 100%;
