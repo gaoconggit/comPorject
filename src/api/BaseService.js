@@ -94,6 +94,8 @@ axios.defaults.timeout = 10000;
 //常用请求地址
 const apiData = {
   public: "api/public/?service=",
+  mywawa: "api/mywawa/api",
+  room: "api/room/api",
 };
 
 export default {
@@ -216,6 +218,38 @@ export default {
     formData.append('wawa_id', wawaId);
     return this.postAxiosAction(url, formData, true);
   },
+  //获取当前房间信息
+  getRoomAudience(roomId) {
+    let url = `${apiData.mywawa}`;
+    let formData = new FormData();
+    formData.append("api_name", "game_audience");
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    formData.append("room_id", roomId);
+    formData.append("page", 1);
+    formData.append("size", 6);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取上报房间错误列表
+  getRoomServiceList() {
+    let url = `${apiData.room}`;
+    let formData = new FormData();
+    formData.append("api_name", "room_service_text");
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取上报房间错误列表
+  getRoomFixReport(roomId, service_text_id) {
+    let url = `${apiData.room}`;
+    let formData = new FormData();
+    formData.append("api_name", "room_game_service");
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    formData.append("room_id", roomId);
+    formData.append("service_text_id", service_text_id);
+    return this.postAxiosAction(url, formData);
+  },
   //获取扭蛋列表
   getNiudanList(page = 1) {
     let url = `${apiData.public}Niudan.roomList`;
@@ -246,11 +280,11 @@ export default {
     return this.postAxiosAction(url, formData);
   },
   //获取积分商城地址
-  getScoreUrl(){
+  getScoreUrl() {
     let url = `${apiData.public}Home.getScoreUrl`;
     let formData = new FormData();
     formData.append('token', state.token);
     formData.append('uid', state.uid);
     return this.postAxiosAction(url, formData);
-  }
+  },
 }

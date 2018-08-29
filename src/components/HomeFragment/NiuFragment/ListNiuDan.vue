@@ -41,7 +41,8 @@
           query: {
             title: item.name,
             url: `${baseUrl}/niudan/index.php?base_url=${baseUrl}api/public/&token=${this.userInfo.token}&uid=${this.userInfo.id}&room_id=${item.id}`
-          }
+          },
+          meta: {keepAlive: false}
         })
       }
     },
@@ -71,17 +72,17 @@
       }
       .item-icon {
         margin: auto;
-        width: 374/2px;
-        height: 454/2px;
+        width: 374px;
+        height: 454px;
         .img-spread;
       }
       .header {
         position: absolute;
         top: 3px;
         left: 9px;
-        width: 340/2px;
-        height: 60/2px;
-        line-height: 60/2px;
+        width: 340px;
+        height: 60px;
+        line-height: 60px;
         text-align: center;
         .background-url("~img/niudan/header_bg.png")
       }
@@ -100,8 +101,8 @@
         font-weight: 600;
         .coin {
           margin-right: 6px;
-          width: 36/2px;
-          height: 36/2px;
+          width: 36px;
+          height: 36px;
           .img-spread;
         }
       }

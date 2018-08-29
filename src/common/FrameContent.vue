@@ -1,6 +1,6 @@
 /**
 *  公用webview
-*
+*  路由：details
 */
 
 <template>
@@ -23,13 +23,15 @@
         title: "活动详情"
       };
     },
-    created() {
-      if (this.$route.query.title) {
-        this.title = this.$route.query.title;
-      }
-    },
     components: {
       TitleBar
+    },
+    watch: {
+      $route() {
+        if (/^\/details/.test(this.$route.path)) {
+          this.title = this.$route.query.title;
+        }
+      }
     }
   };
 </script>

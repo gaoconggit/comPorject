@@ -1,5 +1,5 @@
 <template>
-  <div class="score-wrapper" :style="'padding-bottom:' + tabHeight + 'px'">
+  <div class="score-wrapper">
     <frameset>
       <frame :src="scoreURL">
     </frameset>
@@ -11,7 +11,6 @@
 
   export default {
     name: "Index",
-    props: ['tabHeight'],
     data() {
       return {
         scoreURL: ''
@@ -29,3 +28,9 @@
     }
   }
 </script>
+
+<style scoped>
+  .score-wrapper {
+    padding-bottom: 48px
+  }
+</style>
