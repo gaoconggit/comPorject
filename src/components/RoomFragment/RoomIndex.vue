@@ -22,6 +22,15 @@
         <!--房间上报-->
         <div class="fix" @click="_getRoomServiceList"><img src="~/img/room/game_report.png" alt=""></div>
       </div>
+      <div class="baosong-icon">
+        <div class="icon-wrap">
+          <div class="song-icon" v-for="(song,index) in roomData.baosong_num">
+            <img src="~/img/room/game_baosong_no.png" alt="">
+          </div>
+        </div>
+        <p class="song-time">{{roomData.baosong_expire_time_str}}</p>
+        <p class="song-text">还差{{roomData.baosong_num-roomData.baosong_progress}}局娃娃就送你</p>
+      </div>
       <div class="left"></div>
       <div class="right"></div>
       <div class="score-center"></div>
@@ -64,7 +73,6 @@
         this.roomId = this.$route.query.id;
         this._getJoinRoom();
       }
-      showToast("123456", "success", 20000);
     },
     beforeRouteLeave(to, from, next) {
       this.bgmusic.stop();
@@ -149,7 +157,7 @@
         console.log(id);
         let result = await api.getRoomFixReport(this.roomId, id)
         if (result.code == 1) {
-          showToast(result.msg, "success");
+          showToast(result.msg, "success", 3000, '300px');
           this.$vux.loading.hide();
         } else {
           setTimeout(() => {
@@ -251,6 +259,24 @@
             }
             .img-spread;
           }
+        }
+      }
+      .baosong-icon {
+        margin: 10px 20px;
+        .icon-wrap {
+          display: flex;
+        }
+        .song-icon {
+          margin: 0 2px;
+          width: 56px;
+          height: 56px;
+          .img-spread;
+        }
+        .song-text, .song-time {
+          margin-top: 10px;
+          font-size: @subFontSize;
+          color: @catchText;
+          font-weight: 600;
         }
       }
     }
