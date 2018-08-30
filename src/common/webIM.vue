@@ -1,29 +1,31 @@
 <template>
   <div>
-    <div class="fixScroll">
-      <ul class="messages">
-        <li style="color: #00FF05;">禁止传播违法违规、封建迷信、暴力血腥、低俗色情、招嫖诈骗、违禁品等不良信息，坚决维护青少年群体精神文明健康。</li>
-        <li v-for="(item,index) in msgList2" :key="index">{{`${item.name}: ${item.msg}`}}</li>
-      </ul>
-    </div>
+    <scroller class="barrage-wrap" lock-x scrollbar-y>
+      <div class="chat-box">
+        <p class="tips">禁止传播违法违规、封建迷行、暴力血腥、低俗色情、招嫖诈骗、违禁品等不良信息，坚决维护青少钱群体精神文明健康。</p>
+        <p v-for="(item,index) in msgList2" :key="index">{{`${item.name}: ${item.msg}`}}</p>
+      </div>
+    </scroller>
   </div>
 </template>
 
 <script>
-  import webim from 'src/common/webIM';
-  import {mapState} from 'vuex';
-  import {getStore, escape2Html} from "./util/Utils";
+  import webim from 'webim';
+  import {mapState, mapGetters} from 'vuex'
+  import {Scroller} from "vux";
+  import {getStore, escape2Html} from "./util/ImUtils";
+  import {SDK_APPID, ACCOUNT_TYPE} from "../config/config";
 
   export default {
-    components: {},
+    components: {Scroller},
     created() {
       // this.initIM();
     },
     data() {
       return {
         accountMode: 0,
-        sdkAppID: 1400058881,
-        accountType: 20972,
+        sdkAppID: SDK_APPID,
+        accountType: ACCOUNT_TYPE,
         msgList2: [],
         loginInfo: '',
         selType: null,
@@ -32,13 +34,10 @@
         selSessHeadUrl: '',
         toastContent: '',
         confirmTitle: '',
-        userInfo: '',
       }
     },
     computed: {
-      ...mapState([
-        'nowUserId',
-      ]),
+      ...mapGetters(['userInfo']),
     },
     watch: {
       beginSendMsg: function () {
@@ -65,8 +64,8 @@
       }
     },
     props: ['tim_uid', 'tim_sig', 'sendMsgText', 'beginSendMsg', 'avChatRoomId', 'commendUserName', 'exitIM', 'msgType', 'roomId', 'gameId', 'notice', 'reservationRandomNum'],
-    mounted() {
-      this.userInfo = JSON.parse(getStore('userInfo'));
+    mounted(){
+      console.log("props tim_uid",this.tim_uid);
     },
     beforeRouteLeave(to, from, next) {
     },
@@ -380,11 +379,12 @@
           this.avChatRoomId = webim.Tool.getQueryString("groupid");//用户自定义房间群id
         }
         //当前用户身份
-        console.log("this:", _this);
+        console.log("this:", _this.tim_sig);
+        console.log("this:", this.tim_sig);
         let loginInfo = {
-          'sdkAppID': this.sdkAppID, //用户所属应用id,必填
-          'appIDAt3rd': this.sdkAppID, //用户所属应用id，必填
-          'accountType': this.accountType, //用户所属应用帐号类型，必填
+          'sdkAppID': _this.sdkAppID, //用户所属应用id,必填
+          'appIDAt3rd': _this.sdkAppID, //用户所属应用id，必填
+          'accountType': _this.accountType, //用户所属应用帐号类型，必填
           'identifier': "admin", //当前用户ID,必须是否字符串类型，选填
           'identifierNick': "null", //当前用户昵称，选填
           'userSig': _this.tim_sig, //当前用户身份凭证，必须是字符串类型，选填
@@ -553,7 +553,7 @@
                 case 11://预约排队通知
                   if (_msg.user_id != 0 && _msg.user_id == this.userInfo.id) {
                     this.confirmTitle = '准备到你抓娃娃了,5s自动取消...';
-                    //this.showConfirm();
+                    this.showConfirm();
                   }
 
                   break;
@@ -791,4 +791,20 @@
   }
 </script>
 <style lang="less" scoped>
+  @import "~assets/style/index.less";
+
+  .barrage-wrap {
+    position: absolute;
+    top: 520px;
+    left: 20px;
+    width: 400px;
+    height: 360px !important;
+    .chat-box {
+      .tips {
+        font-size: @minFontSize;
+        line-height: 28px;
+        color: @catchText;
+      }
+    }
+  }
 </style>

@@ -17,8 +17,13 @@ if (process.env.NODE_ENV === 'development') {
   baseUrl = "http://wawaji.whxyzx.cn/wawaji/";
 }
 
+const SDK_APPID = 1400058881;     //腾讯IM的appid
+const ACCOUNT_TYPE = 20972;       //腾讯IM的account_type
+
 export {
   baseUrl,
   routerMode,
-  imageUrl
+  imageUrl,
+  SDK_APPID,
+  ACCOUNT_TYPE
 }

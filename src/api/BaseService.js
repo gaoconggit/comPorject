@@ -250,6 +250,23 @@ export default {
     formData.append("service_text_id", service_text_id);
     return this.postAxiosAction(url, formData);
   },
+  //获取快捷聊天语句
+  getQuickMessage() {
+    let url = `${apiData.public}Room.quickMessage`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取屏蔽关键字
+  getKeyWord() {
+    let url = `${apiData.room}`;
+    let formData = new FormData();
+    formData.append("api_name", "get_keyword");
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
   //获取扭蛋列表
   getNiudanList(page = 1) {
     let url = `${apiData.public}Niudan.roomList`;
