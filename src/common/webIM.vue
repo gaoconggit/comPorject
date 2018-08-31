@@ -1,9 +1,10 @@
 <template>
   <div>
-    <scroller class="barrage-wrap" lock-x scrollbar-y>
-      <div class="chat-box">
+    <scroller class="barrage-wrap" lock-x scrollbar-y ref="scrollerChat">
+      <div class="chat-box" ref="chatBox">
         <p class="tips">禁止传播违法违规、封建迷行、暴力血腥、低俗色情、招嫖诈骗、违禁品等不良信息，坚决维护青少钱群体精神文明健康。</p>
-        <p v-for="(item,index) in msgList2" :key="index">{{`${item.name}: ${item.msg}`}}</p>
+        <p v-for="(item,index) in msgList" :key="index" class="chat-item" :class="{'active':item.is_mi}">
+          {{`${item.name}: ${item.msg}`}}</p>
       </div>
     </scroller>
   </div>
@@ -26,7 +27,7 @@
         accountMode: 0,
         sdkAppID: SDK_APPID,
         accountType: ACCOUNT_TYPE,
-        msgList2: [],
+        msgList: [],
         loginInfo: '',
         selType: null,
         selSess: null,
@@ -41,6 +42,7 @@
     },
     watch: {
       beginSendMsg: function () {
+        console.log("sendMsgText", this.sendMsgText);
         this.sendCommend(this.avChatRoomId, JSON.stringify({
           type: this.msgType,
           user_id: this.userInfo.id,
@@ -64,8 +66,8 @@
       }
     },
     props: ['tim_uid', 'tim_sig', 'sendMsgText', 'beginSendMsg', 'avChatRoomId', 'commendUserName', 'exitIM', 'msgType', 'roomId', 'gameId', 'notice', 'reservationRandomNum'],
-    mounted(){
-      console.log("props tim_uid",this.tim_uid);
+    mounted() {
+      console.log("props tim_uid", this.tim_uid);
     },
     beforeRouteLeave(to, from, next) {
     },
@@ -505,13 +507,19 @@
               console.log("type:", _msg);
               switch (_msg.type) {
                 case 1://聊天消息
-                  this.msgList2.push({user_id: _msg.user_id, name: _msg.name, msg: _msg.message});
-                  console.log(this.msgList2);
-                  /*setTimeout(function () {
-                    this.$nextTick(() => {
-                      this.$refs.scrollerEvent.reset({bottom: 0})
-                    })
-                  }.bind(this), 2000);*/
+                  if (_msg.user_id == this.userInfo.id) {
+                    this.msgList.push({user_id: _msg.user_id, name: '我', msg: _msg.message, is_mi: true});
+                  } else {
+                    this.msgList.push({user_id: _msg.user_id, name: _msg.name, msg: _msg.message});
+                  }
+                  console.log("msgList:", this.msgList);
+                  this.$nextTick(() => {
+                    let chatHeight = this.$refs.scrollerChat.$el.clientHeight;
+                    let chatBoxHeight = this.$refs.chatBox.clientHeight;
+                    if (chatBoxHeight > chatHeight) {
+                      this.$refs.scrollerChat.reset({top: chatBoxHeight - chatHeight}, 200, 'ease')
+                    }
+                  });
                   break;
                 case 2://开始游戏
                   this.$emit('listenToStartGame');
@@ -577,7 +585,7 @@
               }
             } else if (bigMsg.elems[0].type == 'TIMTextElem') {//聊天的
               alert('liaotian');
-              this.msgList2.push(bigMsg.elems[0].content.text);
+              this.msgList.push(bigMsg.elems[0].content.text);
               /*setTimeout(function () {
                 this.$nextTick(() => {
                   this.$refs.scrollerEvent.reset({bottom: 0})
@@ -607,7 +615,9 @@
         }
       },
       sendCommend(groupid, msgtosend, cbfunc) {
-        console.log("发送消息之前：", msgtosend);
+        console.log("发送消息之前groupid：", groupid);
+        console.log("发送消息之前msgtosend：", msgtosend);
+        console.log("发送消息之前cbfunc：", cbfunc);
         let _selToID = groupid || this.selToID;
         if (!this.selSess) {
           this.selSess = new webim.Session(this.selType, _selToID, _selToID, this.selSessHeadUrl, Math.round(new Date().getTime() / 1000));
@@ -630,7 +640,6 @@
           //webim.C2C_MSG_SUB_TYPE.COMMON-普通消息,
           subType = webim.C2C_MSG_SUB_TYPE.COMMON;
         }
-        console.log("identifierNick:", this.loginInfo.identifierNick);
         let msg = new webim.Msg(this.selSess, isSend, seq, random, msgTime, this.loginInfo.identifier, subType, this.loginInfo.identifierNick);
         //解析文本和表情
         let expr = /\[[^[\]]{1,3}\]/mg;
@@ -804,6 +813,14 @@
         font-size: @minFontSize;
         line-height: 28px;
         color: @catchText;
+      }
+      .chat-item {
+        color: @whiteColor;
+        font-size: @subFontSize;
+        line-height: @maxFontSize;
+        &.active {
+          color: @catchText;
+        }
       }
     }
   }

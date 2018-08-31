@@ -28,7 +28,7 @@
       }),
       _getToken() {
         let _this = this;
-        this.set_token("f98b3d98cbf005a8263ecb8a9ad042a2");
+        this.set_token("52a315cc24972dfa29b109b244b15b2c");
         this.set_uid("100177");
         setTimeout(() => {
           _this._getBaseInfo();

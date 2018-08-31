@@ -49,7 +49,18 @@
         <div class="icon unpraise" @click="sayGood(1)"><img src="~/img/room/say_good.png" alt=""></div>
       </div>
       <div class="count-down" v-if="countDownNum>0"><span>{{countDownNum}}</span>s</div>
-      <div class="score-center"></div>
+      <div class="score-center">
+        <div class="btn-box">
+          <div class="reduce" @click="scoreReduce"><img
+            :src="multipleReduce?require('img/room/integral_reduce.png'):require('img/room/integral_reduce_not.png')"
+            alt=""></div>
+          <div class="multiple"><img :src="multipleNum" alt=""></div>
+          <div class="add" @click="scoreAdd"><img
+            :src="multipleAdd?require('img/room/integral_add.png'):require('img/room/integral_add_not.png')" alt="">
+          </div>
+        </div>
+        <div class="score-text"><img src="~/img/room/integral_text.png" alt=""></div>
+      </div>
     </div>
     <div class="opera-wrapper">
       <div v-if="!isGameStart" class="opera-box-no">
@@ -65,7 +76,9 @@
         <div v-else-if="!roomData.status&&!isRoomWait" class="game-start-box" @click="()=>{console.log('取消预约抓娃娃')}">
           <div class="game-start-btn"><img src="~/img/room/game_pre_cancel.png" alt=""></div>
         </div>
-        <div class="my-coin"><p class="coin">{{numMax(userInfo.coin)}}</p></div>
+        <div class="my-coin" @click="()=>{$router.push({path:'/recharge'})}">
+          <p class="coin">{{numMax(userInfo.coin)}}</p>
+        </div>
       </div>
       <div v-if="isGameStart" class="opera-box-yes">
         <div class="opera-btn">
@@ -77,18 +90,21 @@
         <div class="grab-btn" @click="roomGameCmd('GRAB')"><img src="~/img/room/game_btn_go.png" alt=""></div>
       </div>
     </div>
+    <desc-wrapper :history="roomHistory" :imgs="roomData.img" :needcoin="roomData.needcoin"/>
     <div v-transfer-dom>
-      <popup v-model="isShowQuick" position="bottom" class="input-box">
-        <ul>
-          <li v-if="quickIndex === 1" v-for="item in quickMessage.negative">{{item}}</li>
-          <li v-if="quickIndex === 2" v-for="item in quickMessage.positive">{{item}}</li>
-        </ul>
+      <popup v-model="isShowQuick" position="bottom" class="quick-wrap">
+        <li class="quick-item" v-if="quickIndex === 1" v-for="item in quickMessage.negative" @click="quickItem(item)">
+          {{item}}
+        </li>
+        <li class="quick-item" v-if="quickIndex === 2" v-for="item in quickMessage.positive" @click="quickItem(item)">
+          {{item}}
+        </li>
       </popup>
     </div>
     <div v-transfer-dom>
       <popup v-model="isShowInput" position="bottom" class="input-box">
         <input class="input-content" type="text" v-model="sendMsgText" v-focus="focusState" placeholder="请输入发送内容...">
-        <p class="send-text" @click="filterMessage">发送</p>
+        <p class="send-text" @click="sendMsg">发送</p>
       </popup>
     </div>
     <actionsheet v-model="isShowFixSheet" :menus="fixList" @on-click-menu="fixItemClick" show-cancel></actionsheet>
@@ -102,6 +118,7 @@
   import api from "../../api/BaseService";
   import {showToast, maxNum} from "../../common/util/Utils";
   import WebIM from "@/common/webIM";
+  import DescWrapper from "./DescWrapper";
 
   export default {
     name: "RoomIndex",
@@ -119,9 +136,10 @@
       return {
         roomId: 0, //房间ID，通过url传输
         roomData: [],       //房间信息
+        roomHistory: [],    //房间历史记录
         spendcoin: 0,       //价格
-        multipleIndex: 1,   //默认倍数
-        multipleArray: [1, 3, 5, 10],  //积分倍数
+        multipleIndex: 0,   //积分场默认倍数
+        multipleArray: [1, 2, 3, 5, 10],  //积分倍数
         nowUsersLen: 0,     //当前房间人数
         nowUsers: [],       //当前房间数组
         isShowInput: false, //是否展示输入框
@@ -148,6 +166,8 @@
         isRoomWait: false,  //是否预约成功
         exitIM: false,       //是否退出IM
         countDownNum: -1,     //倒计时
+        multipleReduce: false,         //积分倍数减是否能点击
+        multipleAdd: false,             //积分倍数加是否能点击
       };
     },
     created() {
@@ -182,7 +202,15 @@
         }
         if (result.code == 1) {
           this.$vux.loading.hide();
-          this._getRoomAudience(result.data.id);
+          if (!this.roomHistory.length) {
+            this._getRoomHistory(result.data.id);
+          }
+          if (!this.nowUsers.length) {
+            this._getRoomAudience(result.data.id);
+          }
+          if (Number(this.userInfo.coin) > Number(result.data.spendcoin) * 2) {
+            this.multipleAdd = true;
+          }
           this.roomId = result.data.id;
           this.spendcoin = result.data.needcoin;
           this.roomData = result.data;
@@ -229,13 +257,18 @@
           showToast(result.msg);
         }
       },
-      async _getRoomAudience(roomId) {
+      async _getRoomAudience(roomId) {//获取房间当前玩家
         let result = await api.getRoomAudience(roomId);
         console.log(result);
         this.nowUsers = result.data;
         this.nowUsersLen = result.total;
       },
-      async _getRoomServiceList() {
+      async _getRoomHistory(roomId) {//获取房间历史记录
+        let result = await api.getRoomHistory(roomId);
+        console.log("获取房间历史记录", result.data);
+        this.roomHistory = result.data;
+      },
+      async _getRoomServiceList() {//获取房间上报列表
         let result = await api.getRoomServiceList();
         let arr = result.data;
         arr.forEach((item, index) => {
@@ -300,7 +333,9 @@
         console.log("未抓中:", data);
       },
       sendMsgToIM(data) {
-        console.log(data);
+        console.log("data:", data);
+        this.isBeginSendMsg = new Date().getTime();//IM需要监听发生变化
+        this.msgType = data;
       },
       roomGameCmd(opera) {
         console.log(opera);
@@ -328,6 +363,31 @@
       },
       backRoom() {
         console.log("退出房间");
+        this.sendMsgToIM(4);
+        this.$router.back();
+      },
+      //减积分
+      scoreReduce() {
+        if (this.multipleReduce) {
+          console.log(1)
+          this.multipleIndex--;
+          if (this.multipleIndex <= 0) {
+            this.multipleReduce = false
+          } else {
+            this.multipleAdd = true;
+          }
+        }
+      },
+      scoreAdd() {
+        if (this.multipleAdd) {
+          console.log(this.multipleIndex);
+          this.multipleIndex++;
+          if (this.multipleIndex >= this.multipleArray.length - 1) {
+            this.multipleAdd = false;
+          } else {
+            this.multipleReduce = true;
+          }
+        }
       },
       showChat() {
         this.sendMsgText = '';
@@ -336,20 +396,22 @@
       },
       //快捷语言
       sayGood(item) {
-        console.log(item);
         this.quickIndex = item;
         this.isShowQuick = true;
       },
-      filterMessage() {    //过滤关键字
-        let _sendMsgText = '';
-        let arrFilter = this.filterMessageSrc.join("|");
-        if (this.sendMsgText.length) {
-          _sendMsgText = this.sendMsgText.replace(new RegExp(arrFilter, 'ig'), '*');
-          this.sendMsgText = '';
+      //发送快捷语言
+      quickItem(value) {
+        this.sendMsgText = value;
+        this.isShowQuick = false;
+        this.sendMsgToIM(1);
+      },
+      //发送消息
+      sendMsg() {
+        if (this.sendMsgText.length <= 0) {
+          showToast('请输入内容')
+        } else {
           this.isShowInput = false;
           this.sendMsgToIM(1);
-        } else {
-          showToast("请输入内容！");
         }
       },
       numMax(num) {
@@ -361,9 +423,39 @@
       }
     },
     computed: {
-      ...mapGetters(['userInfo'])
+      ...mapGetters(['userInfo']),
+      filterMessage: function () {//过滤关键字
+        let filter = this.filterMessageSrc;
+        let arrFilter = filter.join('|');
+        const _sendMsgText = this.sendMsgText.replace(new RegExp(arrFilter, 'ig'), '*');
+        return _sendMsgText;
+      },
+      /*积分场展示*/
+      multipleNum() {
+        let imageUri = "";
+        switch (this.multipleIndex) {
+          case 0:
+            imageUri = require("img/room/integral_1.png");
+            break;
+          case 1:
+            imageUri = require("img/room/integral_2.png");
+            break;
+          case 2:
+            imageUri = require("img/room/integral_3.png");
+            break;
+          case 3:
+            imageUri = require("img/room/integral_5.png");
+            break;
+          case 4:
+            imageUri = require("img/room/integral_10.png");
+            break;
+          default:
+            imageUri = "";
+        }
+        return imageUri;
+      }
     },
-    components: {Actionsheet, Scroller, Popup, WebIM}
+    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper}
   };
 </script>
 
@@ -371,6 +463,7 @@
   @import "~assets/style/index.less";
 
   .room-wrapper {
+    padding-bottom: 50px;
     background-color: @mainColor;
     .video-wrapper {
       position: relative;
@@ -474,7 +567,7 @@
       }
       .left {
         position: absolute;
-        top: 240px;
+        top: 300px;
         left: 20px;
         .icon {
           margin: 20px 0;
@@ -497,18 +590,31 @@
           font-size: 60px;
         }
       }
-      .barrage-wrap {
+      .score-center {
         position: absolute;
-        top: 520px;
-        left: 20px;
-        width: 400px;
-        height: 360px !important;
-        .chat-box {
-          .tips {
-            font-size: @minFontSize;
-            line-height: 28px;
-            color: @catchText;
+        bottom: 30px;
+        left: 177px;
+        .btn-box {
+          margin-bottom: 20px;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          height: 110px;
+          .reduce, .add {
+            width: 80px;
+            height: 88px;
+            .img-spread;
           }
+          .multiple {
+            width: 110px;
+            height: 110px;
+            .img-spread;
+          }
+        }
+        .score-text {
+          width: 396px;
+          height: 30px;
+          .img-spread;
         }
       }
     }
@@ -629,6 +735,20 @@
       -moz-border-radius: 40px;
       border-radius: 40px;
       background-color: #A8DEFF;
+    }
+  }
+
+  .quick-wrap {
+    padding: 30px 14px;
+    .quick-item {
+      display: inline-block;
+      margin: 6px 16px;
+      padding: 6px 16px;
+      border: 1px solid #000;
+      -webkit-border-radius: 30px;
+      -moz-border-radius: 30px;
+      border-radius: 30px;
+      font-size: @subFontSize;
     }
   }
 </style>

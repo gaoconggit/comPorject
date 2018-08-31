@@ -230,6 +230,17 @@ export default {
     formData.append("size", 6);
     return this.postAxiosAction(url, formData);
   },
+  //获取当前房间历史记录
+  getRoomHistory(roomId) {
+    let url = `${apiData.public}Room.roomHistory`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    formData.append("room_id", roomId);
+    formData.append("page", 1);
+    formData.append("size", 10);
+    return this.postAxiosAction(url, formData);
+  },
   //获取上报房间错误列表
   getRoomServiceList() {
     let url = `${apiData.room}`;
