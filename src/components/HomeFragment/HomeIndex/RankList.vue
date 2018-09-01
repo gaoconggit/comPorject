@@ -117,7 +117,7 @@ export default {
 @import "~assets/style/index";
 
 .rank-wrapper {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: @bgOpacity;
   position: fixed;
   top: 0;
   left: 0;

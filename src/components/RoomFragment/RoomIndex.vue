@@ -13,6 +13,7 @@
                :av-chat-room-id="roomId" :msg-type="msgType" :game-id="gameId"
                :reservation-random-num="reservationRandomNum"
                :room-id="roomId"/>
+      <!--返回按钮-->
       <div class="header">
         <div class="back" @click="backRoom"><img src="~/img/room/game_back.png" alt=""></div>
         <div class="now-player">
@@ -33,6 +34,7 @@
         <!--房间上报-->
         <div class="fix" @click="_getRoomServiceList"><img src="~/img/room/game_report.png" alt=""></div>
       </div>
+      <!--保送场次-->
       <div class="baosong-icon" v-if="roomData.baosong_num">
         <div class="icon-wrap">
           <div class="song-icon" v-for="(song,index) in roomData.baosong_num">
@@ -44,12 +46,15 @@
         <p class="song-time">{{roomData.baosong_expire_time_str}}</p>
         <p class="song-text">还差{{roomData.baosong_num-roomData.baosong_progress}}局娃娃就送你</p>
       </div>
+      <!--快捷语言-->
       <div class="left">
         <div class="icon praise" @click="sayGood(2)"><img src="~/img/room/say_good.png" alt=""></div>
         <div class="icon unpraise" @click="sayGood(1)"><img src="~/img/room/say_good.png" alt=""></div>
       </div>
+      <!--倒计时-->
       <div class="count-down" v-if="countDownNum>0"><span>{{countDownNum}}</span>s</div>
-      <div class="score-center">
+      <!--积分加倍-->
+      <div class="score-center" v-if="isMultiple">
         <div class="btn-box">
           <div class="reduce" @click="scoreReduce"><img
             :src="multipleReduce?require('img/room/integral_reduce.png'):require('img/room/integral_reduce_not.png')"
@@ -62,18 +67,19 @@
         <div class="score-text"><img src="~/img/room/integral_text.png" alt=""></div>
       </div>
     </div>
+    <!--操作盘-->
     <div class="opera-wrapper">
       <div v-if="!isGameStart" class="opera-box-no">
         <div class="chart-icon" @click="showChat"><img
           src="~/img/room/game_comments.png" alt=""></div>
-        <div v-if="roomData.status" class="game-start-box" @click="()=>{console.log('开始游戏')}">
+        <div v-if="roomData.status==1&&!isRoomWait" class="game-start-box" @click="_gameStart">
           <div class="game-start-btn"><img src="~/img/room/game_start.png" alt=""></div>
           <p class="price">{{spendcoin*multipleArray[multipleIndex]}}币/次</p>
         </div>
-        <div v-if="!roomData.status&&isRoomWait" class="game-start-box" @click="()=>{console.log('预约抓娃娃')}">
+        <div v-if="roomData.status==2&&!isRoomWait" class="game-start-box" @click="_getRoomWait">
           <div class="game-start-btn"><img src="~/img/room/game_pre.png" alt=""></div>
         </div>
-        <div v-else-if="!roomData.status&&!isRoomWait" class="game-start-box" @click="()=>{console.log('取消预约抓娃娃')}">
+        <div v-else-if="isRoomWait" class="game-start-box" @click="_getRoomWait">
           <div class="game-start-btn"><img src="~/img/room/game_pre_cancel.png" alt=""></div>
         </div>
         <div class="my-coin" @click="()=>{$router.push({path:'/recharge'})}">
@@ -108,17 +114,19 @@
       </popup>
     </div>
     <actionsheet v-model="isShowFixSheet" :menus="fixList" @on-click-menu="fixItemClick" show-cancel></actionsheet>
+    <less-coin v-if="isShowLess" @close-less-coin="closeComp('isShowLess')"/>
   </div>
 </template>
 
 <script>
-  import {mapGetters} from "vuex";
+  import {mapGetters, mapMutations} from "vuex";
   import {Howl} from "howler";
   import {Actionsheet, Scroller, Popup, TransferDom} from "vux";
   import api from "../../api/BaseService";
   import {showToast, maxNum} from "../../common/util/Utils";
   import WebIM from "@/common/webIM";
   import DescWrapper from "./DescWrapper";
+  import LessCoin from "./LessCoin"
 
   export default {
     name: "RoomIndex",
@@ -138,8 +146,11 @@
         roomData: [],       //房间信息
         roomHistory: [],    //房间历史记录
         spendcoin: 0,       //价格
+        isMultiple: false,
         multipleIndex: 0,   //积分场默认倍数
         multipleArray: [1, 2, 3, 5, 10],  //积分倍数
+        multipleReduce: false,         //积分倍数减是否能点击
+        multipleAdd: false,             //积分倍数加是否能点击
         nowUsersLen: 0,     //当前房间人数
         nowUsers: [],       //当前房间数组
         isShowInput: false, //是否展示输入框
@@ -162,12 +173,14 @@
         msgType: '',        //消息类型
         reservationRandomNum: '',//当前预约用户id
         isBeginSendMsg: '',
-        isGameStart: false,      //是否开始
+        isGameStart: false, //是否开始
         isRoomWait: false,  //是否预约成功
         exitIM: false,       //是否退出IM
         countDownNum: -1,     //倒计时
-        multipleReduce: false,         //积分倍数减是否能点击
-        multipleAdd: false,             //积分倍数加是否能点击
+        isShowLess: false,    //是否展示金币不足
+        tcpPort: '',          //WebSocket端口
+        tcpIP: '',            //WebSocketIP
+        webSocket: '',        //WebSocket连接
       };
     },
     created() {
@@ -175,6 +188,7 @@
         this.$router.push({path: "/"});
       } else {
         this.roomId = this.$route.query.id;
+        this._getBaseInfo();
         this._getJoinRoom();
         this._getQuickMessage();
         this._getKeyWord();
@@ -184,13 +198,17 @@
       this.tim_sig = this.userInfo.tim_sig;
       this.tim_sig = 'eJx1z09PgzAYx-E7r6LpFaPtKAN22yYq2yB2fxjuQhgt0rgVhJpuGt*7EZeMi8-190m*eb4MAABcL1a3WZ5XH1Kl6lxzCEYADpDnDODNFdS1YGmmUqthHcAEIWS7rot7ip9q0fA0KxRv-pTtDF30ez0lGJdKFOJiMnYUsje37C3tcv93WvHajaH-Mg3ovTmPJpI*klVMcbvQZ42fljMred7uZvFkHeowrz0WbPyHSAflOLpD2yTJ3j99dJDF1K5K097I5c7cHyqNLV7uOaXjMG7np15SiSO-vISJTRwy9KDxbfwApfVXwQ__';
       this.tim_uid = 'wawaji' + this.userInfo.id;
-      console.log("tim_sig:", this.tim_sig);
     },
     beforeRouteLeave(to, from, next) {
       this.bgmusic.stop();
       next();
     },
     methods: {
+      ...mapMutations({set_userInfo: 'SET_USER_INFO'}),
+      async _getBaseInfo() {
+        let result = await api.getBaseInfo();
+        this.set_userInfo(result.data);
+      },
       async _getJoinRoom() {
         this.$vux.loading.show({
           text: "加载中..."
@@ -213,6 +231,12 @@
           }
           this.roomId = result.data.id;
           this.spendcoin = result.data.needcoin;
+          this.isMultiple = !!Number(result.data.result_type);
+          if (result.data.now_user != null) {
+            if (result.data.now_user.id == this.userInfo.id) {
+              this.isGameStart = true;
+            }
+          }
           this.roomData = result.data;
           this.bgmusic = new Howl({
             src: [result.data.bgmusic],
@@ -257,15 +281,43 @@
           showToast(result.msg);
         }
       },
+      //开始游戏
+      async _gameStart() {
+        console.log("开始游戏");
+        if (Number(this.userInfo.coin) > this.multipleArray[this.multipleIndex] * Number(this.roomData.spendcoin)) {
+          this.$vux.loading.show({
+            text: "连接中..."
+          });
+          let result = await api.getGameStart(this.roomId, this.multipleArray[this.multipleIndex]);
+          console.log(result);
+          if (result.code == 1) {
+            showToast("游戏开始", 'success');
+            this.sendMsgToIM(2);
+            this.isGameStart = true;
+            this.tcpIP = result.tcpIP;
+            this.tcpPort = result.tcpPort;
+            this.webSocket = this.initWebSocket;
+          } else {
+            showToast(result.msg, 'cancel');
+          }
+          this.$vux.loading.hide();
+        } else {
+          this.isShowLess = true;
+        }
+      },
+      //预约/取消抓娃娃
+      async _getRoomWait() {
+        let result = await api.getRoomWait(this.roomId);
+        showToast(result.msg, 'success');
+        this.isRoomWait = !this.isRoomWait;
+      },
       async _getRoomAudience(roomId) {//获取房间当前玩家
         let result = await api.getRoomAudience(roomId);
-        console.log(result);
         this.nowUsers = result.data;
         this.nowUsersLen = result.total;
       },
       async _getRoomHistory(roomId) {//获取房间历史记录
         let result = await api.getRoomHistory(roomId);
-        console.log("获取房间历史记录", result.data);
         this.roomHistory = result.data;
       },
       async _getRoomServiceList() {//获取房间上报列表
@@ -280,21 +332,18 @@
       },
       async _getQuickMessage() {//获取敏感字
         let result = await api.getQuickMessage();
-        console.log("quick:", result);
         this.quickMessage = result.data;
       },
       async _getKeyWord() {//获取敏感字
         let result = await api.getKeyWord();
         this.filterMessageSrc = result.data;
       },
+      async _getRoomExit() {
+        let result = await api.getRoomExit(this.roomId);
+        console.log("退出房间:", result);
+      },
       listenToCancelReservation(data) {//取消预约娃娃机
         console.log("用户取消预约:", data);
-        getRoomInfo(this.$route.query.roomId).then(res => {
-          if (res && res.code == 1) {
-            this.my_wait_rownum = res.data.my_wait_rownum;
-            this.front_wait_num = res.data.front_wait_num;
-          }
-        })
       },
       listenToReservation(data) {//预约娃娃机
         console.log("用户预约娃娃机:", data);
@@ -363,13 +412,15 @@
       },
       backRoom() {
         console.log("退出房间");
-        this.sendMsgToIM(4);
+        this._getRoomExit();
+        this.bgmusic.stop();
         this.$router.back();
+        this.sendMsgToIM(4);
+        this.exitIM = true;
       },
       //减积分
       scoreReduce() {
         if (this.multipleReduce) {
-          console.log(1)
           this.multipleIndex--;
           if (this.multipleIndex <= 0) {
             this.multipleReduce = false
@@ -380,12 +431,15 @@
       },
       scoreAdd() {
         if (this.multipleAdd) {
-          console.log(this.multipleIndex);
           this.multipleIndex++;
           if (this.multipleIndex >= this.multipleArray.length - 1) {
             this.multipleAdd = false;
           } else {
-            this.multipleReduce = true;
+            if (this.multipleArray[this.multipleIndex + 1] * this.roomData.spendcoin > this.userInfo.coin) {
+              this.multipleAdd = false;
+            } else {
+              this.multipleReduce = true;
+            }
           }
         }
       },
@@ -414,17 +468,25 @@
           this.sendMsgToIM(1);
         }
       },
+      //关闭组件
+      closeComp(name) {
+        this[name] = false;
+      },
       numMax(num) {
         if (Number(num) > 9999) {
           return 9999 + '+';
         } else {
           return num;
         }
-      }
+      },
     },
     computed: {
       ...mapGetters(['userInfo']),
-      filterMessage: function () {//过滤关键字
+      initWebSocket() {
+        console.log(this.tcpIP, this.tcpPort);
+        return new WebSocket(`ws://${this.tcpIP}:${this.tcpPort}`);
+      },
+      filterMessage() {//过滤关键字
         let filter = this.filterMessageSrc;
         let arrFilter = filter.join('|');
         const _sendMsgText = this.sendMsgText.replace(new RegExp(arrFilter, 'ig'), '*');
@@ -455,7 +517,7 @@
         return imageUri;
       }
     },
-    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper}
+    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper, LessCoin}
   };
 </script>
 

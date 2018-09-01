@@ -28,10 +28,15 @@
       }),
       _getToken() {
         let _this = this;
-        this.set_token("52a315cc24972dfa29b109b244b15b2c");
-        this.set_uid("100177");
+        let token = window.localStorage.getItem("token");
+        let uid = window.localStorage.getItem("uid");
+        this.set_token(token);
+        this.set_uid(uid);
         setTimeout(() => {
           _this._getBaseInfo();
+          setInterval(() => {
+            this._postOnline();
+          }, 60000)
         }, 0);
       },
       async _getBaseInfo() {
@@ -41,6 +46,10 @@
         window.localStorage.setItem("wawaji_userInfo", JSON.stringify(result.data));
         this.set_userInfo(result.data);
         //}
+      },
+      //发送心跳
+      _postOnline() {
+        api.postOnline();
       }
     }
   };

@@ -399,6 +399,7 @@
       justify-content: center;
       height: 130px;
       transition: all 0.3s;
+      z-index: 2 !important;
       &.nav-wrapper-top {
         position: absolute;
         top: 0;

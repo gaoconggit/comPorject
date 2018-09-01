@@ -1,13 +1,16 @@
 <template>
-    <transition name="scale">
-      <slot></slot>
-    </transition>
+  <transition name="scale" v-transfer-dom>
+    <slot></slot>
+  </transition>
 </template>
 
 <script>
-    export default {
-        name: "TransitionScale"
-    }
+  import {TransferDom} from 'vux'
+
+  export default {
+    name: "TransitionScale",
+    directive: {TransferDom}
+  }
 </script>
 
 <style scoped>

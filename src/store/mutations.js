@@ -12,6 +12,7 @@ const mutation = {
   },
   [types.SET_USER_INFO](state, userInfo) {
     state.userInfo = userInfo;
+    window.localStorage.setItem("wawaji_userInfo", JSON.stringify(userInfo));
   }
 };
 

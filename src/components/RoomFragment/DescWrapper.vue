@@ -8,7 +8,7 @@
       <swiper-item ref="imgWrapper">
         <div class="img-wrapper" ref="imgBox">
           <p v-if="needcoin" class="need-coin">抓取失败，免费获得积分 <span>{{needcoin}}</span></p>
-          <img class="img-item" v-for="img in imgs" v-lazy="img" alt="">
+          <img class="img-item" v-for="img in imgs" :src="img" alt="">
         </div>
       </swiper-item>
       <swiper-item ref="historyWrapper">
@@ -18,7 +18,7 @@
               <img :src="item.avatar_thumb" alt="">
             </div>
             <div class="info">
-              <p class="name">{{item.user_nicename}}发士大夫好的华盛顿积分速度快了解上课了收到了老师的看见识到了开发老师的</p>
+              <p class="name">{{item.user_nicename}}</p>
               <p class="time">{{formatTime(item.ctime)}}</p>
             </div>
           </li>

@@ -78,7 +78,7 @@ axios.interceptors.response.use(response => {
   } else {
     error.message = "连接服务器失败";
   }
-  showToast(error.message);
+  showToast(error.message, 'cancel');
   return Promise.resolve(error.response);
 });
 
@@ -96,6 +96,7 @@ const apiData = {
   public: "api/public/?service=",
   mywawa: "api/mywawa/api",
   room: "api/room/api",
+  usercode: "api/usercode/api",
 };
 
 export default {
@@ -152,6 +153,15 @@ export default {
     })
   },
   
+  //发送心跳
+  postOnline() {
+    let url = `${apiData.usercode}`;
+    let formData = new FormData();
+    formData.append("api_name", "online");
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
   //获取个人信息
   getBaseInfo() {
     let url = `${apiData.public}User.getBaseInfo`;
@@ -218,7 +228,35 @@ export default {
     formData.append('wawa_id', wawaId);
     return this.postAxiosAction(url, formData, true);
   },
-  //获取当前房间信息
+  //开始抓娃娃
+  getGameStart(roomId, multiple) {
+    let url = `${apiData.public}Room.roomGameStart`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    formData.append("room_id", roomId);
+    formData.append("multiple", multiple);
+    return this.postAxiosAction(url, formData, true)
+  },
+  //预约/取消抓娃娃
+  getRoomWait(roomId) {
+    let url = `${apiData.public}Room.roomWaitEdit`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    formData.append("room_id", roomId);
+    return this.postAxiosAction(url, formData);
+  },
+  //退出房间
+  getRoomExit(roomId) {
+    let url = `${apiData.public}Room.exitRoom`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    formData.append("room_id", roomId);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取当前房间人数信息
   getRoomAudience(roomId) {
     let url = `${apiData.mywawa}`;
     let formData = new FormData();

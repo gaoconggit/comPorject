@@ -126,6 +126,7 @@
         //监听大群新消息（普通，点赞，提示，红包）
 
         function onBigGroupMsgNotify(msgList) {
+          console.log("msgList:", msgList);
           for (let i = msgList.length - 1; i >= 0; i--) { //遍历消息，按照时间从后往前
             const msg = msgList[i];
             //console.warn(msg);
@@ -478,13 +479,15 @@
       //登出
 
       logout() {
+        let _this = this;
         //登出
         webim.logout(
           function (resp) {
             webim.Log.info('登出成功');
-            loginInfo.identifier = null;
-            loginInfo.userSig = null;
-            $("#video_sms_list").find("li").remove();
+            // console.log("loginInfo", loginInfo);
+            _this.loginInfo.identifier = null;
+            _this.loginInfo.userSig = null;
+            //$("#video_sms_list").find("li").remove();
             var indexUrl = window.location.href;
             var pos = indexUrl.indexOf('?');
             if (pos >= 0) {
