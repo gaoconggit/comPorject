@@ -15,6 +15,7 @@
     "cssnano-preset-advanced": "^4.0.0",
     "fastclick": "^1.0.6",
     "howler": "^2.0.15",
+    "js-md5": "^0.7.3",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "postcss-aspect-ratio-mini": "^0.0.2",

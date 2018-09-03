@@ -46,6 +46,7 @@
       }
     },
     created() {
+      console.log("created route:", this.$route);
       let path = this.$route.path;
       switch (path) {
         case '/home/index':
@@ -70,6 +71,7 @@
     watch: {
       $route(to, form) {
         let path = to.path;
+        //console.log("watch route:", to);
         switch (path) {
           case '/home/index':
             this.tabIndex = 0;
@@ -96,6 +98,7 @@
         this.tabIndex = index;
       },
       changeTab(index) {
+        console.log("index:", index);
         this.tabIndex = index;
         switch (index) {
           case 0:

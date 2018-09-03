@@ -7,7 +7,7 @@
                @listenToEnterInRoom="listenToEnterInRoom" @listenToGameOver="listenToGameOver"
                @listenToStartGame="listenToStartGame" :exit-i-m="exitIM"
                @listenToCancelGame="listenToCancelGame" @listenToJoinGame="listenToJoinGame"
-               @listenToChildEventSuccess="showMsgFromChildSuccess"
+               @listenGrabResult="showListenGrabResult"
                @listenToChildEventFail="showMsgFromChildFail" commend-user-name="wodeluck" :tim_uid="tim_uid"
                :tim_sig="tim_sig" :send-msg-text="filterMessage" :begin-send-msg="isBeginSendMsg"
                :av-chat-room-id="roomId" :msg-type="msgType" :game-id="gameId"
@@ -52,7 +52,7 @@
         <div class="icon unpraise" @click="sayGood(1)"><img src="~/img/room/say_good.png" alt=""></div>
       </div>
       <!--倒计时-->
-      <div class="count-down" v-if="countDownNum>0"><span>{{countDownNum}}</span>s</div>
+      <div class="count-down" v-if="countDownNum>=0"><span>{{countDownNum}}</span>s</div>
       <!--积分加倍-->
       <div class="score-center" v-if="isMultiple">
         <div class="btn-box">
@@ -88,12 +88,12 @@
       </div>
       <div v-if="isGameStart" class="opera-box-yes">
         <div class="opera-btn">
-          <div class="left" @click="roomGameCmd('LEFT')"><img src="~/img/room/game_btn_left.png" alt=""></div>
-          <div class="right" @click="roomGameCmd('RIGHT')"><img src="~/img/room/game_btn_right.png" alt=""></div>
-          <div class="up" @click="roomGameCmd('UP')"><img src="~/img/room/game_btn_up.png" alt=""></div>
-          <div class="down" @click="roomGameCmd('DOWN')"><img src="~/img/room/game_btn_down.png" alt=""></div>
+          <div class="left" @click="roomGameCmd('left')"><img src="~/img/room/game_btn_left.png" alt=""></div>
+          <div class="right" @click="roomGameCmd('right')"><img src="~/img/room/game_btn_right.png" alt=""></div>
+          <div class="up" @click="roomGameCmd('up')"><img src="~/img/room/game_btn_up.png" alt=""></div>
+          <div class="down" @click="roomGameCmd('down')"><img src="~/img/room/game_btn_down.png" alt=""></div>
         </div>
-        <div class="grab-btn" @click="roomGameCmd('GRAB')"><img src="~/img/room/game_btn_go.png" alt=""></div>
+        <div class="grab-btn" @click="roomGameCmd('grab')"><img src="~/img/room/game_btn_go.png" alt=""></div>
       </div>
     </div>
     <desc-wrapper :history="roomHistory" :imgs="roomData.img" :needcoin="roomData.needcoin"/>
@@ -115,18 +115,29 @@
     </div>
     <actionsheet v-model="isShowFixSheet" :menus="fixList" @on-click-menu="fixItemClick" show-cancel></actionsheet>
     <less-coin v-if="isShowLess" @close-less-coin="closeComp('isShowLess')"/>
+    <result-popup
+      v-if="resultPopup"
+      @close-result-popup="closeComp('resultPopup')"
+      :isNewRoom="isNewRoom"
+      :isBaosong="Number(roomData.baosong_num)-Number(roomData.baosong_progress)"
+      :resultType="isResultSuccess"
+      :expireTime="roomData.baosong_expire_time_str"
+      :countDownResult="countDownResult"
+      :getGiftIcon="roomData.gifticon"/>
   </div>
 </template>
 
 <script>
   import {mapGetters, mapMutations} from "vuex";
   import {Howl} from "howler";
+  import md5 from "js-md5";
   import {Actionsheet, Scroller, Popup, TransferDom} from "vux";
   import api from "../../api/BaseService";
   import {showToast, maxNum} from "../../common/util/Utils";
   import WebIM from "@/common/webIM";
   import DescWrapper from "./DescWrapper";
   import LessCoin from "./LessCoin"
+  import ResultPopup from "./ResultPopup";
 
   export default {
     name: "RoomIndex",
@@ -142,8 +153,10 @@
     },
     data() {
       return {
-        roomId: 0, //房间ID，通过url传输
+        roomId: 0,          //房间ID，通过url传输
+        wawaId: 0,          //娃娃id
         roomData: [],       //房间信息
+        isNewRoom: 0,       //是否是新手场
         roomHistory: [],    //房间历史记录
         spendcoin: 0,       //价格
         isMultiple: false,
@@ -177,7 +190,10 @@
         isRoomWait: false,  //是否预约成功
         exitIM: false,       //是否退出IM
         countDownNum: -1,     //倒计时
+        countDownResult: -1,  //结果倒计时
         isShowLess: false,    //是否展示金币不足
+        resultPopup: true,   //结果弹窗
+        isResultSuccess: 1,//抓取结果是否成功
         tcpPort: '',          //WebSocket端口
         tcpIP: '',            //WebSocketIP
         webSocket: '',        //WebSocket连接
@@ -187,7 +203,7 @@
       if (!this.$route.query.id) {
         this.$router.push({path: "/"});
       } else {
-        this.roomId = this.$route.query.id;
+        this.wawaId = this.$route.query.id;
         this._getBaseInfo();
         this._getJoinRoom();
         this._getQuickMessage();
@@ -205,6 +221,12 @@
     },
     methods: {
       ...mapMutations({set_userInfo: 'SET_USER_INFO'}),
+      sendMsgToIM(data) {
+        console.log("data:", data);
+        console.log("data:", this.roomId);
+        this.isBeginSendMsg = new Date().getTime();//IM需要监听发生变化
+        this.msgType = data;
+      },
       async _getBaseInfo() {
         let result = await api.getBaseInfo();
         this.set_userInfo(result.data);
@@ -213,13 +235,12 @@
         this.$vux.loading.show({
           text: "加载中..."
         });
-        let result = await api.getJoinRoom(this.roomId);
+        let result = await api.getJoinRoom(this.wawaId, this.roomId);
         console.log(result);
         if (result.code != 1) {
           this.$router.back();
         }
         if (result.code == 1) {
-          this.$vux.loading.hide();
           if (!this.roomHistory.length) {
             this._getRoomHistory(result.data.id);
           }
@@ -231,6 +252,7 @@
           }
           this.roomId = result.data.id;
           this.spendcoin = result.data.needcoin;
+          this.isNewRoom = parseInt(result.data.is_newbee);
           this.isMultiple = !!Number(result.data.result_type);
           if (result.data.now_user != null) {
             if (result.data.now_user.id == this.userInfo.id) {
@@ -238,45 +260,59 @@
             }
           }
           this.roomData = result.data;
-          this.bgmusic = new Howl({
-            src: [result.data.bgmusic],
-            autoplay: true,
-            preload: true,
-            loop: true
-          });
-          //按钮音效
-          this.yx_anniu = new Howl({
-            src: [result.data.yx_anniu],
-            preload: true,
-          })
-          //倒计时音效
-          this.yx_daojishi = new Howl({
-            src: [result.data.yx_daojishi],
-            preload: true,
-          })
-          //成功音效
-          this.yx_chenggong = new Howl({
-            src: [result.data.yx_chenggong],
-            preload: true
-          })
-          //失败音效
-          this.yx_shibai = new Howl({
-            src: [result.data.yx_shibai],
-            preload: true,
-          })
-          //开始音效
-          this.yx_kaishi = new Howl({
-            src: [result.data.yx_kaishi],
-            preload: true,
-          })
-          //下抓音效
-          this.yx_xiazhua = new Howl({
-            src: [result.data.yx_xiazhua],
-            preload: true,
-          });
+          if (this.userInfo.user_setting.bgmusic === 1) {
+            //背景音乐
+            this.bgmusic = new Howl({
+              src: [result.data.bgmusic],
+              autoplay: true,
+              preload: true,
+              loop: true
+            });
+            //游戏中背景音乐
+            this.game_bgmusic = new Howl({
+              src: [result.game_bgmusic],
+              preload: true,
+            });
+          }
+          if (this.userInfo.user_setting.yx === 1) {
+            //按钮音效
+            this.yx_anniu = new Howl({
+              src: [result.data.yx_anniu],
+              preload: true,
+            })
+            //倒计时音效
+            this.yx_daojishi = new Howl({
+              src: [result.data.yx_daojishi],
+              preload: true,
+            })
+            //成功音效
+            this.yx_chenggong = new Howl({
+              src: [result.data.yx_chenggong],
+              preload: true
+            })
+            //失败音效
+            this.yx_shibai = new Howl({
+              src: [result.data.yx_shibai],
+              preload: true,
+            })
+            //开始音效
+            this.yx_kaishi = new Howl({
+              src: [result.data.yx_kaishi],
+              preload: true,
+            })
+            //下抓音效
+            this.yx_xiazhua = new Howl({
+              src: [result.data.yx_xiazhua],
+              preload: true,
+            });
+          }
           /*视频播放*/
           let videoWrapMain = this.$refs.videoWrapMain;
           new JSMpeg.Player('ws://47.105.32.106:8080/room18/channel1', {canvas: videoWrapMain});
+          setTimeout(() => {
+            this.sendMsgToIM(3);
+          }, 500);
+          this.$vux.loading.hide();
         } else {
           showToast(result.msg);
         }
@@ -292,12 +328,23 @@
           console.log(result);
           if (result.code == 1) {
             showToast("游戏开始", 'success');
+            this.bgmusic.stop();
+            this.yx_kaishi.play();
+            this.game_bgmusic.play();
             this.sendMsgToIM(2);
             this.isGameStart = true;
-            this.tcpIP = result.tcpIP;
-            this.tcpPort = result.tcpPort;
+            this.tcpIP = result.data.tcpIP;
+            this.webPort = result.data.webPort;
+            this.macno = result.data.fac_id;
+            this.sysnum = result.data.ctime;
+            this.move_time = result.data.move_time;
+            this.top_time = result.data.top_time;
+            this.mactype = result.data.mactype;
             this.webSocket = this.initWebSocket;
+            this.countDown('countDownNum', 30);
+            this._getBaseInfo();
           } else {
+            this.yx_shibai.play();
             showToast(result.msg, 'cancel');
           }
           this.$vux.loading.hide();
@@ -362,7 +409,9 @@
       },
       listenToGameOver() {//监听到游戏结束
         console.log("监听到游戏结束");
-        this._getJoinRoom();
+        this.countDownNum = -1;
+        this.isGameStart = false;
+        this._getBaseInfo();
       },
       listenToStartGame() {//监听到游戏开始
         console.log("监听到游戏开始");
@@ -375,20 +424,57 @@
         console.log("监听操作结束，且不是本人");
         this._getJoinRoom();
       },
-      showMsgFromChildSuccess(data) {//监听抓中了
-        console.log("抓中了:", data);
+      showListenGrabResult(data) {//监听抓取结果
+        console.log("监听抓取结果:", data);
+        if (data.user_id != 0) {
+          if (parseInt(data.success)) {
+            this.sendMsgText = "抓中了一个娃娃";
+            this.sendMsgToIM(1);
+          } else {
+            if (data.user_id != this.userInfo.id) {
+              this.sendMsgText = "没有夹中娃娃，怪我喽~~";
+              this.sendMsgToIM(1);
+            }
+          }
+        }
+        if (data.user_id == this.userInfo.id) {
+          if (parseInt(data.success)) {
+            /*if (!this.state.isNewGame) {
+              this.countDown("result", 5);
+            }*/
+            this.yx_chenggong.play();
+          } else {
+            this.countDown("result", 5);
+            this.yx_shibai.play();
+          }
+          //this.soundPool.pause();
+          this.isResultSuccess = parseInt(data.success);
+          this.isGameStart = false;
+          this.resultPopup = true;
+          this._getJoinRoom();
+          this.webSocket.close();
+        } else if (data.user_id == 0 || data.user_id == null) {
+          //this.setState({isGameStart: false});
+          this._getJoinRoom();
+        }
       },
       showMsgFromChildFail(data) {  //监听未抓中
         console.log("未抓中:", data);
       },
-      sendMsgToIM(data) {
-        console.log("data:", data);
-        this.isBeginSendMsg = new Date().getTime();//IM需要监听发生变化
-        this.msgType = data;
-      },
       roomGameCmd(opera) {
         console.log(opera);
-        if (opera === 'GRAB') {
+        this.sign = md5(this.macno + "DLCwawa" + opera);
+        const sendObj = {};
+        sendObj.macno = this.macno;
+        sendObj.sysnum = this.sysnum;
+        sendObj.type = opera;
+        sendObj.move_time = this.move_time;
+        sendObj.top_time = this.top_time;
+        sendObj.mactype = this.mactype;
+        sendObj.sign = this.sign;
+        console.log("sendObj", sendObj);
+        this.webSocket(JSON.stringify(sendObj));
+        if (opera === 'grab') {
           this.yx_xiazhua.play();
         } else {
           this.yx_anniu.play();
@@ -412,11 +498,18 @@
       },
       backRoom() {
         console.log("退出房间");
+        clearInterval(this.timer);
         this._getRoomExit();
         this.bgmusic.stop();
-        this.$router.back();
+        this.yx_anniu.stop();
+        this.yx_shibai.stop();
+        this.yx_xiazhua.stop();
+        this.yx_daojishi.stop();
+        this.yx_chenggong.stop();
         this.sendMsgToIM(4);
+        this.$vux.loading.hide();
         this.exitIM = true;
+        this.$router.back();
       },
       //减积分
       scoreReduce() {
@@ -450,8 +543,9 @@
       },
       //快捷语言
       sayGood(item) {
-        this.quickIndex = item;
-        this.isShowQuick = true;
+        /*this.quickIndex = item;
+        this.isShowQuick = true;*/
+        this.resultPopup = true;
       },
       //发送快捷语言
       quickItem(value) {
@@ -479,12 +573,27 @@
           return num;
         }
       },
+      //倒计时
+      countDown(val, time) {
+        let num = time;
+        let _this = this;
+
+        function count() {
+          if (num >= 0) {
+            num--;
+            _this.timer = setTimeout(count, 1000);
+            _this[val] = num;
+          }
+        }
+
+        count();
+      }
     },
     computed: {
       ...mapGetters(['userInfo']),
       initWebSocket() {
-        console.log(this.tcpIP, this.tcpPort);
-        return new WebSocket(`ws://${this.tcpIP}:${this.tcpPort}`);
+        console.log(this.tcpIP, this.webPort);
+        return new WebSocket(`ws://${this.tcpIP}:${this.webPort}`);
       },
       filterMessage() {//过滤关键字
         let filter = this.filterMessageSrc;
@@ -517,7 +626,21 @@
         return imageUri;
       }
     },
-    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper, LessCoin}
+    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper, LessCoin, ResultPopup},
+    updated() {
+      if (this.countDownNum < 0) {
+        clearInterval(this.timer);
+        this.countDownNum = -1;
+      }
+      if (!this.countDownNum) {
+        this.roomGameCmd('grab');
+        clearInterval(this.timer);
+        this.countDownNum = -1;
+      }
+    },
+    destroyed() {
+      this.backRoom();
+    }
   };
 </script>
 

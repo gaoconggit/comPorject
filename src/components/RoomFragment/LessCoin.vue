@@ -82,6 +82,7 @@
         position: absolute;
         bottom: -50px;
         left: 30px;
+        right: 30px;
         display: flex;
         justify-content: space-around;
         .cancel, .recharge {

@@ -19,9 +19,6 @@
 
   export default {
     components: {Scroller},
-    created() {
-      // this.initIM();
-    },
     data() {
       return {
         accountMode: 0,
@@ -126,7 +123,6 @@
         //监听大群新消息（普通，点赞，提示，红包）
 
         function onBigGroupMsgNotify(msgList) {
-          console.log("msgList:", msgList);
           for (let i = msgList.length - 1; i >= 0; i--) { //遍历消息，按照时间从后往前
             const msg = msgList[i];
             //console.warn(msg);
@@ -515,7 +511,6 @@
                   } else {
                     this.msgList.push({user_id: _msg.user_id, name: _msg.name, msg: _msg.message});
                   }
-                  console.log("msgList:", this.msgList);
                   this.$nextTick(() => {
                     let chatHeight = this.$refs.scrollerChat.$el.clientHeight;
                     let chatBoxHeight = this.$refs.chatBox.clientHeight;
@@ -528,6 +523,7 @@
                   this.$emit('listenToStartGame');
                   break;
                 case 3://进入房间
+                  console.log("有人进入房间");
                   this.$emit('listenToEnterInRoom', {
                     user_nickname: _msg.user_nicename,
                     avatar: _msg.avatar,
@@ -545,7 +541,7 @@
                   break;
                 case 10://游戏结果//判断user_id=0只刷新排队//user_id>0才是结果
 
-                  if (_msg.success == 0) {//抓不中
+                  /*if (_msg.success == 0) {//抓不中
                     if (_msg.user_id != 0 && (_msg.user_id == this.userInfo.id)) {
                       this.$emit('listenToChildEventFail', [true, false]);
                       this.$emit('listenToGameOver');
@@ -559,7 +555,8 @@
                     } else {
                       this.$emit('broadcastToAll');
                     }
-                  }
+                  }*/
+                  this.$emit("listenGrabResult", _msg);
                   break;
                 case 11://预约排队通知
                   if (_msg.user_id != 0 && _msg.user_id == this.userInfo.id) {
