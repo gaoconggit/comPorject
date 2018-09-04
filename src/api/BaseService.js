@@ -97,6 +97,7 @@ const apiData = {
   mywawa: "api/mywawa/api",
   room: "api/room/api",
   usercode: "api/usercode/api",
+  notice: "api/notice/api",
 };
 
 export default {
@@ -351,6 +352,66 @@ export default {
     let formData = new FormData();
     formData.append('token', state.token);
     formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取个人消息列表
+  getNoticeList() {
+    let url = `${apiData.notice}`;
+    let formData = new FormData();
+    formData.append('api_name', 'user_notice_list');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('size', 31);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取个人消息详情
+  getNoticeInfo(id) {
+    let url = `${apiData.notice}`;
+    let formData = new FormData();
+    formData.append('api_name', 'user_notice_info');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('id', id);
+    return this.postAxiosAction(url, formData);
+  },
+  //领取个人消息中的物品
+  getUserNoticeGoods(id) {
+    let url = `${apiData.notice}`;
+    let formData = new FormData();
+    formData.append('api_name', 'accept_user_notice_goods');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('id', id);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //删除个人消息
+  deleteUserNotice(id) {
+    let url = `${apiData.notice}`;
+    let formData = new FormData();
+    formData.append('api_name', 'remove_user_notice');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('id', id);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取系统消息列表
+  getSysNoticeList(channel = null) {
+    let url = `${apiData.notice}`;
+    let formData = new FormData();
+    formData.append('api_name', 'sys_notice_list');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('channel', channel);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取系统消息详情
+  getSysNoticeInfo(id) {
+    let url = `${apiData.notice}`;
+    let formData = new FormData();
+    formData.append('api_name', 'sys_notice_info');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('id', id);
     return this.postAxiosAction(url, formData);
   },
 }

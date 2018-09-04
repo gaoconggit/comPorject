@@ -2,7 +2,9 @@
 *   常用函数
 * */
 import Vue from 'vue';
+import store from "../../store";
 import {ToastPlugin} from 'vux';
+import api from "../../api/BaseService";
 
 Vue.use(ToastPlugin);
 let vm = new Vue();
@@ -52,3 +54,10 @@ export function getTimeDate(val, isYear = false) {
     return `${Zerofill(varYear)}-${Zerofill(varMonth)}-${Zerofill(varDate)} ${Zerofill(varHours)}:${Zerofill(varMinutes)}`;
   }
 };
+
+export function updateBaseInfo() {
+  api.getBaseInfo().then((result) => {
+    console.log(result);
+    store.commit('SET_USER_INFO', result.data);
+  });
+}
