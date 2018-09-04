@@ -102,8 +102,8 @@
         font-weight: 600;
         .coin {
           margin-right: 12px;
-          width: 72px;
-          height: 72px;
+          width: 72/2px;
+          height: 72/2px;
           .img-spread;
         }
       }

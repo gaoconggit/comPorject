@@ -118,6 +118,8 @@
     <result-popup
       v-if="resultPopup"
       @close-result-popup="closeComp('resultPopup')"
+      @again-game-start="againGameStart"
+      @new-room-exit="backRoom(true)"
       :isNewRoom="isNewRoom"
       :isBaosong="Number(roomData.baosong_num)-Number(roomData.baosong_progress)"
       :resultType="isResultSuccess"
@@ -192,7 +194,7 @@
         countDownNum: -1,     //倒计时
         countDownResult: -1,  //结果倒计时
         isShowLess: false,    //是否展示金币不足
-        resultPopup: true,   //结果弹窗
+        resultPopup: false,   //结果弹窗
         isResultSuccess: 1,//抓取结果是否成功
         tcpPort: '',          //WebSocket端口
         tcpIP: '',            //WebSocketIP
@@ -257,21 +259,25 @@
           if (result.data.now_user != null) {
             if (result.data.now_user.id == this.userInfo.id) {
               this.isGameStart = true;
+              //this._gameStart();
             }
           }
           this.roomData = result.data;
           if (this.userInfo.user_setting.bgmusic === 1) {
             //背景音乐
-            this.bgmusic = new Howl({
-              src: [result.data.bgmusic],
-              autoplay: true,
-              preload: true,
-              loop: true
-            });
+            if (!this.bgmusic) {
+              this.bgmusic = new Howl({
+                src: [result.data.bgmusic],
+                autoplay: true,
+                preload: true,
+                loop: true
+              });
+            }
             //游戏中背景音乐
             this.game_bgmusic = new Howl({
               src: [result.game_bgmusic],
               preload: true,
+              loop: true
             });
           }
           if (this.userInfo.user_setting.yx === 1) {
@@ -340,7 +346,8 @@
             this.move_time = result.data.move_time;
             this.top_time = result.data.top_time;
             this.mactype = result.data.mactype;
-            this.webSocket = this.initWebSocket;
+            this.webSocket = new WebSocket(`ws://${this.tcpIP}:${this.webPort}`);
+            console.log("+++++++++", this.webSocket, "++++++");
             this.countDown('countDownNum', 30);
             this._getBaseInfo();
           } else {
@@ -351,6 +358,15 @@
         } else {
           this.isShowLess = true;
         }
+      },
+      //再来一局
+      againGameStart() {
+        console.log("4,", this.countDownNum);
+        clearInterval(this.resultTimer);
+        this.resultTimer = null;
+        this.countDownResult = -1;
+        this.resultPopup = false;
+        this._gameStart();
       },
       //预约/取消抓娃娃
       async _getRoomWait() {
@@ -439,20 +455,22 @@
         }
         if (data.user_id == this.userInfo.id) {
           if (parseInt(data.success)) {
-            /*if (!this.state.isNewGame) {
-              this.countDown("result", 5);
-            }*/
             this.yx_chenggong.play();
           } else {
-            this.countDown("result", 5);
             this.yx_shibai.play();
           }
+          if (!this.isNewRoom) {
+            this.countDown('countDownResult', 6, "resultTimer");
+          }
           //this.soundPool.pause();
+          this.game_bgmusic.stop();
+          this.bgmusic.play();
           this.isResultSuccess = parseInt(data.success);
           this.isGameStart = false;
           this.resultPopup = true;
           this._getJoinRoom();
-          this.webSocket.close();
+          this.webSocket.close(1000);
+          this.webSocket = null;
         } else if (data.user_id == 0 || data.user_id == null) {
           //this.setState({isGameStart: false});
           this._getJoinRoom();
@@ -473,8 +491,12 @@
         sendObj.mactype = this.mactype;
         sendObj.sign = this.sign;
         console.log("sendObj", sendObj);
-        this.webSocket(JSON.stringify(sendObj));
+        this.webSocket.send(JSON.stringify(sendObj));
         if (opera === 'grab') {
+          console.log("5,", this.countDownNum);
+          // clearInterval(this.timer);
+          // this.timer = null;
+          this.countDownNum = -1;
           this.yx_xiazhua.play();
         } else {
           this.yx_anniu.play();
@@ -496,9 +518,11 @@
           }
         }
       },
-      backRoom() {
+      backRoom(bool = false) {
         console.log("退出房间");
-        clearInterval(this.timer);
+        console.log("6,", this.countDownNum);
+        // clearInterval(this.timer);
+        // this.timer = null;
         this._getRoomExit();
         this.bgmusic.stop();
         this.yx_anniu.stop();
@@ -509,7 +533,11 @@
         this.sendMsgToIM(4);
         this.$vux.loading.hide();
         this.exitIM = true;
-        this.$router.back();
+        if (bool) {
+          this.$router.push({path: '/'});
+        } else {
+          this.$router.back();
+        }
       },
       //减积分
       scoreReduce() {
@@ -543,9 +571,8 @@
       },
       //快捷语言
       sayGood(item) {
-        /*this.quickIndex = item;
-        this.isShowQuick = true;*/
-        this.resultPopup = true;
+        this.quickIndex = item;
+        this.isShowQuick = true;
       },
       //发送快捷语言
       quickItem(value) {
@@ -574,14 +601,15 @@
         }
       },
       //倒计时
-      countDown(val, time) {
+      countDown(val, time, timer = "timer") {
         let num = time;
         let _this = this;
 
         function count() {
           if (num >= 0) {
             num--;
-            _this.timer = setTimeout(count, 1000);
+            console.log("-----", val, num);
+            _this[timer] = setTimeout(count, 1000);
             _this[val] = num;
           }
         }
@@ -630,12 +658,23 @@
     updated() {
       if (this.countDownNum < 0) {
         clearInterval(this.timer);
+        this.timer = null;
         this.countDownNum = -1;
+      }
+      if (this.countDownNum > 0 && this.countDownNum < 10) {
+        this.yx_daojishi.play();
       }
       if (!this.countDownNum) {
         this.roomGameCmd('grab');
         clearInterval(this.timer);
+        this.timer = null;
         this.countDownNum = -1;
+      }
+      if (this.countDownResult < 0) {
+        this.resultPopup = false;
+        clearInterval(this.resultTimer);
+        this.resultTimer = null;
+        this.countDownResult = -1;
       }
     },
     destroyed() {

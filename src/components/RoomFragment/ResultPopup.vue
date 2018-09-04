@@ -5,12 +5,15 @@
         <div class="close" @click="closeResultPopup">
           <img src="~img/com_img/close.png" alt="">
         </div>
-        <div class="less-coin-text">
+        <div class="less-coin-text" v-if="isBaosong">
           <p>再玩{{isBaosong}}局即可保送</p>
           <p>（{{expireTime}}）</p>
         </div>
+        <div class="less-coin-text" v-else>
+          <p>没抓到，就差一点</p>
+        </div>
         <div class="btn-wrapper">
-          <div class="cancel" @click="againGame"><p>在玩一局（{{countDownResult}}）</p></div>
+          <div class="cancel again" @click="againGame"><p>在玩一局({{countDownResult}})</p></div>
         </div>
       </div>
       <div class="box-success" v-if="resultType">
@@ -23,7 +26,7 @@
           </div>
           <div class="new-room" v-if="isNewRoom"><p>太厉害了，晋级成功！新手场，白白！</p></div>
           <div class="btn-wrapper success" v-if="!isNewRoom">
-            <div class="cancel" @click="againGame"><p>在玩一局（{{countDownResult}}）</p></div>
+            <div class="cancel again" @click="againGame"><p>在玩一局({{countDownResult}})</p></div>
             <div class="cancel" @click="showShare"><p>炫耀一下</p></div>
           </div>
           <div class="btn-wrapper success" v-if="isNewRoom">
@@ -47,12 +50,13 @@
       },
       againGame() {
         console.log("再来一局");
+        this.$emit('again-game-start', true);
       },
       showShare() {
         console.log("炫耀一下");
       },
-      newRoomSure(){
-        console.log("新手房间退出");
+      newRoomSure() {
+        console.log("new-room-exit");
       }
     },
     components: {TransitionScale}
@@ -91,7 +95,7 @@
           height: 276px;
         }
       }
-      .new-room{
+      .new-room {
         margin-top: 100px;
         color: #000;
         font-size: @maxFontSize;
@@ -140,6 +144,9 @@
         line-height: 76px;
         font-size: @subFontSize;
         color: @whiteColor;
+        &.again {
+          font-size: @minFontSize;
+        }
       }
     }
   }
