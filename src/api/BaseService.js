@@ -98,6 +98,7 @@ const apiData = {
   room: "api/room/api",
   usercode: "api/usercode/api",
   notice: "api/notice/api",
+  set: "api/set/api"
 };
 
 export default {
@@ -248,6 +249,14 @@ export default {
     formData.append("room_id", roomId);
     return this.postAxiosAction(url, formData);
   },
+  getRoomGameCancel(roomId) {
+    let url = `${apiData.public}Room.roomGameCancel`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('room_id', roomId);
+    return this.postAxiosAction(url, formData);
+  },
   //退出房间
   getRoomExit(roomId) {
     let url = `${apiData.public}Room.exitRoom`;
@@ -255,7 +264,7 @@ export default {
     formData.append("token", state.token);
     formData.append("uid", state.uid);
     formData.append("room_id", roomId);
-    return this.postAxiosAction(url, formData);
+    return this.postAxiosAction(url, formData, true);
   },
   //获取当前房间人数信息
   getRoomAudience(roomId) {
@@ -412,6 +421,26 @@ export default {
     formData.append('token', state.token);
     formData.append('uid', state.uid);
     formData.append('id', id);
+    return this.postAxiosAction(url, formData);
+  },
+  //设置背景音开关
+  fixBgmuisc(type) {
+    let url = apiData.set;
+    let formData = new FormData();
+    formData.append('api_name', 'bgmusic');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('type', type);//1开 2关
+    return this.postAxiosAction(url, formData);
+  },
+  //设置音效开关
+  fixSound(type) {
+    let url = apiData.set;
+    let formData = new FormData();
+    formData.append('api_name', 'yx');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('type', type);//1开 2关
     return this.postAxiosAction(url, formData);
   },
 }

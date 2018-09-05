@@ -70,28 +70,9 @@
     },
     methods: {
       exitIMm() {
+        console.log("退出IM");
         this.quitBigGroup();
         this.logout();
-      },
-      showConfirm() {
-        const _this = this; // 需要注意 onCancel 和 onConfirm 的 this 指向
-        this.$vux.confirm.show({
-          title: this.confirmTitle,
-          // 组件除show外的属性
-          onCancel() {
-            _this.$emit('listenToCancelGame');
-            console.log(this); // 非当前 vm
-            console.log(_this) // 当前 vm
-          },
-          onConfirm() {
-            _this.$emit('listenToJoinGame');
-          }
-        });
-
-        setTimeout(function () {
-          this.$vux.confirm.hide();
-          _this.$emit('listenToCancelGame');
-        }.bind(this), 5000);
       },
       initIM() {
         this.selType = webim.SESSION_TYPE.GROUP;
@@ -503,7 +484,8 @@
             console.log("_msg:", _msg);
             if (_msg.indexOf('{') == 0) {
               _msg = JSON.parse(escape2Html(_msg));
-              console.log("type:", _msg);
+              console.log("_msg:", _msg);
+              console.log("type:", _msg.type);
               switch (_msg.type) {
                 case 1://聊天消息
                   if (_msg.user_id == this.userInfo.id) {
@@ -560,10 +542,8 @@
                   break;
                 case 11://预约排队通知
                   if (_msg.user_id != 0 && _msg.user_id == this.userInfo.id) {
-                    this.confirmTitle = '准备到你抓娃娃了,5s自动取消...';
-                    this.showConfirm();
+                    this.$emit('listenToJoinGame', _msg);
                   }
-
                   break;
                 case 12://滚动公告推送
                   break;

@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="box-success" v-if="resultType">
-        <div class="close" @click="closeResultPopup">
+        <div v-if="!isNewRoom" class="close" @click="closeResultPopup">
           <img src="~img/com_img/close.png" alt="">
         </div>
         <div class="less-coin-text">
@@ -56,7 +56,7 @@
         console.log("炫耀一下");
       },
       newRoomSure() {
-        console.log("new-room-exit");
+        this.$emit("new-room-exit");
       }
     },
     components: {TransitionScale}

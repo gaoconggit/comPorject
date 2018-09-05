@@ -71,7 +71,7 @@
     watch: {
       $route(to, form) {
         let path = to.path;
-        //console.log("watch route:", to);
+        console.log("watch route:", to);
         switch (path) {
           case '/home/index':
             this.tabIndex = 0;

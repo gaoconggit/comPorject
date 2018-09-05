@@ -96,7 +96,7 @@
         <div class="grab-btn" @click="roomGameCmd('grab')"><img src="~/img/room/game_btn_go.png" alt=""></div>
       </div>
     </div>
-    <desc-wrapper :history="roomHistory" :imgs="roomData.img" :needcoin="roomData.needcoin"/>
+    <desc-wrapper :history="roomHistory" :imgs="roomData.img" :addscore="roomData.addscore"/>
     <div v-transfer-dom>
       <popup v-model="isShowQuick" position="bottom" class="quick-wrap">
         <li class="quick-item" v-if="quickIndex === 1" v-for="item in quickMessage.negative" @click="quickItem(item)">
@@ -126,6 +126,18 @@
       :expireTime="roomData.baosong_expire_time_str"
       :countDownResult="countDownResult"
       :getGiftIcon="roomData.gifticon"/>
+    <room-exit
+      v-if="isExitRoom"
+      :data="exitRoomData"
+      :name="roomData.giftname"
+      :isNewRoom="isNewRoom"
+      @close-exit-popup="closeComp('isExitRoom')"
+      @exit-room="sendMsgToIM(4)"/>
+    <make-down-dialog
+      v-if="isMakeDown"
+      :makeCountDown="makeCountDown"
+      @mask-cancel="closeComp('isMakeDown')"
+      @mask-confirm="_gameStart"/>
   </div>
 </template>
 
@@ -135,11 +147,13 @@
   import md5 from "js-md5";
   import {Actionsheet, Scroller, Popup, TransferDom} from "vux";
   import api from "../../api/BaseService";
-  import {showToast, maxNum} from "../../common/util/Utils";
+  import {showToast, maxNum, updateBaseInfo} from "../../common/util/Utils";
   import WebIM from "@/common/webIM";
   import DescWrapper from "./DescWrapper";
   import LessCoin from "./LessCoin"
   import ResultPopup from "./ResultPopup";
+  import RoomExit from "./RoomExit";
+  import MakeDownDialog from "./MakeDownDialog"
 
   export default {
     name: "RoomIndex",
@@ -193,8 +207,12 @@
         exitIM: false,       //是否退出IM
         countDownNum: -1,     //倒计时
         countDownResult: -1,  //结果倒计时
+        makeCountDown: -1,    //轮到自己
+        isMakeDown: false,    //展示轮到自己
         isShowLess: false,    //是否展示金币不足
-        resultPopup: false,   //结果弹窗
+        resultPopup: true,   //结果弹窗
+        isExitRoom: false,    //退出房间提示
+        exitRoomData: {},     //退出房间内容
         isResultSuccess: 1,//抓取结果是否成功
         tcpPort: '',          //WebSocket端口
         tcpIP: '',            //WebSocketIP
@@ -218,7 +236,9 @@
       this.tim_uid = 'wawaji' + this.userInfo.id;
     },
     beforeRouteLeave(to, from, next) {
-      this.bgmusic.stop();
+      if (this.bgmusic) {
+        this.bgmusic.stop();
+      }
       next();
     },
     methods: {
@@ -253,7 +273,7 @@
             this.multipleAdd = true;
           }
           this.roomId = result.data.id;
-          this.spendcoin = result.data.needcoin;
+          this.spendcoin = result.data.spendcoin;
           this.isNewRoom = parseInt(result.data.is_newbee);
           this.isMultiple = !!Number(result.data.result_type);
           if (result.data.now_user != null) {
@@ -263,7 +283,8 @@
             }
           }
           this.roomData = result.data;
-          if (this.userInfo.user_setting.bgmusic === 1) {
+          let sysBgmusic = this.userInfo.user_setting;
+          if (sysBgmusic.bgmusic != null) {
             //背景音乐
             if (!this.bgmusic) {
               this.bgmusic = new Howl({
@@ -314,10 +335,10 @@
           }
           /*视频播放*/
           let videoWrapMain = this.$refs.videoWrapMain;
-          new JSMpeg.Player('ws://47.105.32.106:8080/room18/channel1', {canvas: videoWrapMain});
+          this.vidoe = new JSMpeg.Player('ws://47.105.32.106:8080/room18/channel1', {canvas: videoWrapMain});
           setTimeout(() => {
             this.sendMsgToIM(3);
-          }, 500);
+          }, 300);
           this.$vux.loading.hide();
         } else {
           showToast(result.msg);
@@ -333,7 +354,7 @@
           let result = await api.getGameStart(this.roomId, this.multipleArray[this.multipleIndex]);
           console.log(result);
           if (result.code == 1) {
-            showToast("游戏开始", 'success');
+            showToast("游戏开始", 'success', 1000);
             this.bgmusic.stop();
             this.yx_kaishi.play();
             this.game_bgmusic.play();
@@ -401,10 +422,6 @@
         let result = await api.getKeyWord();
         this.filterMessageSrc = result.data;
       },
-      async _getRoomExit() {
-        let result = await api.getRoomExit(this.roomId);
-        console.log("退出房间:", result);
-      },
       listenToCancelReservation(data) {//取消预约娃娃机
         console.log("用户取消预约:", data);
       },
@@ -412,16 +429,40 @@
         console.log("用户预约娃娃机:", data);
         this._getJoinRoom();
       },
-      listenToJoinGame() {   //监听预约到自己确认上机
+      listenToJoinGame(data) {   //监听预约到自己确认上机
         console.log("监听预约到自己确认上机")
+        if (data.user_id == this.userInfo.id) {
+          this.countDown("makeCountDown", 5, "makeCountTimer");
+          this.isMakeDown = true;
+        } else {
+          this._getJoinRoom();
+        }
       },
       listenToEnterInRoom() {//监听到有人进入房间
         console.log("监听到有人进入房间");
         this._getRoomAudience(this.roomId);
       },
-      listenToLiveOutRoom() {//监听到有人退出房间
+      listenToLiveOutRoom(data) {//监听到有人退出房间
         console.log("监听到有人退出房间");
-        this._getRoomAudience(this.roomId);
+        if (this.userInfo.id === data) {
+          this.exitIM = true;
+          this.bgmusic.stop();
+          this.yx_anniu.stop();
+          this.yx_shibai.stop();
+          this.yx_xiazhua.stop();
+          this.yx_daojishi.stop();
+          this.yx_chenggong.stop();
+          this.$vux.loading.hide()
+          if (this.isNewRoom) {
+            setTimeout(() => {
+              this.$router.push({path: '/home/index', query: {keep: 'no'}})
+            }, 500)
+          } else {
+            this.$router.back(-1);
+          }
+        } else {
+          this._getRoomAudience(this.roomId);
+        }
       },
       listenToGameOver() {//监听到游戏结束
         console.log("监听到游戏结束");
@@ -442,15 +483,13 @@
       },
       showListenGrabResult(data) {//监听抓取结果
         console.log("监听抓取结果:", data);
-        if (data.user_id != 0) {
+        if (data.user_id === this.userInfo.id) {
           if (parseInt(data.success)) {
             this.sendMsgText = "抓中了一个娃娃";
             this.sendMsgToIM(1);
           } else {
-            if (data.user_id != this.userInfo.id) {
-              this.sendMsgText = "没有夹中娃娃，怪我喽~~";
-              this.sendMsgToIM(1);
-            }
+            this.sendMsgText = "没有夹中娃娃，怪我喽~~";
+            this.sendMsgToIM(1);
           }
         }
         if (data.user_id == this.userInfo.id) {
@@ -468,11 +507,13 @@
           this.isResultSuccess = parseInt(data.success);
           this.isGameStart = false;
           this.resultPopup = true;
+          updateBaseInfo();
           this._getJoinRoom();
           this.webSocket.close(1000);
           this.webSocket = null;
         } else if (data.user_id == 0 || data.user_id == null) {
           //this.setState({isGameStart: false});
+          console.log(1234);
           this._getJoinRoom();
         }
       },
@@ -520,24 +561,31 @@
       },
       backRoom(bool = false) {
         console.log("退出房间");
-        console.log("6,", this.countDownNum);
+        if (Number(this.roomData.baosong_num) || this.isNewRoom) {
+          api.getRoomExit(this.roomId)
+            .then((result) => {
+              if (result.code == 1) {
+                console.log("getRoomExit:", result);
+                console.log("getRoomExit:", this.roomData.baosong_num);
+                console.log("getRoomExit:", result.data.baosong_remain_count);
+                if (this.roomData.baosong_num > result.data.baosong_remain_count && result.data.baosong_remain_count) {
+                  this.isExitRoom = true;
+                  this.exitRoomData = result.data;
+                } else {
+                  this.sendMsgToIM(4);
+                }
+              } else {
+                this.sendMsgToIM(4);
+              }
+            })
+            .catch(() => {
+              this.sendMsgToIM(4);
+            })
+        } else {
+          this.sendMsgToIM(4);
+        }
         // clearInterval(this.timer);
         // this.timer = null;
-        this._getRoomExit();
-        this.bgmusic.stop();
-        this.yx_anniu.stop();
-        this.yx_shibai.stop();
-        this.yx_xiazhua.stop();
-        this.yx_daojishi.stop();
-        this.yx_chenggong.stop();
-        this.sendMsgToIM(4);
-        this.$vux.loading.hide();
-        this.exitIM = true;
-        if (bool) {
-          this.$router.push({path: '/'});
-        } else {
-          this.$router.back();
-        }
       },
       //减积分
       scoreReduce() {
@@ -591,6 +639,9 @@
       },
       //关闭组件
       closeComp(name) {
+        if (name === 'resultPopup' || name === 'isMakeDown') {
+          api.getRoomGameCancel(this.roomId);
+        }
         this[name] = false;
       },
       numMax(num) {
@@ -654,7 +705,7 @@
         return imageUri;
       }
     },
-    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper, LessCoin, ResultPopup},
+    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper, LessCoin, ResultPopup, RoomExit, MakeDownDialog},
     updated() {
       if (this.countDownNum < 0) {
         clearInterval(this.timer);
@@ -670,11 +721,20 @@
         this.timer = null;
         this.countDownNum = -1;
       }
-      if (this.countDownResult < 0) {
+      if (!this.countDownResult) {
+        api.getRoomGameCancel(this.roomId);
+        console.log("乌拉拉");
         this.resultPopup = false;
         clearInterval(this.resultTimer);
         this.resultTimer = null;
         this.countDownResult = -1;
+      }
+      if (!this.makeCountDown) {
+        api.getRoomGameCancel(this.roomId);
+        this.isMakeDown = false;
+        clearInterval(this.makeCountTimer);
+        this.makeCountTimer = null;
+        this.makeCountDown = -1;
       }
     },
     destroyed() {

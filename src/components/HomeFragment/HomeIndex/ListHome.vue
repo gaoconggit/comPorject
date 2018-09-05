@@ -43,6 +43,7 @@
         if (!Number(item.status)) {
           showToast("房间补货中，去其他的房间玩玩吧~", 'text', 2000, '300px');
         } else {
+          // window.localStorage.setItem("wawaji_room_id", item.giftid);
           this.$router.push({path: '/room', query: {id: item.giftid}});
         }
       },

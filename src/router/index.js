@@ -13,6 +13,7 @@ const FrameContent = r => require([], () => r(require('../common/FrameContent'))
 const VipContent = r => require([], () => r(require('../components/MineFragment/VipContent')));
 const MailIndex = r => require([], () => r(require('../components/MailFragment/MailIndex')));
 const UseGetDetailed = r => require([], () => r(require('../components/MineFragment/UseGetDetailed')));
+const SystemSet = r => require([], () => r(require('../components/MineFragment/SystemSet')));
 
 export default [{
   path: '/',
@@ -41,5 +42,6 @@ export default [{
     {path: '/email', name: '邮件中心', component: MailIndex},
     {path: '/coindetail', name: '金币明细', component: UseGetDetailed},
     {path: '/scoredetail', name: '积分明细', component: UseGetDetailed},
+    {path: '/system', name: '系统设置 ', component: SystemSet},
   ]
 }];

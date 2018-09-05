@@ -7,7 +7,7 @@
     <swiper ref="descSwiper" class="desc-swiper" v-model="index" :show-dots="false" @on-index-change="onItemClick">
       <swiper-item ref="imgWrapper">
         <div class="img-wrapper" ref="imgBox">
-          <p v-if="needcoin" class="need-coin">抓取失败，免费获得积分 <span>{{needcoin}}</span></p>
+          <p v-if="Number(addscore)" class="need-coin">抓取失败，免费获得积分： <span>{{addscore}}</span></p>
           <img class="img-item" v-for="img in imgs" :src="img" alt="">
         </div>
       </swiper-item>
@@ -34,7 +34,7 @@
 
   export default {
     name: "DescWrapper",
-    props: ['history', 'imgs', 'needcoin'],
+    props: ['history', 'imgs', 'addscore'],
     data() {
       return {
         index: 0,

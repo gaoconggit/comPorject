@@ -106,7 +106,7 @@ export default {
           this.$router.push({ path: "/recharge" });
           break;
         case 9:
-          this.$router.push({ path: "/recharge" });
+          this.$router.push({ path: "/system" });
           break;
         case 10:
           this.$router.push({ path: "/vip" });

@@ -83,6 +83,15 @@
         isNavWrapperTop: false //是否吸顶导航
       };
     },
+    watch: {
+      $route(to, form) {
+        let query = to.query;
+        if (query.keep) {
+          this._getCategory();
+          updateBaseInfo();
+        }
+      },
+    },
     created() {
       this.$vux.loading.show({
         text: "加载中.."
