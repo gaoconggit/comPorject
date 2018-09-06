@@ -87,6 +87,7 @@
         this.$vux.loading.show({
           text: "加载中.."
         });
+        this.page = 1;
         this._getGameCenterList(1, true);
       },
       onPullupLoading() {

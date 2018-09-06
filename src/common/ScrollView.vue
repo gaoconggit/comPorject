@@ -11,7 +11,7 @@
     ref="scroller">
     <div>
       <slot></slot>
-      <p class="bottom-text" v-show="status.pullupStatus === 'disabled' && showBottom.isShow">没有更多娃娃了哟~</p>
+      <p class="bottom-text" v-show="status.pullupStatus === 'disabled' && showBottom.isShow">{{showBottom.text}}</p>
     </div>
     <!--下拉刷新-->
     <div slot="pulldown"
@@ -76,13 +76,13 @@
       };
     },
     methods: {
-      onPulldownLoading() {
+      onPulldownLoading() {//下拉刷新
         this.$emit("on-pulldown-loading");
       },
-      onPullupLoading() {
+      onPullupLoading() {//上拉加载
         this.$emit("on-pullup-loading");
       },
-      onScrollBottom() {
+      onScrollBottom() {//距离底部
         this.$emit("on-scroll-bottom");
       },
       onScroll(pos) {

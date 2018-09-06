@@ -21,6 +21,7 @@
     <h1 class="header-title" :style="isWhiteBack?'color:#FFF':'color:#000'" @click="$emit('on-click-title')">
       <span>{{title}}</span>
     </h1>
+    <slot name="right"></slot>
   </div>
 </template>
 

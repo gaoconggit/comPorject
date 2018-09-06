@@ -14,6 +14,10 @@ const VipContent = r => require([], () => r(require('../components/MineFragment/
 const MailIndex = r => require([], () => r(require('../components/MailFragment/MailIndex')));
 const UseGetDetailed = r => require([], () => r(require('../components/MineFragment/UseGetDetailed')));
 const SystemSet = r => require([], () => r(require('../components/MineFragment/SystemSet')));
+const Faq = r => require([], () => r(require('../components/MineFragment/Faq')));
+const CoinDetailed = r => require([], () => r(require('../components/MineFragment/CoinDetailed')));
+const ScoreDetailed = r => require([], () => r(require('../components/MineFragment/ScoreDetailed')));
+const WawaIndex = r => require([], () => r(require('../components/MyWawa/WawaIndex')));
 
 export default [{
   path: '/',
@@ -43,5 +47,9 @@ export default [{
     {path: '/coindetail', name: '金币明细', component: UseGetDetailed},
     {path: '/scoredetail', name: '积分明细', component: UseGetDetailed},
     {path: '/system', name: '系统设置 ', component: SystemSet},
+    {path: '/faq', name: '常见问题 ', component: Faq},
+    {path: '/coin', name: '金币明细 ', component: CoinDetailed},
+    {path: '/score', name: '积分明细 ', component: ScoreDetailed},
+    {path: '/mywawa', name: '我的娃娃 ', component: WawaIndex},
   ]
 }];

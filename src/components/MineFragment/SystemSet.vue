@@ -6,8 +6,8 @@
   <div class="system-wrapper">
     <title-bar class="title" title="设置"/>
     <group>
-      <x-switch class="switch" title="背景音乐开关" v-model="bgmusic" @on-change="bgmusicChange"></x-switch>
-      <x-switch class="switch" title="音效开关" v-model="sound" @on-change="yxChange"></x-switch>
+      <x-switch prevent-default class="switch" title="背景音乐开关" v-model="bgmusic" @on-click="bgmusicChange"></x-switch>
+      <x-switch prevent-default class="switch" title="音效开关" v-model="sound" @on-click="yxChange"></x-switch>
     </group>
     <group>
       <cell class="switch" title="当前版本" value="2.2.0"></cell>
@@ -32,16 +32,23 @@
     },
     mounted() {
       if (this.userInfo.user_setting) {
-        this.bgmusic = this.userInfo.user_setting.bgmusic == 1 ? true : false;
-        this.sound = this.userInfo.user_setting.yx == 1 ? true : false;
-        console.log(this.bgmusic)
+        this.bgmusic = this.returnBool(this.userInfo.user_setting.bgmusic);
+        this.sound = this.returnBool(this.userInfo.user_setting.yx);
+      }
+    },
+    watch: {
+      userInfo() {
+        console.log(this.userInfo);
+        this.bgmusic = this.returnBool(this.userInfo.user_setting.bgmusic);
+        this.sound = this.returnBool(this.userInfo.user_setting.yx);
       }
     },
     methods: {
-      bgmusicChange(bool) {
+      bgmusicChange(newVal, oldVal) {
+        console.log(newVal);
         this.$vux.loading.show({text: '设置中...'})
         let type = 0;
-        if (bool) {
+        if (newVal) {
           type = 1;
         } else {
           type = 2;
@@ -62,15 +69,15 @@
             showToast("设置失败，请稍后重试", "cancel")
           })
       },
-      yxChange(bool) {
-        //this.$vux.loading.show({text: '设置中...'})
+      yxChange(newVal, oldVal) {
+        console.log(newVal);
+        this.$vux.loading.show({text: '设置中...'})
         let type = 0;
-        if (bool) {
+        if (newVal) {
           type = 1;
         } else {
           type = 2;
         }
-        console.log(type);
         api.fixSound(type)
           .then((result) => {
             this.$vux.loading.hide();
@@ -87,9 +94,15 @@
             showToast("设置失败，请稍后重试", "cancel")
           })
       },
+      returnBool(num) {
+        if (num == 1) {
+          return true;
+        }
+        return false
+      }
     },
     computed: {
-      ...mapGetters(['userInfo'])
+      ...mapGetters(['userInfo']),
     },
     components: {TitleBar, Group, XSwitch, Cell}
   }

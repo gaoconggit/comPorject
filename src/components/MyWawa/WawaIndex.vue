@@ -1,6 +1,10 @@
 <template>
     <div>
-      <title-bar title="我的娃娃" />
+      <title-bar title="我的娃娃">
+        <div slot="right">
+          1234
+        </div>
+      </title-bar>
     </div>
 </template>
 

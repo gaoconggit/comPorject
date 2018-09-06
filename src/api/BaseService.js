@@ -98,7 +98,8 @@ const apiData = {
   room: "api/room/api",
   usercode: "api/usercode/api",
   notice: "api/notice/api",
-  set: "api/set/api"
+  set: "api/set/api",
+  record: "api/record/api"
 };
 
 export default {
@@ -443,4 +444,30 @@ export default {
     formData.append('type', type);//1开 2关
     return this.postAxiosAction(url, formData);
   },
+  //获取常见问题
+  getSettingFaq() {
+    let url = `api/public/service=setting.faq`;
+    return this.postAxiosAction(url);
+  },
+  //获取金币明细
+  getCoinDetailed(page) {
+    let url = apiData.record;
+    let formData = new FormData();
+    formData.append('api_name', 'body_bill');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('page', page);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取积分明细
+  getScoreDetailed(page) {
+    let url = `${apiData.public}Score.info`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('page', page);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
+  }
 }
