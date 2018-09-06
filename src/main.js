@@ -17,11 +17,10 @@ Vue.use(AlertPlugin);
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  error: require('img/lazyload.png'),
-  loading: require('img/lazyload.png'),
-  attempt: 3,
-  lazyComponent: true,
-  listenEvents: ['scroll']
+  error: './assets/img/lazyload.png',
+  loading: './assets/img/lazyload.png',
+  attempt: 1,
+  listenEvents: ['scroll'],
 });
 
 Vue.config.productionTip = false;

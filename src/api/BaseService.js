@@ -469,5 +469,46 @@ export default {
     formData.append('page', page);
     formData.append('size', 10);
     return this.postAxiosAction(url, formData);
+  },
+  //我的娃娃个人信息接口
+  getWawaInfo() {
+    let url = `${apiData.public}Wawa.info`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取娃娃列表
+  getMyWawaList(page = 1, type = 0) {
+    let url = `${apiData.public}wawa.wawaList`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('status', type);
+    formData.append('page', page);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取运单列表
+  getWaybillList(page) {
+    let url = 'api/waybill/api';
+    let formData = new FormData();
+    formData.append('api_name', 'waybill_list');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('page', page);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取游戏历史记录
+  getHistoryList(page = 1) {
+    let url = apiData.mywawa;
+    let formData = new FormData();
+    formData.append('api_name', 'game_history');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('page', page);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
   }
 }

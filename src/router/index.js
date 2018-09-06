@@ -18,6 +18,7 @@ const Faq = r => require([], () => r(require('../components/MineFragment/Faq')))
 const CoinDetailed = r => require([], () => r(require('../components/MineFragment/CoinDetailed')));
 const ScoreDetailed = r => require([], () => r(require('../components/MineFragment/ScoreDetailed')));
 const WawaIndex = r => require([], () => r(require('../components/MyWawa/WawaIndex')));
+const HistoryIndex = r => require([], () => r(require('../components/Historys/HistoryIndex')));
 
 export default [{
   path: '/',
@@ -51,5 +52,6 @@ export default [{
     {path: '/coin', name: '金币明细 ', component: CoinDetailed},
     {path: '/score', name: '积分明细 ', component: ScoreDetailed},
     {path: '/mywawa', name: '我的娃娃 ', component: WawaIndex},
+    {path: '/history', name: '游戏历史 ', component: HistoryIndex},
   ]
 }];

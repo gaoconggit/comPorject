@@ -189,6 +189,7 @@
       .vux-tab-item {
         height: @roomTabHeight !important;
         line-height: @roomTabHeight !important;
+        font-size: @subFontSize;
       }
       .mail-content {
         .person-wrap {

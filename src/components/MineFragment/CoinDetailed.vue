@@ -60,7 +60,7 @@
         console.log(result);
         if (result.data.list.length) {
           if (isRefresh) {
-            this.listPage = 1;
+            this.page = 1;
             this.$refs.coinScroll.reset({top: 0}, 500);
             this.$refs.coinScroll.enablePullup();
             this.$refs.coinScroll.donePulldown();
@@ -92,7 +92,6 @@
         this._getCoinDetailed(1, true);
       },
       onPullUp() {
-        console.log(4567);
         this.page += 1;
         this._getCoinDetailed(this.page);
       },

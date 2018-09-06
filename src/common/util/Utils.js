@@ -55,9 +55,43 @@ export function getTimeDate(val, isYear = false) {
   }
 };
 
+//更新个人信息
 export function updateBaseInfo() {
   api.getBaseInfo().then((result) => {
     console.log(result);
     store.commit('SET_USER_INFO', result.data);
   });
 }
+
+//返回时分秒
+export function formatSeconds(value) {
+  let theTime = parseInt(value),// 需要转换的时间秒
+    hour = 0,// 小时
+    minute = 0,// 分
+    day = 0;// 天
+  if (theTime > 60) {
+    minute = parseInt(theTime / 60);
+    if (minute > 60) {
+      hour = parseInt(minute / 60);
+      minute = parseInt(minute % 60);
+      if (hour > 24) {
+        //大于24小时
+        day = parseInt(hour / 24);
+        hour = parseInt(hour % 24);
+      }
+    }
+  }
+  let result = '';
+  
+  if (day > 0) {
+    result = "" + Zerofill(parseInt(hour)) + "时";
+    result = "" + parseInt(day) + "天" + result;
+    
+    return result;
+  } else {
+    result = "" + Zerofill(parseInt(minute)) + "分";
+    result = "" + Zerofill(parseInt(hour)) + "时" + result;
+    
+    return result;
+  }
+};
