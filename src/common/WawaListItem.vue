@@ -4,14 +4,15 @@
 
 <template>
   <div>
-    <div class="item-wrap" v-for="item in data" :key="item.w_id||item.hid" @click="clickItem(item)">
-      <slot name="select"></slot>
+    <div class="item-wrap" v-for="(item,index) in data" :key="item.w_id||item.hid" @click="clickItem(item,index)">
+      <slot name="left" :item="item"></slot>
       <div class="icon"><img v-lazy="item.gifticon||item.img" alt=""></div>
       <div class="info">
         <p class="name">{{item.giftname||item.name}}</p>
         <p class="time">{{formatTime(item.ctime)}}</p>
       </div>
-      <p class="" v-if="item.expire_time">{{formatSeconds(item.expire_time)}}</p>
+      <p class="expire-time" v-if="item.expire_time" :class="{'active':item.expire_time<60*60*24}">
+        {{formatSeconds(item.expire_time)}}</p>
       <slot name="right" :item="item"></slot>
     </div>
   </div>
@@ -24,8 +25,8 @@
     name: "WawaListItem",
     props: ['data'],
     methods: {
-      clickItem(item) {
-        this.$emit("on-item-click", item);
+      clickItem(item, index) {
+        this.$emit("on-item-click", item, index);
       },
       formatTime(num) {
         return getTimeDate(num);
@@ -64,6 +65,13 @@
       .time {
         font-size: @subFontSize;
         color: @grayColor;
+      }
+    }
+    .expire-time {
+      font-size: @subFontSize;
+      color: #000;
+      &.active {
+        color: @mainColor;
       }
     }
   }

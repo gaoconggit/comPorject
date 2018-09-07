@@ -510,5 +510,26 @@ export default {
     formData.append('page', page);
     formData.append('size', 10);
     return this.postAxiosAction(url, formData);
-  }
+  },
+  //游戏申诉列表
+  getAppealList(roomId) {
+    let url = apiData.mywawa;
+    let formData = new FormData();
+    formData.append('api_name', 'appeal_list');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('room_id', roomId);
+    return this.postAxiosAction(url, formData);
+  },
+  //提交游戏申诉
+  getConfirmAppeal(hid, type) {
+    let url = apiData.mywawa;
+    let formData = new FormData();
+    formData.append('api_name', 'add_appeal');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('hid', hid);
+    formData.append('appeal_type', type);
+    return this.postAxiosAction(url, formData, true);
+  },
 }

@@ -22,13 +22,6 @@
       <un-delivery v-show="tabIndex===0" :tabHeight="tabHeight"/>
       <al-delivery v-if="tabIndex===1" :tabHeight="tabHeight"/>
     </div>
-    <div class="bottom-wrapper" ref="wawaBottom">
-      <div class="btn deliver"><img src="~/img/wawa/button_deliver.png" alt=""></div>
-      <div class="btn exchange">
-        <img src="~/img/wawa/button_exchange.png" alt="">
-        <p>(可兑换123456)</p>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -68,7 +61,7 @@
       },
       titleHeight(height) {
         if (Number(height)) {
-          this.tabHeight = -(height + this.$refs.wawaHeader.clientHeight + this.$refs.wawaTab.$el.clientHeight + this.$refs.wawaBottom.clientHeight);
+          this.tabHeight = -(height + this.$refs.wawaHeader.clientHeight + this.$refs.wawaTab.$el.clientHeight);
         }
       },
     },

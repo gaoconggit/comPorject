@@ -6,8 +6,8 @@
   <div class="system-wrapper">
     <title-bar class="title" title="设置"/>
     <group>
-      <x-switch prevent-default class="switch" title="背景音乐开关" v-model="bgmusic" @on-click="bgmusicChange"></x-switch>
-      <x-switch prevent-default class="switch" title="音效开关" v-model="sound" @on-click="yxChange"></x-switch>
+      <x-switch class="switch" title="背景音乐开关" prevent-default v-model="bgmusic"></x-switch>
+      <x-switch class="switch" title="音效开关" prevent-default v-model="sound"></x-switch>
     </group>
     <group>
       <cell class="switch" title="当前版本" value="2.2.0"></cell>
@@ -41,14 +41,12 @@
         console.log(this.userInfo);
         this.bgmusic = this.returnBool(this.userInfo.user_setting.bgmusic);
         this.sound = this.returnBool(this.userInfo.user_setting.yx);
-      }
-    },
-    methods: {
-      bgmusicChange(newVal, oldVal) {
-        console.log(newVal);
+      },
+      bgmusic() {
+        console.log(this.bgmusic);
         this.$vux.loading.show({text: '设置中...'})
         let type = 0;
-        if (newVal) {
+        if (this.bgmusic) {
           type = 1;
         } else {
           type = 2;
@@ -69,11 +67,11 @@
             showToast("设置失败，请稍后重试", "cancel")
           })
       },
-      yxChange(newVal, oldVal) {
-        console.log(newVal);
+      sound() {
+        console.log(this.bgmusic);
         this.$vux.loading.show({text: '设置中...'})
         let type = 0;
-        if (newVal) {
+        if (this.sound) {
           type = 1;
         } else {
           type = 2;
@@ -93,7 +91,9 @@
             this.$vux.loading.hide();
             showToast("设置失败，请稍后重试", "cancel")
           })
-      },
+      }
+    },
+    methods: {
       returnBool(num) {
         if (num == 1) {
           return true;

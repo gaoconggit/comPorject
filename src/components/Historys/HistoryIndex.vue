@@ -22,6 +22,7 @@
 </template>
 
 <script>
+  import {mapMutations} from "vuex";
   import TitleBar from "@/common/TitleBar";
   import WawaListItem from "@/common/WawaListItem";
   import ScrollView from "@/common/ScrollView";
@@ -40,9 +41,9 @@
       this._getHistoryList();
     },
     methods: {
+      ...mapMutations({set_history: "SET_HISTORY"}),
       async _getHistoryList(page = 1, isRefresh = false) {
         let result = await api.getHistoryList(page);
-        console.log(result);
         if (result.data.length) {
           if (isRefresh) {
             this.page = 1;
@@ -52,7 +53,6 @@
           } else {
             this.$refs.hsitoryScroll.reset();
           }
-          console.log('page', page);
           if (page === 1) {
             this.historyList = result.data;
           } else {
@@ -73,7 +73,8 @@
         }
       },
       clickItem(item) {
-        console.log(item);
+        this.set_history(item);
+        this.$router.push({path: `/history/${item.hid}`})
       },
       onPullDown() {
         this.page = 1;
