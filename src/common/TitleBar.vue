@@ -14,7 +14,7 @@
 ##
 -->
 <template>
-  <div class="header" :style="headerStyle" ref="titleHeader">
+  <div class="header" :class="{'white':!isWhiteBack}" :style="headerStyle" ref="titleHeader">
     <div class="header-left">
       <a class="header-back" :class="isWhiteBack?'white':'black'" @click.preventDefault @click="onClickBack"></a>
     </div>
@@ -76,6 +76,9 @@
     padding: 6px 0;
     box-sizing: border-box;
     background-color: @mainColor;
+    &.white {
+      background-color: @whiteColor;
+    }
 
     .header-title {
       flex: 1;

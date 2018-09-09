@@ -12,7 +12,6 @@ const RoomIndex = r => require([], () => r(require('../components/RoomFragment/R
 const FrameContent = r => require([], () => r(require('../common/FrameContent')));
 const VipContent = r => require([], () => r(require('../components/MineFragment/VipContent')));
 const MailIndex = r => require([], () => r(require('../components/MailFragment/MailIndex')));
-const UseGetDetailed = r => require([], () => r(require('../components/MineFragment/UseGetDetailed')));
 const SystemSet = r => require([], () => r(require('../components/MineFragment/SystemSet')));
 const Faq = r => require([], () => r(require('../components/MineFragment/Faq')));
 const CoinDetailed = r => require([], () => r(require('../components/MineFragment/CoinDetailed')));
@@ -20,6 +19,9 @@ const ScoreDetailed = r => require([], () => r(require('../components/MineFragme
 const WawaIndex = r => require([], () => r(require('../components/MyWawa/WawaIndex')));
 const HistoryIndex = r => require([], () => r(require('../components/Historys/HistoryIndex')));
 const HistoryDetail = r => require([], () => r(require('../components/Historys/HistoryDetail')));
+const DistriDetail = r => require([], () => r(require('../components/MyWawa/DistriDetail')));
+const AddressAll = r => require([], () => r(require('../components/MyWawa/AddressAll')));
+const FillAddress = r => require([], () => r(require('../components/MyWawa/FillAddress')));
 
 export default [{
   path: '/',
@@ -46,14 +48,15 @@ export default [{
     {path: '/details', name: '内容详情', component: FrameContent, meta: {keepAlive: true}},
     {path: '/vip', name: 'VIP会员俱乐部', component: VipContent},
     {path: '/email', name: '邮件中心', component: MailIndex},
-    {path: '/coindetail', name: '金币明细', component: UseGetDetailed},
-    {path: '/scoredetail', name: '积分明细', component: UseGetDetailed},
     {path: '/system', name: '系统设置 ', component: SystemSet},
-    {path: '/faq', name: '常见问题 ', component: Faq},
-    {path: '/coin', name: '金币明细 ', component: CoinDetailed},
-    {path: '/score', name: '积分明细 ', component: ScoreDetailed},
-    {path: '/mywawa', name: '我的娃娃 ', component: WawaIndex},
-    {path: '/history', name: '游戏历史 ', component: HistoryIndex},
-    {path: '/history/:id', name: '游戏申诉 ', component: HistoryDetail},
+    {path: '/faq', name: '常见问题', component: Faq},
+    {path: '/coin', name: '金币明细', component: CoinDetailed},
+    {path: '/score', name: '积分明细', component: ScoreDetailed},
+    {path: '/mywawa', name: '我的娃娃', component: WawaIndex},
+    {path: '/history', name: '游戏历史', component: HistoryIndex},
+    {path: '/history/:id', name: '游戏申诉', component: HistoryDetail},
+    {path: '/distri', name: '配送详情', component: DistriDetail},
+    {path: '/address', name: '收货地址', component: AddressAll},
+    {path: '/filladdress', name: '新增修改地址', component: FillAddress},
   ]
 }];

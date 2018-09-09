@@ -44,14 +44,20 @@
 <style scoped lang="less">
   @import "~assets/style/index.less";
 
-  .al-delivery {
+  .al-delivery {position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
     .empty-wrapper {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       .empty-icon {
-        margin-top: 100px;
         margin-bottom: 30px;
         width: 363px;
         height: 363px;

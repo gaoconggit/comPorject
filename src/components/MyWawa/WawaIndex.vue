@@ -141,30 +141,9 @@
       }
     }
     .list-wrapper {
+      position: relative;
       padding: 0 20px;
       flex: 1;
-    }
-    .bottom-wrapper {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      height: 120px;
-      .btn {
-        width: 316px;
-        height: 92px;
-        .img-spread;
-      }
-      .exchange {
-        position: relative;
-        p {
-          position: absolute;
-          bottom: 18px;
-          width: 100%;
-          text-align: center;
-          font-size: @subFontSize;
-          color: @whiteColor;
-        }
-      }
     }
   }
 </style>

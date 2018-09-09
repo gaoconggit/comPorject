@@ -99,7 +99,8 @@ const apiData = {
   usercode: "api/usercode/api",
   notice: "api/notice/api",
   set: "api/set/api",
-  record: "api/record/api"
+  record: "api/record/api",
+  addr: "api/addr/api"
 };
 
 export default {
@@ -155,7 +156,7 @@ export default {
       })
     })
   },
-  
+
   //发送心跳
   postOnline() {
     let url = `${apiData.usercode}`;
@@ -532,4 +533,50 @@ export default {
     formData.append('appeal_type', type);
     return this.postAxiosAction(url, formData, true);
   },
+  //获取地址列表
+  getAddressList() {
+    let url = apiData.addr;
+    let formData = new FormData();
+    formData.append('api_name', 'addr_list');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //删除地址
+  deleteAddress(id) {
+    let url = apiData.addr;
+    let formData = new FormData();
+    formData.append('api_name', 'addr_del');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('addr_id', id);
+    return this.postAxiosAction(url, formData);
+  },
+  //添加地址
+  addAddAddress(name, mobile, addr, addr_info) {
+    let url = apiData.addr;
+    let formData = new FormData();
+    formData.append('api_name', 'addr_add');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('username', name);
+    formData.append('mobile', mobile);
+    formData.append('addr', addr);
+    formData.append('addr_info', addr_info);
+    return this.postAxiosAction(url, formData);
+  },
+  //修改地址
+  fixAddress(id, name, mobile, addr, addr_info) {
+    let url = apiData.addr;
+    let formData = new FormData();
+    formData.append('api_name', 'addr_update');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('addr_id', id);
+    formData.append('username', name);
+    formData.append('mobile', mobile);
+    formData.append('addr', addr);
+    formData.append('addr_info', addr_info);
+    return this.postAxiosAction(url, formData);
+  }
 }

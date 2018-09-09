@@ -16,3 +16,8 @@ export const deleteSelect = ({commit, state}, item, index) => {
   console.log("newArr--:", newArr);
   commit(types.SET_IS_SELECT, newArr);
 };
+
+export const emptySelect = ({commit, state}) => {
+  console.log(1234)
+  commit(types.SET_IS_SELECT, []);
+};

@@ -11,3 +11,7 @@ export const userInfo = state => state.userInfo;
 export const history = state => state.historyDetail;
 
 export const isSelect = state => state.isSelect;
+
+export const selectAddress = state => state.selectAddress;
+
+export const editAddress = state => state.editAddress;

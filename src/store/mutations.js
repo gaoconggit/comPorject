@@ -18,8 +18,13 @@ const mutation = {
     state.historyDetail = history;
   },
   [types.SET_IS_SELECT](state, item) {
-    console.log("state item:", item);
     state.isSelect = item;
+  },
+  [types.SET_SELECT_ADDRESS](state,address){
+    state.selectAddress = address;
+  },
+  [types.SET_EDIT_ADDRESS](state,address){
+    state.editAddress = address;
   }
 };
 
