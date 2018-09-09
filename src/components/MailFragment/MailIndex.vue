@@ -11,6 +11,7 @@
         <tab-item @on-item-click="onItemClick(1)">系统消息</tab-item>
       </tab>
       <div class="mail-content">
+        <p class="more-max" ref="moreMax">消息过多，请自行删除</p>
         <scroller class="person-wrap" v-if="mailIndex===0" ref="personScroller"
                   :bounce="false" lock-x :scrollbarY="true" :height="personHeight + ''">
           <ul>
@@ -66,6 +67,7 @@
     name: "MainIndex",
     data() {
       return {
+        isOverMaxSize: false, //信息条数是否超出
         mailIndex: 0,         //默认选择
         personHeight: 0,      //高度
         noticeList: [],       //个人消息
@@ -87,9 +89,26 @@
       });
       this._getNoticeList();
     },
+    watch: {
+      isOverMaxSize() {
+        let moreMaxHeight = 0;
+        if (this.isOverMaxSize) {
+          moreMaxHeight = this.$refs.moreMax.clientHeight;
+        }
+        this.personHeight -= moreMaxHeight;
+      }
+    },
     methods: {
       async _getNoticeList() {
         let result = await api.getNoticeList();
+        if (result.data.length >= api.MAXSIZE) {
+          this.isOverMaxSize = true;
+          this.$refs.moreMax.style.display = 'block';
+        } else {
+          this.$refs.moreMax.style.display = 'none';
+        }
+        console.log(result.data);
+        result.data.pop();
         for (let i = 0; i < result.data.length; i++) {
           if (result.data[i].status == 0) {
             this.allRead = false;
@@ -192,6 +211,13 @@
         font-size: @subFontSize;
       }
       .mail-content {
+        .more-max {
+          display: none;
+          text-align: center;
+          color: @warnColor;
+          font-size: @subFontSize;
+          line-height: 50px;
+        }
         .person-wrap {
           background-color: @whiteColor;
         }

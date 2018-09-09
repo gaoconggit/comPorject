@@ -365,6 +365,7 @@ export default {
     formData.append('uid', state.uid);
     return this.postAxiosAction(url, formData);
   },
+  MAXSIZE: 31,
   //获取个人消息列表
   getNoticeList() {
     let url = `${apiData.notice}`;
@@ -372,7 +373,7 @@ export default {
     formData.append('api_name', 'user_notice_list');
     formData.append('token', state.token);
     formData.append('uid', state.uid);
-    formData.append('size', 31);
+    formData.append('size', this.MAXSIZE);
     return this.postAxiosAction(url, formData);
   },
   //获取个人消息详情
