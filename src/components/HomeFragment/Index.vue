@@ -29,11 +29,13 @@
         <img slot="icon-active" src="../../assets/img/index/earn_select.png">
       </tabbar-item>
     </tabbar>
+    <SignPopup v-if="isSign"/>
   </div>
 </template>
 
 <script>
-  import {Tabbar, TabbarItem} from 'vux'
+  import {Tabbar, TabbarItem} from 'vux';
+  import SignPopup from "../../components/SignGater/SignPopup";
 
   export default {
     name: "HomeFragment",
@@ -43,6 +45,7 @@
         tabIndex: 0,      //默认选中的底部菜单
         tabHeight: 48,
         tabZIndex: 10,
+        isSign: false,     //是否签到
       }
     },
     created() {
@@ -124,9 +127,9 @@
     },
 
     components: {
-      Tabbar, TabbarItem
+      Tabbar, TabbarItem, SignPopup
     }
-  }
+  };
 </script>
 
 <style lang="less">
