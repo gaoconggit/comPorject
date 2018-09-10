@@ -156,7 +156,7 @@ export default {
       })
     })
   },
-  
+
   //发送心跳
   postOnline() {
     let url = `${apiData.usercode}`;
@@ -338,8 +338,16 @@ export default {
     formData.append('size', 10);
     return this.postAxiosAction(url, formData);
   },
+  getNiudanRoomInfo(roomId) {
+    let url = `${apiData.public}Niudan.RoomInfo`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('room_id', roomId);
+    return this.postAxiosAction(url, formData);
+  },
   //获取扭蛋历史记录
-  getNiuDanHistory(roomId){
+  getNiuDanHistory(roomId) {
     let url = `${apiData.public}Niudan.roomHistory`;
     let formData = new FormData();
     formData.append('token', state.token);

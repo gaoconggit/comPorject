@@ -4,19 +4,19 @@
 
 <template>
   <div class="niu-room">
-    <title-bar class="title-bar" :title="$route.query.title" left="left" :style="'background-color:#07040D'"/>
-    <div class="niu-desc">
+    <title-bar class="title-bar" :title="$route.query.title" left="left" :style="'background-color:#07040D'"
+               @get-title-height="titleHeight"/>
+    <div class="niu-desc" ref="niuDesc">
       <div class="need-coin">
         <div class="icon"><img src="~/img/com_img/icon_coin.png" alt=""></div>
-        <p class="num">20/次</p>
+        <p class="num">{{niudanInfo.price}}/次</p>
       </div>
       <div class="my-coin">
         <p class="coin">{{showCoin(userInfo.coin)}}</p>
       </div>
     </div>
-    <frameset>
-      <frame :src="'../../../../static/dist/index.html' + $route.query.url" ref="iframe"/>
-    </frameset>
+    <iframe :src="'../../../../static/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
+    <p class="down-icon"></p>
     <div class="history-wrapper">
       <div class="niu-history">
         <p class="title">最近抓中记录</p>
@@ -32,6 +32,13 @@
         </ul>
       </div>
     </div>
+    <div class="img-wrapper">
+      <div class="niu-history img-desc">
+        <p class="title">扭蛋详情</p>
+        <img class="desc-img" v-for="(item,index) in niudanInfo.img" :key="index" :src="item" alt="">
+      </div>
+    </div>
+    <less-coin v-if="isLessCoin" @close-less-coin="closeLessCoin"/>
   </div>
 </template>
 
@@ -39,6 +46,7 @@
   import {mapGetters} from "vuex";
   import {Howl} from "howler";
   import TitleBar from "@/common/TitleBar";
+  import LessCoin from "../../RoomFragment/LessCoin";
   import {getTimeDate, showToast, updateBaseInfo} from "../../../common/util/Utils";
   import api from "../../../api/BaseService";
 
@@ -47,8 +55,11 @@
     data() {
       return {
         roomId: this.$route.query.id,
+        niudanInfo: [],
         historyList: [],                //扭蛋房间历史记录
-      }
+        topHeight: 0,                   //历史记录到顶部的高度
+        isLessCoin: false,              //金币不足
+      };
     },
     mounted() {
       if (!this.$route.query.id) {
@@ -58,31 +69,26 @@
         console.log(data);
         if (data === "Niudan") {
           console.log("扭到了");
-          //this._getNiuRoomInfo(this.props.room_id);
-          //DeviceEventEmitter.emit("mEventCoinChange", "扭中更新金币");
+          this._getNiudanRoomInfo();
           updateBaseInfo();
         } else if (data === "NiudanSuccess") {
-          //DeviceEventEmitter.emit("NiudanHistory", "扭中更新历史记录");
+          this._getNiuDanHistory();
         } else if (data === "NiudanError") {
           showToast("数据获取失败", 'cancel');
         } else if (data == "-100") {
-          //this.setState({noCoinWin: true});
+          this.isLessCoin = true;
           console.log("金币不足")
         } else if (data === "NiudanImage") {
           console.log("跳转到指定地方");
-          //this.scrollView.scrollTo({y: scaleSize(1234), animated: true})
+          window.scrollTo(0, this.topHeight);
         } else if (data === "NiudanVoice") {
-          /*if (this.state.isSound) {
-            this.playSound(soundStart);
-          }*/
-          this.niuClick.play();
-          console.log("播放声音");
+          if (this.userInfo.user_setting.yx == 1) {
+            this.niuClick.play();
+          }
         } else if (data === "NiudanSuccessVoice") {
-          /*if (this.state.isSound) {
-            this.playSound(soundSuccess);
-          }*/
-          this.niuSuccess.play();
-          console.log("播放扭到的声音");
+          if (this.userInfo.user_setting.yx == 1) {
+            this.niuSuccess.play();
+          }
         } else {
           //showToast(data, 'cancel');
         }
@@ -95,13 +101,24 @@
         src: [require('@/assets/video/niudan_success.mp3')],
         preload: true,
       });
+      this._getNiudanRoomInfo();
       this._getNiuDanHistory();
     },
     methods: {
+      //获取扭蛋房间信息
+      async _getNiudanRoomInfo() {
+        let result = await api.getNiudanRoomInfo(this.roomId);
+        console.log("扭蛋房间信息", result);
+        this.niudanInfo = result.data;
+      },
+      //获取扭蛋房间历史图
       async _getNiuDanHistory() {
         let result = await api.getNiuDanHistory(this.roomId);
         console.log(result);
         this.historyList = result.data;
+      },
+      closeLessCoin() {
+        this.isLessCoin = false;
       },
       /*金币展示*/
       showCoin(num) {
@@ -116,6 +133,9 @@
           return num;
         }
       },
+      titleHeight(height) {
+        this.topHeight = this.$refs.iframe.clientHeight + this.$refs.niuDesc.clientHeight - height;
+      },
       //格式化时间
       formatTime(num) {
         return getTimeDate(num);
@@ -124,7 +144,7 @@
     computed: {
       ...mapGetters(['userInfo'])
     },
-    components: {TitleBar}
+    components: {TitleBar, LessCoin}
   }
 </script>
 
@@ -181,14 +201,26 @@
         }
       }
     }
-    .history-wrapper {
+    .iframe {
+      margin-top: 20px;
+      width: 100%;
+      height: 1200px;
+    }
+    .down-icon {
+      margin: -20px auto 0;
+      width: 60px;
+      height: 60px;
+      transform: rotate(-90deg);
+      .background-url("~img/com_img/icon_bakc.png");
+    }
+    .history-wrapper, .img-wrapper {
       padding: 20px;
       background-color: @titleBackgroundColor;
       .niu-history {
         background-color: @whiteColor;
         border-radius: 40px;
         .title {
-          padding: 0 40px;
+          padding: 20px 40px;
           height: @titleHeight;
           line-height: @titleHeight;
           border-bottom: 2px solid #000;
@@ -197,6 +229,7 @@
           padding: 20px 30px;
         }
         .niu-item {
+          margin: 6px 0;
           display: flex;
           align-items: center;
           .icon {
@@ -210,6 +243,16 @@
           .info {
             flex: 1;
             .over-ellip;
+            p {
+              line-height: 44px;
+            }
+            .name {
+              .over-ellip;
+            }
+            .time {
+              font-size: @subFontSize;
+              color: @grayColor;
+            }
           }
           .get-icon {
             width: 90px;
@@ -217,6 +260,12 @@
             .img-spread;
           }
         }
+      }
+      .img-desc {
+        overflow: hidden;
+      }
+      .desc-img {
+        width: 100%;
       }
     }
   }
