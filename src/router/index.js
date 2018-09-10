@@ -22,6 +22,7 @@ const HistoryDetail = r => require([], () => r(require('../components/Historys/H
 const DistriDetail = r => require([], () => r(require('../components/MyWawa/DistriDetail')));
 const AddressAll = r => require([], () => r(require('../components/MyWawa/AddressAll')));
 const FillAddress = r => require([], () => r(require('../components/MyWawa/FillAddress')));
+const MailDetails = r => require([], () => r(require('../components/MyWawa/MailDetails')));
 
 export default [{
   path: '/',
@@ -58,5 +59,6 @@ export default [{
     {path: '/distri', name: '配送详情', component: DistriDetail},
     {path: '/address', name: '收货地址', component: AddressAll},
     {path: '/filladdress', name: '新增修改地址', component: FillAddress},
+    {path: '/maildetails', name: '订单详情', component: MailDetails},
   ]
 }];

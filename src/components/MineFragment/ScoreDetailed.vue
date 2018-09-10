@@ -22,7 +22,7 @@
           <p>{{item.title}}</p>
           <p class="time">{{formatTime(item.ctime)}}</p>
         </div>
-        <p class="type">{{item.change}}</p>
+        <p class="type" :class="{'active':addClass}">{{addClass?"+":""}}{{item.change}}</p>
       </li>
     </scroll-view>
     <div v-if="!scoreList.length">
@@ -103,6 +103,14 @@
       formatTime(num) {
         return getTimeDate(num);
       },
+      addClass(type) {
+        console.log(type);
+        let reg = /\-/;
+        if (type.test(reg)) {
+          return false
+        }
+        return true
+      }
     },
     computed: {
       ...mapGetters(['userInfo'])

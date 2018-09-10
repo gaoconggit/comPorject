@@ -25,21 +25,21 @@
     </div>
     <div class="introduce">
       <div class="price">
-        <p class="text">所需邮费：(3件以上包邮)</p>
-        <p class="num">{{postagePrice?`￥${postagePrice}`:"包邮"}}</p>
+        <p class="text">所需邮费：({{numFreeMail}}件以上包邮)</p>
+        <p class="num">{{!isFree?`￥${postagePrice}`:"包邮"}}</p>
       </div>
     </div>
     <div v-if="!isFree" class="select-type">
       <div class="postage">
-        <p class="num">付邮费12元</p>
+        <p class="num">{{mailInfo.charge_rule[0].name}}</p>
       </div>
       <div class="free-postage">
         <p class="num">免邮费福利</p>
-        <p class="num coin">买150金币即可包邮</p>
+        <p class="num coin">{{mailInfo.charge_rule[1].name}}</p>
       </div>
     </div>
     <div v-else class="select-type">
-      <div class="postage">
+      <div class="postage" @click="confirmMail">
         <p class="num">提交</p>
       </div>
     </div>
@@ -47,17 +47,21 @@
 </template>
 
 <script>
-  import {mapGetters} from "vuex";
+  import {mapGetters, mapActions} from "vuex";
   import {Scroller} from "vux";
   import TitleBar from "@/common/TitleBar";
   import WawaListItem from "@/common/WawaListItem";
+  import {selectAddress} from "../../store/getters";
+  import {showToast} from "../../common/util/Utils";
+  import api from "../../api/BaseService";
 
   export default {
     name: "distri-detail",
     data() {
       return {
-        isFree: true,        //是否包邮
+        isFree: false,        //是否包邮
         postagePrice: 0,      //邮费多少
+        numFreeMail: 3,       //几个包邮
       }
     },
     mounted() {
@@ -67,14 +71,38 @@
       if (!this.isSelect.length) {
         this.$router.back();
       }
+      console.log(this.mailInfo);
+      this.isFree = !this.mailInfo.mail_fee;
+      this.numFreeMail = this.mailInfo.mail_free_wawa_num;
+      this.postagePrice = parseInt(this.mailInfo.mail_fee_price) / 100;
     },
     methods: {
+      ...mapActions(['emptySelect']),
       gotoAddress() {
         this.$router.push({path: '/address'});
+      },
+      async confirmMail() {
+        if (this.selectAddress.addr_id) {
+          let arr = [];
+          this.isSelect.forEach((item) => {
+            arr.push(item.w_id);
+          });
+          let result = await api.getConfirmMail(this.selectAddress.addr_id, arr);
+          console.log(result);
+          if (result.code == 1) {
+            this.emptySelect();
+            this.$router.back();
+            showToast('邮寄成功，请前往我的订单中查看', 'success', 1000, '300px');
+          } else {
+            showToast(result.msg, 'cancel', 1000, '300px');
+          }
+        } else {
+          showToast('请选择收货地址')
+        }
       }
     },
     computed: {
-      ...mapGetters(['isSelect', 'selectAddress'])
+      ...mapGetters(['isSelect', 'selectAddress', 'mailInfo'])
     },
     components: {TitleBar, WawaListItem, Scroller}
   };

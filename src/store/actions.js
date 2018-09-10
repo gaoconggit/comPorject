@@ -10,14 +10,12 @@ export const addSelect = ({commit, state}, item) => {
   commit(types.SET_IS_SELECT, arr);
 };
 
-export const deleteSelect = ({commit, state}, item, index) => {
+export const deleteSelect = ({commit, state}, {item, index}) => {
   let newArr = state.isSelect.slice();
   newArr.splice(index, 1);
-  console.log("newArr--:", newArr);
   commit(types.SET_IS_SELECT, newArr);
 };
 
 export const emptySelect = ({commit, state}) => {
-  console.log(1234)
   commit(types.SET_IS_SELECT, []);
 };

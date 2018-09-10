@@ -12,6 +12,10 @@ export const SET_HISTORY = "SET_HISTORY";
 
 export const SET_IS_SELECT = "SET_IS_SELECT";
 
+export const SET_MAIL_INFO = "SET_MAIL_INFO";
+
 export const SET_SELECT_ADDRESS = "SET_SELECT_ADDRESS";
 
 export const SET_EDIT_ADDRESS = "SET_EDIT_ADDRESS";
+
+export const SET_MAIL_DETAILS = "SET_MAIL_DETAILS";

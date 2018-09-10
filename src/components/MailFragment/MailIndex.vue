@@ -104,11 +104,10 @@
         if (result.data.length >= api.MAXSIZE) {
           this.isOverMaxSize = true;
           this.$refs.moreMax.style.display = 'block';
+          result.data.pop();
         } else {
           this.$refs.moreMax.style.display = 'none';
         }
-        console.log(result.data);
-        result.data.pop();
         for (let i = 0; i < result.data.length; i++) {
           if (result.data[i].status == 0) {
             this.allRead = false;

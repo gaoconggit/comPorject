@@ -22,9 +22,19 @@
       <div class="btn deliver" @click="applyWawa"><img src="~/img/wawa/button_deliver.png" alt=""></div>
       <div class="btn exchange" @click="changeWawa">
         <img src="~/img/wawa/button_exchange.png" alt="">
-        <p>(可兑换{{selectCoin}})</p>
+        <p>(可兑换{{selectCoin}}金币)</p>
       </div>
     </div>
+    <transition-scale v-if="isChangeCoin">
+      <div class="change-wrapper">
+        <div class="box">
+          <div class="close" @click="changeCoinClose"><img src="~/img/com_img/close.png" alt=""></div>
+          <p class="title">确认兑换</p>
+          <p class="desc">可以兑换{{selectCoin}}个金币</p>
+          <div class="change-btn" @click="confirmChangeCoin"><p>确认兑换</p></div>
+        </div>
+      </div>
+    </transition-scale>
   </div>
 </template>
 
@@ -32,6 +42,7 @@
   import {mapGetters, mapMutations, mapActions} from "vuex";
   import ScrollView from "@/common/ScrollView";
   import WawaListItem from "@/common/WawaListItem";
+  import TransitionScale from "@/common/TransitionScale";
   import api from "../../api/BaseService";
   import {showToast} from "../../common/util/Utils";
 
@@ -44,6 +55,7 @@
         unList: [],         //未发货的列表
         page: 1,            //默认页码
         selectCoin: 0,      //选中可兑换的金币
+        isChangeCoin: false,  //娃娃兑换金币
       }
     },
     mounted() {
@@ -56,10 +68,12 @@
       },
       isSelect() {
         if (this.isSelect.length) {
+          this.selectCoin = 0;
           this.isSelect.forEach((item) => {
             this.selectCoin += parseInt(item.needcoin, 10);
           })
         } else {
+          this.selectCoin = 0;
           let arr = this.unList;
           arr.forEach((item) => {
             item.is_select = false;
@@ -68,7 +82,7 @@
       }
     },
     methods: {
-      ...mapMutations({set_isSelect: 'SET_IS_SELECT'}),
+      ...mapMutations({set_isSelect: 'SET_IS_SELECT', set_mailInfo: 'SET_MAIL_INFO'}),
       ...mapActions(['addSelect', 'deleteSelect', 'emptySelect']),
       async _getMyWawaList(page = 1, isRefresh = false) {
         let result = await api.getMyWawaList(page);
@@ -135,38 +149,101 @@
         this.unList = arr;
 
         let sIndex = this.isSelect.findIndex((val) => {
+          console.log("item.w_id:", item.w_id);
+          console.log("val.w_id:", val.w_id);
           return item.w_id === val.w_id;
         });
-        console.log("sIndex", sIndex);
         let data = {
           w_id: item.w_id,
           gifticon: item.gifticon,
           giftname: item.giftname,
           needcoin: item.needcoin,
+          is_receive: item.is_receive,
           is_newbee: item.is_newbee,
           ctime: item.ctime
         };
-        if (sIndex < 0) {
+        if (sIndex == -1) {
           this.addSelect(data);
         } else {
-          this.deleteSelect(data, sIndex);
+          this.deleteSelect({item: data, index: sIndex});
         }
       },
       //申请发货
       applyWawa() {
         if (this.isSelect.length) {
-          this.$router.push({path: '/distri'});
+          console.log(this.isSelect);
+          let arr = [];
+          this.isSelect.forEach((item) => {
+            arr.push(item.w_id);
+          })
+          console.log(arr.join());
+          api.getWawaMail(arr.join())
+            .then((res) => {
+              console.log(res);
+              if (res.code == 1) {
+                this.set_mailInfo(res.data);
+                this.$router.push({path: '/distri'});
+              } else {
+                showToast(res.msg, 'cancel', 1000, '300px');
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            })
         } else {
           showToast('请选择你要申请发货的娃娃！', 'text', 1000, '300px');
         }
       },
       //兑换娃娃
       changeWawa() {
-        if (this.selectCoin) {
-          console.log('兑换娃娃')
+        this.isSelect.forEach((item) => {
+          console.log(item);
+          if (parseInt(item.is_newbee)) {
+            showToast(item.giftname + '不能兑换金币', 'cancel', 2000, '300px');
+            return false;
+          }
+          if (!parseInt(item.needcoin)) {
+            showToast(item.giftname + '为活动娃娃，不能兑换金币', 'cancel', 2000, '300px');
+            return false;
+          }
+        })
+        let isNewbee = true;
+        let isNeedcoin = true;
+        isNewbee = this.isSelect.every((item) => {
+          if (parseInt(item.is_newbee)) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        isNeedcoin = this.isSelect.every((item) => {
+          if (!parseInt(item.needcoin)) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+        if (isNeedcoin && isNewbee && this.selectCoin) {
+          this.isChangeCoin = true;
         } else {
-          console.log('不能兑换娃娃')
+          showToast('请选择需要兑换的娃娃');
         }
+      },
+      async confirmChangeCoin() {
+        console.log(1234)
+        let arr = this.isSelect;
+        let result = await api.getWawaConvertCoin(arr.join());
+        if (result.code == 1) {
+          showToast(result.msg, 'success');
+        } else {
+          showToast(result.msg, 'cancel')
+        }
+        this.isChangeCoin = false;
+        this.page = 1;
+        this._getMyWawaList(1, true);
+      },
+      changeCoinClose() {
+        this.isChangeCoin = false
       }
     },
     computed: {
@@ -175,7 +252,7 @@
     destroyed() {
 
     },
-    components: {ScrollView, WawaListItem}
+    components: {ScrollView, WawaListItem, TransitionScale}
   }
 </script>
 
@@ -229,6 +306,57 @@
           font-size: @subFontSize;
           color: @whiteColor;
         }
+      }
+    }
+    .change-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-color: @bgOpacity;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .box {
+        position: relative;
+        width: 564px;
+        height: 464px;
+        .background-url("~img/wawa/exchange_pop_bg.png")
+      }
+      .close {
+        position: absolute;
+        top: -10px;
+        right: 0;
+        width: 60px;
+        height: 60px;
+        .img-spread;
+      }
+      .title {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+      .desc {
+        position: absolute;
+        top: 160px;
+        left: 40px;
+        right: 40px;
+        text-align: center;
+      }
+      .change-btn {
+        position: absolute;
+        left: 50%;
+        bottom: -50px;
+        transform: translateX(-50%);
+        width: 284px;
+        height: 128px;
+        line-height: 96px;
+        text-align: center;
+        color: @whiteColor;
+        .background-url("~img/wawa/btn_bg.png")
       }
     }
   }

@@ -20,11 +20,17 @@ const mutation = {
   [types.SET_IS_SELECT](state, item) {
     state.isSelect = item;
   },
-  [types.SET_SELECT_ADDRESS](state,address){
+  [types.SET_SELECT_ADDRESS](state, address) {
     state.selectAddress = address;
   },
-  [types.SET_EDIT_ADDRESS](state,address){
+  [types.SET_EDIT_ADDRESS](state, address) {
     state.editAddress = address;
+  },
+  [types.SET_MAIL_INFO](state, info) {
+    state.mailInfo = info;
+  },
+  [types.SET_MAIL_DETAILS](state, details) {
+    state.mailDetails = details
   }
 };
 

@@ -156,7 +156,7 @@ export default {
       })
     })
   },
-
+  
   //发送心跳
   postOnline() {
     let url = `${apiData.usercode}`;
@@ -501,6 +501,37 @@ export default {
     formData.append('page', page);
     formData.append('size', 10);
     return this.postAxiosAction(url, formData);
+  },
+  //兑换娃娃
+  getWawaConvertCoin(list) {
+    let url = `${apiData.public}Wawa.convertCoin`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('w_list', list);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //邮寄娃娃
+  getWawaMail(list) {
+    let url = `${apiData.public}Wawa.mail`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('w_list', list);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //确认邮寄娃娃
+  getConfirmMail(addrId, list, chargeId = null, payType = null, remark = "邮寄备注") {
+    let url = `${apiData.public}Wawa.confirmMail`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('addr_id', addrId);
+    formData.append('remark', remark);
+    formData.append('w_list', list);
+    formData.append('charge_id', chargeId);
+    formData.append('pay_type', payType);
+    return this.postAxiosAction(url, formData, true);
   },
   //获取游戏历史记录
   getHistoryList(page = 1) {

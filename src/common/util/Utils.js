@@ -15,7 +15,7 @@ function Zerofill(num) {
 }
 
 /*封装toast*/
-export const showToast = (text, type = 'text', time = 2000, width = '7.6em', position = 'middle') => {
+export const showToast = (text, type = 'text', time = 2000, width = '200px', position = 'middle') => {
   vm.$vux.toast.show({
     type,
     position,

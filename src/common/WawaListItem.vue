@@ -6,7 +6,7 @@
   <div>
     <div class="item-wrap" v-for="(item,index) in data" :key="item.w_id||item.hid" @click="clickItem(item,index)">
       <slot name="left" :item="item"></slot>
-      <div class="icon"><img v-lazy="item.gifticon||item.img" alt=""></div>
+      <div class="icon"><img v-lazy="item.gifticon||item.img||item.icon" alt=""></div>
       <div class="info">
         <p class="name">{{item.giftname||item.name}}</p>
         <p class="time">{{formatTime(item.ctime)}}</p>
@@ -68,6 +68,7 @@
       }
     }
     .expire-time {
+      padding-right: 16px;
       font-size: @subFontSize;
       color: #000;
       &.active {
