@@ -25,7 +25,7 @@
     </div>
     <div class="mine-item">
       <div class="item" @click="mineItem(2)">
-        <p class="item-icon max"><img src="~/img/mine/icon_coin.png" alt=""></p>
+        <p class="item-icon max"><img src="~/img/com_img/icon_coin.png" alt=""></p>
         <p class="item-title">我的金币 <span class="num">{{userInfo.coin}}</span></p>
         <p class="item-text">充值</p>
       </div>

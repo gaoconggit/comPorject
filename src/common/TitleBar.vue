@@ -18,7 +18,8 @@
     <div class="header-left">
       <a class="header-back" :class="isWhiteBack?'white':'black'" @click.preventDefault @click="onClickBack"></a>
     </div>
-    <h1 class="header-title" :style="isWhiteBack?'color:#FFF':'color:#000'" @click="$emit('on-click-title')">
+    <h1 class="header-title" :class="{'left':left === 'left'}" :style="isWhiteBack?'color:#FFF':'color:#000'"
+        @click="$emit('on-click-title')">
       <span>{{title}}</span>
     </h1>
     <slot name="right"></slot>
@@ -36,6 +37,10 @@
       preventGoBack: {
         type: Boolean,
         default: false
+      },
+      left: {
+        type: String,
+        default: 'center'
       },
       headerStyle: String,
       isWhiteBack: {
@@ -92,6 +97,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      &.left {
+        padding-left: 20px;
+        text-align: left;
+      }
       span {
         margin-right: 60px;
       }

@@ -38,10 +38,12 @@
       joinNiuDan(item) {
         console.log(item.name);
         this.$router.push({
-          path: '/details',
+          path: '/niu',
           query: {
             title: item.name,
-            url: `${baseUrl}/niudan/index.php?base_url=${baseUrl}api/public/&token=${this.userInfo.token}&uid=${this.userInfo.id}&room_id=${item.id}`
+            id: item.id,
+            // url: `${baseUrl}niudan/index.php?base_url=${baseUrl}api/public/&token=${this.userInfo.token}&uid=${this.userInfo.id}&room_id=${item.id}`
+            url: `?base_url=${baseUrl}api/public/&token=${this.userInfo.token}&uid=${this.userInfo.id}&room_id=${item.id}`
           },
           meta: {keepAlive: false}
         })

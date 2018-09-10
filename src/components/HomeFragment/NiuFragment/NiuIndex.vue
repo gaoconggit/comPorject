@@ -35,7 +35,6 @@
     },
     mounted() {
       this._getNiudanList();
-      console.log(this.tabHeight, this.$refs.niuHeader.clientHeight);
       this.$nextTick(() => {
         this.scrollBottom = -(this.tabHeight + this.$refs.niuHeader.clientHeight);
       });
@@ -88,6 +87,9 @@
       changTab() {
         this.$emit("changeTab", 0);
       }
+    },
+    destroyed(){
+      //this._getNiudanList();
     },
     components: {
       ScorllView,

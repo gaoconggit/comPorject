@@ -338,14 +338,16 @@ export default {
     formData.append('size', 10);
     return this.postAxiosAction(url, formData);
   },
-  //进入扭蛋房间
-  getJoinNiudan(roomId) {
-    let url = `${apiData.public}Niudan.roomInfo`;
+  //获取扭蛋历史记录
+  getNiuDanHistory(roomId){
+    let url = `${apiData.public}Niudan.roomHistory`;
     let formData = new FormData();
     formData.append('token', state.token);
     formData.append('uid', state.uid);
     formData.append('room_id', roomId);
-    return this.postAxiosAction(url, formData, true);
+    formData.append('page', 1);
+    formData.append('size', 10);
+    return this.postAxiosAction(url, formData);
   },
   //获取游戏中心列表
   getGameCenterList(page = 1) {

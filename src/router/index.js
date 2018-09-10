@@ -4,6 +4,7 @@ const Index = r => require([], () => r(require('../components/HomeFragment/Index
 const HomeIndex = r => require([], () => r(require('../components/HomeFragment/HomeIndex/HomeIndex')));
 const XzwwIndex = r => require([], () => r(require('../components/HomeFragment/XzwwFragment/XzwwIndex')));
 const NiuIndex = r => require([], () => r(require('../components/HomeFragment/NiuFragment/NiuIndex')));
+const NiuDanRoom = r => require([], () => r(require('../components/HomeFragment/NiuFragment/NiuDanRoom')));
 const ScoreIndex = r => require([], () => r(require('../components/HomeFragment/ScoreFragment/ScoreIndex')));
 const EarnIndex = r => require([], () => r(require('../components/HomeFragment/EarnFragment/EarnIndex')));
 const MineIndex = r => require([], () => r(require('../components/MineFragment/MineIndex')));
@@ -38,7 +39,7 @@ export default [{
         {path: '/home', redirect: '/home/index'},
         {path: '/home/index', name: '首页', component: HomeIndex, meta: {keepAlive: true}},
         {path: '/home/zxww', name: '旋转抓娃娃', component: XzwwIndex},
-        {path: '/home/niu', name: '扭蛋', component: NiuIndex, meta: {keepAlive: true}},
+        {path: '/home/niu', name: '扭蛋', component: NiuIndex},
         {path: '/home/score', name: '积分商城', component: ScoreIndex},
         {path: '/home/earn', name: '游戏中心', component: EarnIndex, meta: {keepAlive: true}},
       ]
@@ -46,6 +47,7 @@ export default [{
     {path: '/my', name: '我的中心', component: MineIndex, meta: {keepAlive: true}},
     {path: '/recharge', name: '充值中心', component: CoinsIndex, meta: {keepAlive: true}},
     {path: '/room', name: '娃娃机房间', component: RoomIndex},
+    {path: '/niu', name: '扭蛋房间', component: NiuDanRoom},
     {path: '/details', name: '内容详情', component: FrameContent, meta: {keepAlive: true}},
     {path: '/vip', name: 'VIP会员俱乐部', component: VipContent},
     {path: '/email', name: '邮件中心', component: MailIndex},
