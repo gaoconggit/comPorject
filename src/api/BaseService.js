@@ -156,7 +156,7 @@ export default {
       })
     })
   },
-
+  
   //发送心跳
   postOnline() {
     let url = `${apiData.usercode}`;
@@ -169,6 +169,14 @@ export default {
   //获取个人信息
   getBaseInfo() {
     let url = `${apiData.public}User.getBaseInfo`;
+    let formData = new FormData();
+    formData.append("token", state.token);
+    formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取签到信息
+  getSignInfo() {
+    let url = `${apiData.public}Home.getSignIn`;
     let formData = new FormData();
     formData.append("token", state.token);
     formData.append("uid", state.uid);

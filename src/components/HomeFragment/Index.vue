@@ -29,13 +29,14 @@
         <img slot="icon-active" src="../../assets/img/index/earn_select.png">
       </tabbar-item>
     </tabbar>
-    <SignPopup v-if="isSign"/>
+    <SignPopup v-if="isSign" :data="signData"/>
   </div>
 </template>
 
 <script>
   import {Tabbar, TabbarItem} from 'vux';
   import SignPopup from "../../components/SignGater/SignPopup";
+  import api from "../../api/BaseService";
 
   export default {
     name: "HomeFragment",
@@ -45,7 +46,8 @@
         tabIndex: 0,      //默认选中的底部菜单
         tabHeight: 48,
         tabZIndex: 10,
-        isSign: false,     //是否签到
+        isSign: true,     //是否签到
+        signData: [],     //签到信息
       }
     },
     created() {
@@ -96,7 +98,16 @@
         }
       }
     },
+    mounted() {
+      //this._getSignInfo();
+    },
     methods: {
+      //签到信息
+      async _getSignInfo() {
+        let result = await api.getSignInfo();
+        console.log("getSignInfo", result);
+        this.signData = result.data;
+      },
       onIndexChange(index) {
         this.tabIndex = index;
       },
