@@ -62,6 +62,7 @@
   import ScrollView from "@/common/ScrollView";
   import SwiperList from "@/common/SwiperList";
   import api from "api/BaseService";
+  import {clickBannerItem} from "../../../common/util/Utils";
 
   export default {
     name: "HomeIndex",
@@ -199,18 +200,10 @@
       },
       /*点击banner*/
       swiperItem(banner) {
-        if (banner.slide_url !== "" || banner.slide_content !== "") {
-          //window.location.href = slide_url;
-          this.$router.push({path: '/details', query: {url: banner.slide_url}})
-        } else {
-          switch (banner.jump_target) {
-            case "store":
-              this.$router.push({path: "/recharge"});
-              break;
-            case "niudan":
-              this.$emit("changeTab", 2);
-              break;
-          }
+        let gotoTab = clickBannerItem(this, banner);
+        console.log(gotoTab);
+        if (gotoTab != null) {
+          this.$emit('change-tab', gotoTab);
         }
       },
       /*Vip等级展示图片*/

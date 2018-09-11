@@ -182,6 +182,49 @@ export default {
     formData.append("uid", state.uid);
     return this.postAxiosAction(url, formData);
   },
+  //签到
+  postSign() {
+    let url = `${apiData.public}Home.signIn`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //获取vip卡签到
+  getVipCard() {
+    let url = apiData.mywawa;
+    let formData = new FormData();
+    formData.append('api_name', 'get_vip_sign_in');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //VIP卡签到
+  postVipCardSign(id) {
+    let url = apiData.mywawa;
+    let formData = new FormData();
+    formData.append('api_name', 'vip_sign_in');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('vip_card_id', id);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //获取公告信息
+  getPublicNotice() {
+    let url = `${apiData.public}Home.publicNotice`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取新手场房间信息
+  getNewBeeRoomInfo() {
+    let url = `${apiData.public}Home.newbeeRoomInfo`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData, true);
+  },
   //获取banner
   getBanner() {
     let url = `${apiData.public}Home.getHot`;
@@ -228,6 +271,14 @@ export default {
     let formData = new FormData();
     formData.append("token", state.token);
     formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取特惠礼包信息
+  getGiftBagInfo() {
+    let url = `${apiData.public}Record.storePromotionInfo`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
     return this.postAxiosAction(url, formData);
   },
   //获取进入房间信息

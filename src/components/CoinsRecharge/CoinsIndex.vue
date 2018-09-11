@@ -50,6 +50,7 @@
         </div>
       </div>
     </div>
+    <promotion-bag v-if="isShowGiftBag" @close-promotion="closePromotion"/>
   </div>
 </template>
 
@@ -57,6 +58,7 @@
   import {mapGetters} from "vuex";
   import {Scroller, Grid, GridItem} from "vux";
   import TitleBar from "@/common/TitleBar";
+  import PromotionBag from "./PromotionBag";
   import api from "../../api/BaseService";
   import {showToast} from "../../common/util/Utils";
 
@@ -67,9 +69,15 @@
         vipCard: [],          //充值卡的规则
         charges: [],   //充值列表规则
         selectIndex: 0,       //默认选中
-      }
+        isShowGiftBag: false, //是否展示特惠礼包
+      };
     },
     mounted() {
+      if (parseInt(this.userInfo.newbee_promotion)) {
+        setTimeout(() => {
+          this.isShowGiftBag = true;
+        }, 500)
+      }
       this._getRechargeRuleList();
     },
     methods: {
@@ -91,20 +99,16 @@
       },
       gotoVip() {
         this.$router.push({path: '/vip'});
+      },
+      closePromotion() {
+        this.isShowGiftBag = false;
       }
-    },
-    watch: {
-      /*$route() {
-        if (this.$route.path === '/recharge') {
-          this._getRechargeRuleList();
-        }
-      }*/
     },
     computed: {
       ...mapGetters(['userInfo']),
     },
     components: {
-      TitleBar, Scroller, Grid, GridItem
+      TitleBar, Scroller, Grid, GridItem, PromotionBag
     }
   };
 </script>
@@ -174,9 +178,11 @@
           }
           .return-coin {
             top: 76px;
-            left: 108px;
-            font-size: @mainFontSize;
+            left: 110px;
+            width: 100px;
+            font-size: @subFontSize;
             color: @warnColor;
+            text-align: center;
           }
           .money {
             top: 126px;

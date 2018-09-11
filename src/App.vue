@@ -28,8 +28,8 @@
       }),
       _getToken() {
         let _this = this;
-        let token = window.localStorage.getItem("token") || "52a315cc24972dfa29b109b244b15b2c";
-        let uid = window.localStorage.getItem("uid") || "100177";
+        let token = window.localStorage.getItem("token") || "fe36befc803b9db17928bfcfd10e0a4e";
+        let uid = window.localStorage.getItem("uid") || "100184";
         this.set_token(token);
         this.set_uid(uid);
         setTimeout(() => {

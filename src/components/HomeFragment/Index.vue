@@ -1,7 +1,7 @@
 <template>
   <div class="home-wrapper">
     <keep-alive>
-      <router-view @changeTab="changeTab" @changeZIndex="changeZIndex" :tabHeight="tabHeight"></router-view>
+      <router-view @change-tab="changeTab" @changeZIndex="changeZIndex" :tabHeight="tabHeight"></router-view>
     </keep-alive>
     <tabbar class="tab_bar"
             :style="{zIndex: tabZIndex}"
@@ -29,14 +29,22 @@
         <img slot="icon-active" src="../../assets/img/index/earn_select.png">
       </tabbar-item>
     </tabbar>
-    <SignPopup v-if="isSign" :data="signData"/>
+    <SignPopup v-if="isSign" :data="signData" @sign-complete="signComplete"/>
+    <SignWeek v-if="isSignCard" :data="signCardInfo" @close-sign-card="closeSignCard"/>
+    <public-notice v-if="isPublicNotice" :data="publicNoticeInfo" @close-public="closePublic" @change-tab="changeTab"/>
+    <new-bee-room v-if="isNewBee" @close-new-bee="closeNewBee"/>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import {Tabbar, TabbarItem} from 'vux';
   import SignPopup from "../../components/SignGater/SignPopup";
+  import SignWeek from "../../components/SignGater/SignWeek";
+  import PublicNotice from "../../components/SignGater/PublicNotice";
+  import NewBeeRoom from "../../components/SignGater/NewBeeRoom";
   import api from "../../api/BaseService";
+  import {showToast} from "../../common/util/Utils";
 
   export default {
     name: "HomeFragment",
@@ -45,10 +53,16 @@
         back: false,
         tabIndex: 0,      //默认选中的底部菜单
         tabHeight: 48,
-        tabZIndex: 10,
-        isSign: true,     //是否签到
+        tabZIndex: 2,
+        isSign: false,     //是否签到
         signData: [],     //签到信息
-      }
+        isSignCard: false, //是否周卡签到
+        signCardInfo: [],     //周卡签到
+        isPublicNotice: false,  //公告展示
+        publicNoticeInfo: [],   //公告展示
+        isNewBee: false,        //是否前往新手场房间
+        newBeeData: [],         //是否前往新手场房间
+      };
     },
     created() {
       console.log("created route:", this.$route);
@@ -99,15 +113,65 @@
       }
     },
     mounted() {
-      //this._getSignInfo();
+      if (this.isOneShow) {
+        this._getSignInfo();
+      }
     },
     methods: {
       //签到信息
       async _getSignInfo() {
         let result = await api.getSignInfo();
         console.log("getSignInfo", result);
+        if (!result.data.has_sign_in) {
+          this.isSign = true;
+        } else {
+          this._getVipCard();
+        }
         this.signData = result.data;
       },
+      async _getVipCard() {
+        let result = await api.getVipCard();
+        console.log("vip卡信息", result);
+        if (result.data.vip_card_list.length) {
+          let res = result.data.vip_card_list.some((item) => {
+            if (!item.accepted) {
+              return true;
+            }
+            return false;
+          });
+          console.log("res:", res);
+          if (res) {
+            for (let i = 0; i < result.data.vip_card_list.length; i++) {
+              if (!result.data.vip_card_list[i].accepted) {
+                this.signCardInfo = result.data.vip_card_list[i];
+                break;
+              }
+            }
+            this.isSignCard = true;
+          } else {
+            this._getPublicNotice();
+          }
+        } else {
+          this.isSignCard = false;
+          if (parseInt(this.userInfo.to_newbee_room)) {
+            this.isNewBee = true;
+          } else {
+            this._getPublicNotice();
+          }
+        }
+      },
+      async _getPublicNotice() {
+        let result = await api.getPublicNotice();
+        console.log("公告信息", result);
+        if (result.data.pic) {
+          this.isPublicNotice = true;
+          this.publicNoticeInfo = result.data;
+        } else {
+          this.$store.commit('isOneShow', false);
+          this.isPublicNotice = false;
+        }
+      },
+      //获取新手场房间信息
       onIndexChange(index) {
         this.tabIndex = index;
       },
@@ -134,11 +198,34 @@
       },
       changeZIndex(zIndex) {
         this.tabZIndex = zIndex;
+      },
+      signComplete() {
+        this.isSign = false;
+        console.log("签到完成");
+        setTimeout(() => {
+          this._getVipCard();
+        }, 500);
+      },
+      closeSignCard() {
+        this.isSignCard = false;
+        setTimeout(() => {
+          this._getVipCard();
+        }, 500)
+      },
+      closePublic() {
+        this.$store.commit('isOneShow', false);
+        this.isPublicNotice = false;
+      },
+      closeNewBee() {
+        this.$router.push({path: '/recharge'})
+        this.isNewBee = false;
       }
     },
-
+    computed: {
+      ...mapGetters(['isOneShow', 'userInfo'])
+    },
     components: {
-      Tabbar, TabbarItem, SignPopup
+      Tabbar, TabbarItem, SignPopup, SignWeek, PublicNotice, NewBeeRoom
     }
   };
 </script>

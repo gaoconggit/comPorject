@@ -45,7 +45,7 @@ export default [{
       ]
     },// 如果此路由需要微信授权请设置为true,默认为false
     {path: '/my', name: '我的中心', component: MineIndex, meta: {keepAlive: true}},
-    {path: '/recharge', name: '充值中心', component: CoinsIndex, meta: {keepAlive: true}},
+    {path: '/recharge', name: '充值中心', component: CoinsIndex},
     {path: '/room', name: '娃娃机房间', component: RoomIndex},
     {path: '/niu', name: '扭蛋房间', component: NiuDanRoom},
     {path: '/details', name: '内容详情', component: FrameContent, meta: {keepAlive: true}},

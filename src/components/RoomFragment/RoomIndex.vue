@@ -220,10 +220,11 @@
       };
     },
     created() {
-      if (!this.$route.query.id) {
+      if (!this.$route.query.id || !this.$route.query.roomId) {
         this.$router.push({path: "/"});
       } else {
         this.wawaId = this.$route.query.id;
+        this.roomId = this.$route.query.roomId;
         this._getBaseInfo();
         this._getJoinRoom();
         this._getQuickMessage();

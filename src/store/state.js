@@ -13,6 +13,7 @@ const state = {
   selectAddress: [],        //选中的地址
   editAddress: {},          //修改地址
   mailDetails: {},          //邮寄娃娃详情
+  isOneShow: true,          //签到，公告只展示一次
 };
 
 export default state;

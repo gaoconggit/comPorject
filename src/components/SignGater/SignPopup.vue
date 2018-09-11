@@ -4,7 +4,7 @@
 
 <template>
   <transition-scale>
-    <div class="sign-wrapper" style="z-index: 20;">
+    <div class="sign-wrapper" style="z-index: 3;">
       <div class="box">
         <div class="header-title"><img src="~/img/sign/title_sign.png" alt=""></div>
         <div class="content">
@@ -24,6 +24,8 @@
 
 <script>
   import TransitionScale from "@/common/TransitionScale";
+  import {showToast} from "../../common/util/Utils";
+  import api from "../../api/BaseService";
 
   export default {
     name: "sign-popup",
@@ -43,19 +45,49 @@
       }
     },
     mounted() {
-      this.vipLevel = this.data.is_level;
+      this.vipLevel = parseInt(this.data.vip_level);
       let list = this.data.reward_list;
       let arr = this.signArray;
-      console.log(list, arr);
       arr.forEach((v, i) => {
-        console.log(v.add_gold)
-        console.log(i)
-        //v.add_gold = list[i].coin;
+        if (i < this.data.cont_days - 1) {
+          v.complete = 1;
+        } else {
+          v.complete = 0;
+        }
+        v.add_gold = list[i].coin;
       });
+      this.signArray = arr;
     },
     methods: {
-      receiveSign() {
+      //签到信息
+      async _getSignInfo() {
+        let result = await api.getSignInfo();
+        console.log("getSignInfo", result);
+        let arr = this.signArray;
+        arr.forEach((v, i) => {
+          if (result.data.has_sign_in) {
+            if (i < this.data.cont_days) {
+              v.complete = 1;
+            } else {
+              v.complete = 0;
+            }
+          }
+        });
+        this.signArray = arr;
+      },
+      async receiveSign() {
         console.log("领取签到");
+        let result = await api.postSign();
+        if (result.code == 1) {
+          console.log(result);
+          showToast(result.msg + '领取' + result.data.coin + '金币', 'success');
+          this._getSignInfo();
+        } else {
+          showToast(result.msg, 'cancel');
+        }
+        setTimeout(() => {
+          this.$emit('sign-complete');
+        }, 2000);
       }
     },
     components: {TransitionScale}

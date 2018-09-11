@@ -31,6 +31,9 @@ const mutation = {
   },
   [types.SET_MAIL_DETAILS](state, details) {
     state.mailDetails = details
+  },
+  isOneShow(state) {
+    state.isOneShow = false;
   }
 };
 

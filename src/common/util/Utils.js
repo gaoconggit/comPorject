@@ -95,3 +95,50 @@ export function formatSeconds(value) {
     return result;
   }
 };
+
+//点击banner
+export function clickBannerItem(_this, item) {
+  let changeTab = null;
+  if (item.slide_url !== "" || item.slide_content !== "") {
+    //window.location.href = slide_url;
+    _this.$router.push({path: '/details', query: {url: item.slide_url}})
+  } else {
+    switch (item.jump_target) {
+      case "store":
+        //充值中心
+        _this.$router.push({path: "/recharge"});
+        break;
+      case "share":
+        //我的邀请码
+        // _this.$router.push({path: "/recharge"});
+        break;
+      case "vip":
+        //vip中心
+        // _this.$router.push({path: "/recharge"});
+        break;
+      case "faq":
+        //常见问题
+        // _this.$router.push({path: "/recharge"});
+        break;
+      case "niudan":
+        //扭蛋
+        changeTab = 2;
+        break;
+      case "score_store":
+        //积分商城
+        changeTab = 3;
+        break;
+      case "xzww":
+        //旋转抓娃娃
+        changeTab = 1;
+        break;
+      case "game_content":
+        //游戏中心
+        changeTab = 4;
+        break;
+    }
+  }
+  if (changeTab != null) {
+    return changeTab;
+  }
+}
