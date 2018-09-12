@@ -14,7 +14,7 @@
 <script>
   import {mapMutations} from "vuex";
   import api from "api/BaseService";
-  import {getCookie, getStore, setStore} from "./common/util/ImUtils";
+  import {delCookie, getCookie, getStore, removeStore, setStore} from "./common/util/ImUtils";
 
   export default {
     name: "App",
@@ -38,9 +38,15 @@
         }, 60000)
       },
       async _getBaseInfo() {
-        let result = await api.getBaseInfo();
-        window.localStorage.setItem("wawaji_userInfo", JSON.stringify(result.data));
-        this.set_userInfo(result.data);
+        let result = await api.getBaseInfo(true);
+        if (result.code == 1) {
+          this.set_userInfo(result.data);
+        } else {
+          console.log("获取个人信息", result);
+          delCookie('wawaji_code');
+          delCookie('wawaji_token');
+          removeStore('wawaji_userInfo')
+        }
       },
       //发送心跳
       _postOnline() {

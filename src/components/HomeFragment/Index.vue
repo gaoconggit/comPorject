@@ -121,7 +121,6 @@
       //签到信息
       async _getSignInfo() {
         let result = await api.getSignInfo();
-        console.log("getSignInfo", result);
         if (!result.data.has_sign_in) {
           this.isSign = true;
         } else {
@@ -131,7 +130,6 @@
       },
       async _getVipCard() {
         let result = await api.getVipCard();
-        console.log("vip卡信息", result);
         if (result.data.vip_card_list.length) {
           let res = result.data.vip_card_list.some((item) => {
             if (!item.accepted) {
@@ -154,7 +152,9 @@
         } else {
           this.isSignCard = false;
           if (parseInt(this.userInfo.to_newbee_room)) {
+            // if (this.isOneShow) {
             this.isNewBee = true;
+            // }
           } else {
             this._getPublicNotice();
           }
@@ -162,7 +162,6 @@
       },
       async _getPublicNotice() {
         let result = await api.getPublicNotice();
-        console.log("公告信息", result);
         if (result.data.pic) {
           this.isPublicNotice = true;
           this.publicNoticeInfo = result.data;
@@ -217,7 +216,8 @@
         this.isPublicNotice = false;
       },
       closeNewBee() {
-        this.$router.push({path: '/recharge'})
+        this.$store.commit('isOneShow', false);
+        this.$router.push({path: '/recharge'});
         this.isNewBee = false;
       }
     },

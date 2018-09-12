@@ -23,7 +23,7 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
-* {
+h1, h2, h3, h4, h5, h6, p {
   -webkit-touch-callout: none; /*系统默认菜单被禁用*/
   -webkit-user-select: none; /*webkit浏览器*/
   -khtml-user-select: none; /*早期浏览器*/
@@ -81,4 +81,8 @@ a {
 img[src=""], img:not([src]) {
   opacity: 0;
   content: normal !important;
+}
+
+.weui-icon_toast {
+  font: normal normal normal 1.867vw/1 weui !important;
 }

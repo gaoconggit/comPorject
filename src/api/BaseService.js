@@ -163,7 +163,7 @@ export default {
     let formData = new FormData();
     formData.append('code', code);
     formData.append('usercode', 0);
-    return this.postAxiosAction(url, formData);
+    return this.postAxiosAction(url, formData, true);
   },
   //发送心跳
   postOnline() {
@@ -175,12 +175,12 @@ export default {
     return this.postAxiosAction(url, formData);
   },
   //获取个人信息
-  getBaseInfo() {
+  getBaseInfo(isShowError = false) {
     let url = `${apiData.public}User.getBaseInfo`;
     let formData = new FormData();
     formData.append("token", state.token);
     formData.append("uid", state.uid);
-    return this.postAxiosAction(url, formData);
+    return this.postAxiosAction(url, formData, isShowError);
   },
   //获取签到信息
   getSignInfo() {
@@ -525,7 +525,7 @@ export default {
   },
   //获取常见问题
   getSettingFaq() {
-    let url = `api/public/service=setting.faq`;
+    let url = `${apiData.public}setting.faq`;
     return this.postAxiosAction(url);
   },
   //获取金币明细

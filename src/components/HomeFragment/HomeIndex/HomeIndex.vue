@@ -63,6 +63,7 @@
   import SwiperList from "@/common/SwiperList";
   import api from "api/BaseService";
   import {clickBannerItem} from "../../../common/util/Utils";
+  import {baseUrl} from "../../../config/config";
 
   export default {
     name: "HomeIndex",
@@ -87,6 +88,7 @@
     watch: {
       $route(to, form) {
         let query = to.query;
+        let path = to.path;
         if (query.keep) {
           this._getCategory();
           updateBaseInfo();
@@ -113,7 +115,6 @@
       async _getBanner() {
         let result = await api.getBanner();
         this.banners = result.data.slide;
-        console.log(result.data.slide);
       },
       async _getCategory() {
         let result = await api.getCategory();
@@ -125,11 +126,9 @@
           }
         });
         this.navs = result;
-        console.log(result);
       },
       async _getWawaList(type, isRefresh = false, page = 1) {
         let result = await api.getWawaList(type, page);
-        console.log(result);
         if (result.data.length) {
           //上拉刷新更新数据
           if (isRefresh) {
@@ -154,11 +153,9 @@
             this.$refs.scrollerIndex.donePullup();
           }
         } else if (page > 1) {
-          console.log(1);
           this.$refs.scrollerIndex.disablePullup();
           console.log("没有更多娃娃了1");
         } else {
-          console.log(2);
           this.wawaList = [];
           this.$refs.scrollerIndex.disablePullup();
           console.log("没有更多娃娃了2");
@@ -262,7 +259,6 @@
       /*充值中心*/
       rechargeBtn() {
         this.$router.push({path: "/recharge"});
-        console.log("充值中心");
       },
       /*晒单*/
       sunburnBtn() {
@@ -270,7 +266,7 @@
           path: "/details",
           query: {
             title: "晒单",
-            url: "https://www.baidu.com" //`${baseUrl}photowall/index.php?base_url=${baseUrl}api/public/&token=${this.userInfo.token}&uid=${this.userInfo.id}`
+            url: `${baseUrl}photowall/index.php?base_url=${baseUrl}api/public/&token=${this.token}&uid=${this.uid}`
           }
         });
       },
@@ -278,7 +274,6 @@
       rankBtn() {
         this.isShowRank = true;
         this.$emit("changeZIndex", 0);
-        console.log("排行榜");
       },
       changeZIndex(index) {
         this.$emit("changeZIndex", index);
@@ -289,7 +284,7 @@
       }
     },
     computed: {
-      ...mapGetters(["userInfo"])
+      ...mapGetters(["userInfo", 'token', 'uid'])
     },
     components: {
       ScrollView,

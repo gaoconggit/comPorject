@@ -67,6 +67,9 @@
           console.log("已经没有数据了");
           this.$refs.hsitoryScroll.disablePullup();
         } else {
+          if (page === 1) {
+            this.$refs.hsitoryScroll.reset({top: 0}, 500);
+          }
           this.historyList = [];
           this.$refs.hsitoryScroll.disablePullup();
           console.log("已经没有数据了");
