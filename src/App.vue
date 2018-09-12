@@ -14,6 +14,7 @@
 <script>
   import {mapMutations} from "vuex";
   import api from "api/BaseService";
+  import {getCookie, getStore, setStore} from "./common/util/ImUtils";
 
   export default {
     name: "App",
@@ -27,25 +28,19 @@
         set_userInfo: "SET_USER_INFO"
       }),
       _getToken() {
-        let _this = this;
-        let token = window.localStorage.getItem("token") || "fe36befc803b9db17928bfcfd10e0a4e";
-        let uid = window.localStorage.getItem("uid") || "100184";
-        this.set_token(token);
+        let token = getCookie('wawaji_token') || "a1960558963cdef71fefb224614d868d";
+        let uid = getStore("wawaji_uid") || "100180";
         this.set_uid(uid);
-        setTimeout(() => {
-          _this._getBaseInfo();
-          setInterval(() => {
-            this._postOnline();
-          }, 60000)
-        }, 0);
+        this.set_token(token);
+        this._getBaseInfo();
+        setInterval(() => {
+          this._postOnline();
+        }, 60000)
       },
       async _getBaseInfo() {
-        // if (!window.localStorage.getItem("wawaji_userInfo")) {
         let result = await api.getBaseInfo();
-        console.log(result);
         window.localStorage.setItem("wawaji_userInfo", JSON.stringify(result.data));
         this.set_userInfo(result.data);
-        //}
       },
       //发送心跳
       _postOnline() {

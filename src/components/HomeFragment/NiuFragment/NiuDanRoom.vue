@@ -15,7 +15,9 @@
         <p class="coin">{{showCoin(userInfo.coin)}}</p>
       </div>
     </div>
-    <iframe :src="'../../../../static/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
+    <iframe v-if="production" :src="'../../../../static/dist/index.html' + $route.query.url"
+            ref="iframe" class="iframe"></iframe>
+    <iframe v-else :src="'./static/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
     <p class="down-icon"></p>
     <div class="history-wrapper">
       <div class="niu-history">
@@ -59,6 +61,7 @@
         historyList: [],                //扭蛋房间历史记录
         topHeight: 0,                   //历史记录到顶部的高度
         isLessCoin: false,              //金币不足
+        production: process.env.NODE === 'production' ? true : false,
       };
     },
     mounted() {
@@ -66,9 +69,7 @@
         this.$router.back();
       }
       window.postMessage = (data) => {
-        console.log(data);
         if (data === "Niudan") {
-          console.log("扭到了");
           this._getNiudanRoomInfo();
           updateBaseInfo();
         } else if (data === "NiudanSuccess") {
@@ -77,9 +78,7 @@
           showToast("数据获取失败", 'cancel');
         } else if (data == "-100") {
           this.isLessCoin = true;
-          console.log("金币不足")
         } else if (data === "NiudanImage") {
-          console.log("跳转到指定地方");
           window.scrollTo(0, this.topHeight);
         } else if (data === "NiudanVoice") {
           if (this.userInfo.user_setting.yx == 1) {
@@ -108,13 +107,11 @@
       //获取扭蛋房间信息
       async _getNiudanRoomInfo() {
         let result = await api.getNiudanRoomInfo(this.roomId);
-        console.log("扭蛋房间信息", result);
         this.niudanInfo = result.data;
       },
       //获取扭蛋房间历史图
       async _getNiuDanHistory() {
         let result = await api.getNiuDanHistory(this.roomId);
-        console.log(result);
         this.historyList = result.data;
       },
       closeLessCoin() {

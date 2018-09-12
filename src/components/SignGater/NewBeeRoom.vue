@@ -30,7 +30,6 @@
     methods: {
       async _getNewBeeRoomInfo() {
         let result = await api.getNewBeeRoomInfo();
-        console.log("新手场房间信息:", result);
         if (result.code == 1) {
           if (parseInt(result.data.room_id) < 0) {
             showToast(result.msg, 'cancel');
@@ -48,7 +47,6 @@
         }
       },
       gotoNewRoom() {
-        console.log("前往新手场房间");
         this.$router.push({path: '/room', query: {roomId: this.newBeeData.room_id}});
         this.$emit('close-new-bee')
       },

@@ -9,6 +9,8 @@ import {routerMode} from "./config/config";
 import {mapMutations, mapState} from "vuex";
 import FastClick from 'fastClick';
 import {LoadingPlugin, ToastPlugin, AlertPlugin} from 'vux';
+import {delCookie, getCookie, getQueryString, getStore, removeStore, setCookie, setStore} from './common/util/ImUtils';
+import api from "./api/BaseService";
 
 Vue.use(VueLazyload);
 Vue.use(LoadingPlugin);
@@ -43,6 +45,42 @@ const router = new VueRouter({
     }
   }
 });
+
+if (process.env.NODE_ENV === "production") {
+  router.beforeEach((to, form, next) => {
+    if (getQueryString('code') || getQueryString('token')) {
+      if (!getCookie('wawaji_token')) {
+        setCookie('wawaji_code', getQueryString('code'));
+        setCookie('wawaji_token', getQueryString('token'));
+      }
+    }
+    if (!getCookie('wawaji_code') && !getCookie('wawaji_token')) {
+      window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx51c749f31ff97876&redirect_uri=http%3A//wawaji.whxyzx.cn/h5_login/&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+    } else if (!getCookie('wawaji_token')) {
+      api.loginWeChat(getCookie('wawaji_code'))
+        .then((res) => {
+          if (res.code == 1) {
+            store.commit('setToken', res.data.token);
+            store.commit('setUid', res.data.id);
+            store.commit('setUserInfo', res.data);
+            setStore('wawaji_tim_uid', res.data.tim_uid);
+            setStore('wawaji_tim_sig', res.data.user_sig);
+            next();
+          } else {
+            delCookie('wawaji_code');
+            delCookie('wawaji_token');
+            removeStore('wawaji_user')
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    } else {
+      console.log('已登录');
+      next();
+    }
+  })
+}
 
 /* eslint-disable no-new */
 new Vue({

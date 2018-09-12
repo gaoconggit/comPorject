@@ -57,7 +57,6 @@
     methods: {
       async _getCoinDetailed(page = 1, isRefresh = false) {
         let result = await api.getCoinDetailed(page);
-        console.log(result);
         if (result.data.list.length) {
           if (isRefresh) {
             this.page = 1;
@@ -87,7 +86,6 @@
         }
       },
       onPullDown() {
-        console.log(1234);
         this.page = 1;
         this._getCoinDetailed(1, true);
       },

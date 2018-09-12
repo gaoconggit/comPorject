@@ -669,17 +669,19 @@
         count();
       }
     },
-    computed: {
-      ...mapGetters(['userInfo']),
-      initWebSocket() {
-        console.log(this.tcpIP, this.webPort);
-        return new WebSocket(`ws://${this.tcpIP}:${this.webPort}`);
-      },
+    filter: {
       filterMessage() {//过滤关键字
         let filter = this.filterMessageSrc;
         let arrFilter = filter.join('|');
         const _sendMsgText = this.sendMsgText.replace(new RegExp(arrFilter, 'ig'), '*');
         return _sendMsgText;
+      }
+    },
+    computed: {
+      ...mapGetters(['userInfo']),
+      initWebSocket() {
+        console.log(this.tcpIP, this.webPort);
+        return new WebSocket(`ws://${this.tcpIP}:${this.webPort}`);
       },
       /*积分场展示*/
       multipleNum() {

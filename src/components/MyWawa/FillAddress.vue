@@ -93,7 +93,6 @@
         } else {
           api.addAddAddress(this.name, this.mobile, address, this.addr_info)
             .then((res) => {
-              console.log("新增", res);
               showToast(res.msg, 'success');
               this.$router.back();
             })

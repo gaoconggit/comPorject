@@ -62,7 +62,6 @@
       //签到信息
       async _getSignInfo() {
         let result = await api.getSignInfo();
-        console.log("getSignInfo", result);
         let arr = this.signArray;
         arr.forEach((v, i) => {
           if (result.data.has_sign_in) {
@@ -76,10 +75,8 @@
         this.signArray = arr;
       },
       async receiveSign() {
-        console.log("领取签到");
         let result = await api.postSign();
         if (result.code == 1) {
-          console.log(result);
           showToast(result.msg + '领取' + result.data.coin + '金币', 'success');
           this._getSignInfo();
         } else {

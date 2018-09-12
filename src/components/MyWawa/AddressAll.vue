@@ -70,7 +70,6 @@
         this.$refs.addressScroll.reset();
       },
       clickAddressItem(item) {
-        console.log("点击了每一个item");
         this.set_select_address(item);
         this.$router.back();
       },

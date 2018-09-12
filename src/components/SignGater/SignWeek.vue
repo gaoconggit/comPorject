@@ -36,7 +36,6 @@
       };
     },
     mounted() {
-      console.log("data:", this.data);
       switch (this.data.name) {
         case "周卡":
           this.titleImg = require("img/sign/title_week.png");
@@ -56,9 +55,7 @@
     },
     methods: {
       async receiveSign() {
-        console.log("领取");
         let result = await api.postVipCardSign(this.cardId);
-        console.log("vip卡签到:", result);
         if (result.code == 1) {
           this.remainDay = result.data.remain_day;
           showToast(result.data.name + "领取成功,领取金币" + result.data.coin, 'success');

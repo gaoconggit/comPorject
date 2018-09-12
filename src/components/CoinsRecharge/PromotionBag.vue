@@ -40,7 +40,6 @@
     methods: {
       async _getGiftBagInfo() {
         let result = await api.getGiftBagInfo();
-        console.log("特惠礼包", result);
         if (result.data.vip_card.length) {
           this.giftBagData = result.data;
           this.showGiftBag = result.data.vip_card[0];

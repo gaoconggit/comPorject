@@ -167,7 +167,7 @@
           this.isPublicNotice = true;
           this.publicNoticeInfo = result.data;
         } else {
-          this.$store.commit('isOneShow', false);
+          this.$store.commit('isOneShow');
           this.isPublicNotice = false;
         }
       },

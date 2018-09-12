@@ -157,6 +157,14 @@ export default {
     })
   },
   
+  //微信登录
+  loginWeChat(code) {
+    let url = `${apiData.public}Login.weixinLogin`;
+    let formData = new FormData();
+    formData.append('code', code);
+    formData.append('usercode', 0);
+    return this.postAxiosAction(url, formData);
+  },
   //发送心跳
   postOnline() {
     let url = `${apiData.usercode}`;

@@ -20,13 +20,11 @@
     props: ['data'],
     methods: {
       clickPublic() {
-        console.log(this.data);
         let info = {};
         info.slide_url = this.data.url;
         info.jump_target = this.data.jump_target;
         info.slide_content = '';
         let gotoTab = clickBannerItem(this, info);
-        console.log(gotoTab);
         if (gotoTab != null) {
           this.$emit('change-tab', gotoTab);
         }
