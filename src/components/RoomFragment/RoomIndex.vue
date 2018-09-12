@@ -210,7 +210,7 @@
         makeCountDown: -1,    //轮到自己
         isMakeDown: false,    //展示轮到自己
         isShowLess: false,    //是否展示金币不足
-        resultPopup: true,   //结果弹窗
+        resultPopup: false,   //结果弹窗
         isExitRoom: false,    //退出房间提示
         exitRoomData: {},     //退出房间内容
         isResultSuccess: 1,//抓取结果是否成功
@@ -220,7 +220,7 @@
       };
     },
     created() {
-      if (!this.$route.query.id || !this.$route.query.roomId) {
+      if (!this.$route.query.hasOwnProperty('id')) {
         this.$router.push({path: "/"});
       } else {
         this.wawaId = this.$route.query.id;
@@ -447,13 +447,25 @@
         console.log("监听到有人退出房间");
         if (this.userInfo.id === data) {
           this.exitIM = true;
-          this.bgmusic.stop();
-          this.yx_anniu.stop();
-          this.yx_shibai.stop();
-          this.yx_xiazhua.stop();
-          this.yx_daojishi.stop();
-          this.yx_chenggong.stop();
-          this.$vux.loading.hide()
+          if (this.bgmusic) {
+            this.bgmusic.stop();
+          }
+          if (this.yx_anniu) {
+            this.yx_anniu.stop();
+          }
+          if (this.yx_shibai) {
+            this.yx_shibai.stop();
+          }
+          if (this.yx_xiazhua) {
+            this.yx_xiazhua.stop();
+          }
+          if (this.yx_daojishi) {
+            this.yx_daojishi.stop();
+          }
+          if (this.yx_chenggong) {
+            this.yx_chenggong.stop();
+          }
+          this.$vux.loading.hide();
           if (this.isNewRoom) {
             setTimeout(() => {
               this.$router.push({path: '/home/index', query: {keep: 'no'}})
@@ -669,19 +681,17 @@
         count();
       }
     },
-    filter: {
-      filterMessage() {//过滤关键字
-        let filter = this.filterMessageSrc;
-        let arrFilter = filter.join('|');
-        const _sendMsgText = this.sendMsgText.replace(new RegExp(arrFilter, 'ig'), '*');
-        return _sendMsgText;
-      }
-    },
     computed: {
       ...mapGetters(['userInfo']),
       initWebSocket() {
         console.log(this.tcpIP, this.webPort);
         return new WebSocket(`ws://${this.tcpIP}:${this.webPort}`);
+      },
+      filterMessage() {//过滤关键字
+        let filter = this.filterMessageSrc;
+        let arrFilter = filter.join('|');
+        const _sendMsgText = this.sendMsgText.replace(new RegExp(arrFilter, 'ig'), '*');
+        return _sendMsgText;
       },
       /*积分场展示*/
       multipleNum() {
@@ -740,7 +750,7 @@
         this.makeCountDown = -1;
       }
     },
-    destroyed() {
+    beforeDestroyed() {
       this.backRoom();
     }
   };
