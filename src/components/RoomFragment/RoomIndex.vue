@@ -356,9 +356,15 @@
           console.log(result);
           if (result.code == 1) {
             showToast("游戏开始", 'success', 1000);
-            this.bgmusic.stop();
-            this.yx_kaishi.play();
-            this.game_bgmusic.play();
+            if (this.bgmusic) {
+              this.bgmusic.stop();
+            }
+            if (this.yx_kaishi) {
+              this.yx_kaishi.stop();
+            }
+            if (this.game_bgmusic) {
+              this.game_bgmusic.stop();
+            }
             this.sendMsgToIM(2);
             this.isGameStart = true;
             this.tcpIP = result.data.tcpIP;
@@ -373,7 +379,9 @@
             this.countDown('countDownNum', 30);
             this._getBaseInfo();
           } else {
-            this.yx_shibai.play();
+            if (this.yx_shibai) {
+              this.yx_shibai.play();
+            }
             showToast(result.msg, 'cancel');
           }
           this.$vux.loading.hide();
@@ -507,16 +515,24 @@
         }
         if (data.user_id == this.userInfo.id) {
           if (parseInt(data.success)) {
-            this.yx_chenggong.play();
+            if (this.yx_chenggong) {
+              this.yx_chenggong.play();
+            }
           } else {
-            this.yx_shibai.play();
+            if (this.yx_shibai) {
+              this.yx_shibai.play();
+            }
           }
           if (!this.isNewRoom) {
             this.countDown('countDownResult', 6, "resultTimer");
           }
           //this.soundPool.pause();
-          this.game_bgmusic.stop();
-          this.bgmusic.play();
+          if (this.game_bgmusic) {
+            this.game_bgmusic.stop();
+          }
+          if (this.bgmusic) {
+            this.bgmusic.play();
+          }
           this.isResultSuccess = parseInt(data.success);
           this.isGameStart = false;
           this.resultPopup = true;
@@ -551,9 +567,13 @@
           // clearInterval(this.timer);
           // this.timer = null;
           this.countDownNum = -1;
-          this.yx_xiazhua.play();
+          if (this.yx_xiazhua) {
+            this.yx_xiazhua.play();
+          }
         } else {
-          this.yx_anniu.play();
+          if (this.yx_anniu) {
+            this.yx_anniu.play();
+          }
         }
       },
       async fixItemClick(id) {
@@ -726,7 +746,9 @@
         this.countDownNum = -1;
       }
       if (this.countDownNum > 0 && this.countDownNum < 10) {
-        this.yx_daojishi.play();
+        if (this.yx_daojishi) {
+          this.yx_daojishi.play();
+        }
       }
       if (!this.countDownNum) {
         this.roomGameCmd('grab');
