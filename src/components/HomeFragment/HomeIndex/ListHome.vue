@@ -143,14 +143,15 @@
         left: 32px;
         width: 168px;
         .item_name {
-          font-size: @subFontSize;
-          line-height: 32px;
+          font-size: @minFontSize;
+          line-height: 36px;
         }
       }
       .price {
         display: flex;
         align-items: center;
         right: 32px;
+        font-size: @minFontSize;
         .icon {
           margin-right: 4px;
           width: 36px;

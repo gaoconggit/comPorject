@@ -112,12 +112,14 @@
 </script>
 
 <style lang="less">
+  @import "~assets/style/index.less";
+
   .scroller {
     .bottom-text {
       height: 40px;
       line-height: 40px;
       text-align: center;
-      font-size: 28px;
+      font-size: @minFontSize;
     }
     .loadmore {
       margin: 0 auto 10px !important;

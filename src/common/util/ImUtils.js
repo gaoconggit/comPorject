@@ -42,7 +42,7 @@ export const getQueryString = (key) => {
 export const setCookie = (c_name, value, expiredays = 6) => {
   const exdate = new Date();
   exdate.setHours(exdate.getHours() + expiredays);
-  document.cookie = c_name + "=" + escape(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
+  document.cookie = c_name + "=" + encodeURIComponent(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());
 };
 
 /**

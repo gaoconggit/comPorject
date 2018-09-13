@@ -17,6 +17,8 @@ const SystemSet = r => require([], () => r(require('../components/MineFragment/S
 const Faq = r => require([], () => r(require('../components/MineFragment/Faq')));
 const CoinDetailed = r => require([], () => r(require('../components/MineFragment/CoinDetailed')));
 const ScoreDetailed = r => require([], () => r(require('../components/MineFragment/ScoreDetailed')));
+const InvitationCode = r => require([], () => r(require('../components/MineFragment/InvitationCode')));
+const InvitationInput = r => require([], () => r(require('../components/MineFragment/InvitationInput')));
 const WawaIndex = r => require([], () => r(require('../components/MyWawa/WawaIndex')));
 const HistoryIndex = r => require([], () => r(require('../components/Historys/HistoryIndex')));
 const HistoryDetail = r => require([], () => r(require('../components/Historys/HistoryDetail')));
@@ -62,5 +64,7 @@ export default [{
     {path: '/address', name: '收货地址', component: AddressAll},
     {path: '/filladdress', name: '新增修改地址', component: FillAddress},
     {path: '/maildetails', name: '订单详情', component: MailDetails},
+    {path: '/invitation', name: '我的邀请码', component: InvitationCode},
+    {path: '/invitationinput', name: '输入邀请码', component: InvitationInput},
   ]
 }];

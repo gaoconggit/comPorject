@@ -157,6 +157,15 @@ export default {
     })
   },
   
+  //微信公众号分享获取签名
+  getSignature(sendUrl) {
+    let url = `${apiData.public}Order.getSignature`;
+    let formData = new FormData()
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('url', sendUrl);
+    return this.postAxiosAction(url, formData);
+  },
   //微信登录
   loginWeChat(code) {
     let url = `${apiData.public}Login.weixinLogin`;
@@ -687,5 +696,32 @@ export default {
     formData.append('addr', addr);
     formData.append('addr_info', addr_info);
     return this.postAxiosAction(url, formData);
-  }
+  },
+  //获取我的邀请码
+  getMyCode() {
+    let url = apiData.usercode;
+    let formData = new FormData();
+    formData.append('api_name', 'get_code');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('sys', 3);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取邀请码规则
+  getCodeRule() {
+    let url = apiData.usercode;
+    let formData = new FormData();
+    formData.append('api_name', 'get_code_config');
+    return this.postAxiosAction(url, formData);
+  },
+  //兑换邀请码
+  postConvertCode(code) {
+    let url = apiData.usercode;
+    let formData = new FormData();
+    formData.append('api_name', 'convert_code');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('code', code);
+    return this.postAxiosAction(url, formData, true);
+  },
 }

@@ -102,10 +102,10 @@
             this.$router.push({path: "/faq"});
             break;
           case 7://我的邀请码
-            this.$router.push({path: "/recharge"});
+            this.$router.push({path: "/invitation"});
             break;
           case 8://输入邀请码
-            this.$router.push({path: "/recharge"});
+            this.$router.push({path: "/invitationinput"});
             break;
           case 9://设置
             this.$router.push({path: "/system"});
@@ -218,7 +218,7 @@
         padding: 16px 0;
         display: flex;
         align-items: center;
-        font-size: @mainFontSize;
+        font-size: @subFontSize;
         .item-icon {
           margin-right: 20px;
           width: 46px;

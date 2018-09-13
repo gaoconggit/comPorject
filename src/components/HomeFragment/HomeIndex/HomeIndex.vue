@@ -316,27 +316,24 @@
         }
         .user_info {
           position: relative;
-          height: 140px;
+          height: 120px;
           .avatar {
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             border: 4px solid @auxColor;
             overflow: hidden;
             background-color: #000;
             z-index: 1;
-            img {
-              width: 100%;
-              height: 100%;
-            }
+            .img-spread;
           }
           .vip_con {
             position: absolute;
             bottom: 4px;
-            left: 10px;
-            width: 138*0.8px;
-            height: 66*0.8px;
+            left: 6px;
+            width: 138*0.7px;
+            height: 66*0.7px;
             z-index: 2;
             img {
               width: 100%;
@@ -345,11 +342,11 @@
           }
           .name {
             padding: 0 20px;
-            height: 60px;
+            height: 50px;
             width: 220px;
-            line-height: 60px;
+            line-height: 50px;
             position: absolute;
-            left: 120px;
+            left: 100px;
             top: 32px;
             font-size: @mainFontSize;
             background-color: #fff;
@@ -380,7 +377,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 94px;
+      height: 90px;
       .btn_item {
         width: 214px;
         height: 84px;

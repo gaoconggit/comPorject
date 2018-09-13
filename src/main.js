@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import VueLazyload from "vue-lazyload";
 import routes from './router/index';
 import store from './store/';
-import {routerMode} from "./config/config";
+import {APPID, routerMode, URL} from "./config/config";
 import {mapMutations, mapState} from "vuex";
 import FastClick from 'fastClick';
 import {LoadingPlugin, ToastPlugin, AlertPlugin} from 'vux';
@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === "production") {
       }
     }
     if (!getCookie('wawaji_code') && !getCookie('wawaji_token')) {
-      window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx51c749f31ff97876&redirect_uri=http%3A//wawaji.whxyzx.cn/h5_login/&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+      window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${encodeURIComponent(URL)}&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect`;
     } else {
       if (getCookie('wawaji_token') === "null" || !getCookie('wawaji_token')) {
         api.loginWeChat(getCookie('wawaji_code'))

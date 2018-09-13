@@ -2016,13 +2016,13 @@ var webim = { // namespace object webim
         this.setCookie = function (name, value, expires, path, domain) {
             var exp = new Date();
             exp.setTime(exp.getTime() + expires * 1000);
-            document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+            document.cookie = name + "=" + encodeURIComponent(value) + ";expires=" + exp.toGMTString();
         };
         //获取cookie
         this.getCookie = function (name) {
             var result = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
             if (result != null) {
-                return unescape(result[2]);
+                return decodeURIComponent(result[2]);
             }
             return null;
         };
@@ -2032,13 +2032,13 @@ var webim = { // namespace object webim
             exp.setTime(exp.getTime() - 1);
             var value = this.getCookie(name);
             if (value != null)
-                document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+                document.cookie = name + "=" + encodeURIComponent(value) + ";expires=" + exp.toGMTString();
         };
         //根据名字获取url参数值
         this.getQueryString = function (name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
             var r = window.location.search.substr(1).match(reg);
-            if (r != null) return unescape(r[2]);
+            if (r != null) return decodeURIComponent(r[2]);
             return null;
         };
         //判断IE版本号，ver表示版本号

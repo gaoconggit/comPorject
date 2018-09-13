@@ -20,10 +20,16 @@ if (process.env.NODE_ENV === 'development') {
 const SDK_APPID = 1400058881;     //腾讯IM的appid
 const ACCOUNT_TYPE = 20972;       //腾讯IM的account_type
 
+const APPID = 'wx51c749f31ff97876';//微信公众号唯一标识
+
+const URL = 'http://wawaji.whxyzx.cn/h5_login/';//微信公众号地址
+
 export {
   baseUrl,
   routerMode,
   imageUrl,
   SDK_APPID,
-  ACCOUNT_TYPE
+  ACCOUNT_TYPE,
+  APPID,
+  URL,
 }
