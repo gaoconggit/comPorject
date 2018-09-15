@@ -10,6 +10,7 @@ import {mapMutations, mapState} from "vuex";
 import FastClick from 'fastClick';
 import {LoadingPlugin, ToastPlugin, AlertPlugin, WechatPlugin} from 'vux';
 import {delCookie, getCookie, getQueryString, getStore, removeStore, setCookie, setStore} from './common/util/ImUtils';
+//import VConsole from "./common/util/VConsole";
 import api from "./api/BaseService";
 import {showToast} from "./common/util/Utils";
 

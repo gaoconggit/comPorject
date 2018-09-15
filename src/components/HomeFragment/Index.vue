@@ -89,6 +89,7 @@
     },
     watch: {
       $route(to, form) {
+        document.title = "掌上抓娃娃-" + this.$route.name;
         let path = to.path;
         console.log("watch route:", to);
         switch (path) {

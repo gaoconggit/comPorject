@@ -29,8 +29,8 @@
         set_userInfo: "SET_USER_INFO"
       }),
       _getToken() {
-        let token = getCookie('wawaji_token') || "a1960558963cdef71fefb224614d868d";
-        let uid = getStore("wawaji_uid") || "100180";
+        let token = getCookie('wawaji_token') || "e52a4d78cd1cb73b2cc17a1864cce7ad";
+        let uid = getStore("wawaji_uid") || "100181";
         this.set_uid(uid);
         this.set_token(token);
         this._getBaseInfo();

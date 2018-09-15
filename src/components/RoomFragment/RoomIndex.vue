@@ -217,6 +217,7 @@
         tcpPort: '',          //WebSocket端口
         tcpIP: '',            //WebSocketIP
         webSocket: '',        //WebSocket连接
+        isVideo: true,
       };
     },
     created() {
@@ -235,6 +236,10 @@
       this.tim_sig = this.userInfo.tim_sig;
       this.tim_sig = 'eJx1z09PgzAYx-E7r6LpFaPtKAN22yYq2yB2fxjuQhgt0rgVhJpuGt*7EZeMi8-190m*eb4MAABcL1a3WZ5XH1Kl6lxzCEYADpDnDODNFdS1YGmmUqthHcAEIWS7rot7ip9q0fA0KxRv-pTtDF30ez0lGJdKFOJiMnYUsje37C3tcv93WvHajaH-Mg3ovTmPJpI*klVMcbvQZ42fljMred7uZvFkHeowrz0WbPyHSAflOLpD2yTJ3j99dJDF1K5K097I5c7cHyqNLV7uOaXjMG7np15SiSO-vISJTRwy9KDxbfwApfVXwQ__';
       this.tim_uid = 'wawaji' + this.userInfo.id;
+
+      window.addEventListener("popstate", () => {
+        this.sendMsgToIM(4);
+      }, false)
     },
     beforeRouteLeave(to, from, next) {
       if (this.bgmusic) {
@@ -284,8 +289,7 @@
             }
           }
           this.roomData = result.data;
-          let sysBgmusic = this.userInfo.user_setting;
-          if (sysBgmusic.bgmusic != null) {
+          if (this.userInfo.user_setting.user_setting == 1) {
             //背景音乐
             if (!this.bgmusic) {
               this.bgmusic = new Howl({
@@ -302,7 +306,7 @@
               loop: true
             });
           }
-          if (this.userInfo.user_setting.yx === 1) {
+          if (this.userInfo.user_setting.yx == 1) {
             //按钮音效
             this.yx_anniu = new Howl({
               src: [result.data.yx_anniu],
@@ -336,7 +340,12 @@
           }
           /*视频播放*/
           let videoWrapMain = this.$refs.videoWrapMain;
-          this.vidoe = new JSMpeg.Player('ws://47.105.32.106:8080/room18/channel1', {canvas: videoWrapMain});
+          console.log("video", this.video);
+          if (this.isVideo) {
+            console.log(123456)
+            this.isVideo = false;
+            new JSMpeg.Player('ws://47.105.32.106:8080/room18/channel1', {canvas: videoWrapMain});
+          }
           setTimeout(() => {
             this.sendMsgToIM(3);
           }, 300);
@@ -605,9 +614,11 @@
                   this.isExitRoom = true;
                   this.exitRoomData = result.data;
                 } else {
+                  this.vidoe = null;
                   this.sendMsgToIM(4);
                 }
               } else {
+                this.vidoe = null;
                 this.sendMsgToIM(4);
               }
             })
@@ -773,7 +784,9 @@
       }
     },
     beforeDestroyed() {
+      this.sendMsgToIM(4);
       this.backRoom();
+      window.removeEventListener('popstate');
     }
   };
 </script>

@@ -231,7 +231,6 @@
         }
         .item-title {
           flex: 1;
-          .over-ellip;
           .num {
             color: @mainColor;
             font-size: @subFontSize;
