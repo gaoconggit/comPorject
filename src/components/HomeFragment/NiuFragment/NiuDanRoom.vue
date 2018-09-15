@@ -15,9 +15,9 @@
         <p class="coin">{{showCoin(userInfo.coin)}}</p>
       </div>
     </div>
-    <iframe v-if="production" :src="'../../../../static/dist/index.html' + $route.query.url"
+    <iframe v-if="production" :src="'../../../../static/web/dist/index.html' + $route.query.url"
             ref="iframe" class="iframe"></iframe>
-    <iframe v-else :src="'./static/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
+    <iframe v-else :src="'./static/web/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
     <p class="down-icon"></p>
     <div class="history-wrapper">
       <div class="niu-history">
@@ -244,6 +244,7 @@
               line-height: 44px;
             }
             .name {
+              font-size: @mainFontSize;
               .over-ellip;
             }
             .time {

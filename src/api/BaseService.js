@@ -110,7 +110,6 @@ export default {
       axios({
         method: 'get',
         url: baseUrl + url,
-        params,
         cancelToken: new CancelToken(c => {
           cancel = c;
         })
@@ -159,12 +158,8 @@ export default {
   
   //微信公众号分享获取签名
   getSignature(sendUrl) {
-    let url = `${apiData.public}Order.getSignature`;
-    let formData = new FormData()
-    formData.append('token', state.token);
-    formData.append('uid', state.uid);
-    formData.append('url', sendUrl);
-    return this.postAxiosAction(url, formData);
+    let url = `${apiData.public}Order.getSignature&token=${state.token}&uid=${state.uid}&url=${sendUrl}`;
+    return this.getAxiosAction(url);
   },
   //微信登录
   loginWeChat(code) {

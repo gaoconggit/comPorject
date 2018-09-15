@@ -24,6 +24,9 @@ const APPID = 'wx51c749f31ff97876';//微信公众号唯一标识
 
 const URL = 'http://wawaji.whxyzx.cn/h5_login/';//微信公众号地址
 
+const TITLE = '掌上抓娃娃';//标题
+const DESC = '新手免费抓！百分之百前爪场，强抓爪不送爪！手残党那就来保送场！还有无挡板房间等你来捡漏！邀请好友送金币';//描述
+
 export {
   baseUrl,
   routerMode,
@@ -32,4 +35,6 @@ export {
   ACCOUNT_TYPE,
   APPID,
   URL,
+  TITLE,
+  DESC,
 }

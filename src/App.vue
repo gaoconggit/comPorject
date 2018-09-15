@@ -20,6 +20,7 @@
     name: "App",
     created() {
       this._getToken();
+      this.wxShare();
     },
     methods: {
       ...mapMutations({

@@ -1,8 +1,6 @@
 <template>
-  <div class="score-wrapper">
-    <frameset>
-      <frame :src="scoreURL">
-    </frameset>
+  <div class="score-wrapper" ref="scoreWrapper">
+    <iframe :src="scoreURL" width="100%" height="100%"></iframe>
   </div>
 </template>
 
@@ -33,6 +31,9 @@
   @import "~assets/style/index.less";
 
   .score-wrapper {
-    padding-bottom: @tabBarHeight;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: @tabBarHeight;
   }
 </style>

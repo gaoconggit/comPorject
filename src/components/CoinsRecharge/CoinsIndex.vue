@@ -143,21 +143,21 @@
         margin: 8px 0;
         .card {
           position: relative;
-          width: 376px;
-          height: 192px;
+          width: 366px;
+          height: 182px;
           font-weight: 600;
           .img-spread;
           & > span {
             position: absolute;
           }
           .extra-rate {
-            top: 20px;
-            left: 196px;
-            padding: 0 12px;
+            top: 19px;
+            left: 192px;
+            padding: 0 10px;
             height: 32px;
             line-height: 32px;
             color: @whiteColor;
-            font-size: @subFontSize;
+            font-size: @minFontSize;
             font-weight: 600;
             background-color: @warnColor;
             &::before {
@@ -172,8 +172,8 @@
           }
           .actual-coin {
             top: 72px;
-            left: 36px;
-            font-size: @maxFontSize;
+            left: 30px;
+            font-size: @mainFontSize;
             color: @whiteColor;
           }
           .return-coin {
@@ -181,13 +181,15 @@
             left: 110px;
             width: 100px;
             font-size: @subFontSize;
+            font-weight: 700;
             color: @warnColor;
             text-align: center;
           }
           .money {
-            top: 126px;
+            top: 120px;
             left: 28px;
             color: @whiteColor;
+            font-size: @subFontSize;
           }
           .desc-text {
             position: absolute;

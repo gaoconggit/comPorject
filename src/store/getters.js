@@ -23,3 +23,5 @@ export const editAddress = state => state.editAddress;
 export const mailDetails = state => state.mailDetails;
 
 export const isOneShow = state => state.isOneShow;
+
+export const showHideDialog = state => state.showHideDialog;
