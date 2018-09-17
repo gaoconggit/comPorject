@@ -1,29 +1,71 @@
 <template>
-  <div class="xzww-wrapper" :style="'bottom:' + tabHeight + 'px'">
-    <frameset>
-      <frame :src="xzwwURL" />
-    </frameset>
+  <div class="xzww-wrapper">
+    <iframe ref="iframe" src="../../../../static/web/web-mobile/index.html"></iframe>
   </div>
 </template>
 
 <script>
-import {baseUrl} from "../../../config/config";
+  import {mapGetters} from "vuex";
+  import {baseUrl, URL} from "../../../config/config";
 
-export default {
-  name: "XzwwIndex",
-  props: ["tabHeight"],
-  data(){
-    return {
-      xzwwURL: `${baseUrl}spinning_wawa/index.php`,       //旋转娃娃地址
+  export default {
+    name: "XzwwIndex",
+    props: ["tabHeight"],
+    data() {
+      return {}
+    },
+
+    mounted() {
+      console.log(2)
+      window.postMessageXzww = (d) => {
+        console.log('ready', d)
+        window.dispatchEvent(new Event(d));
+      }
+
+      console.log(window.postMessage.children);
+
+      window.addEventListenerXzww = (d, fn) => {
+        console.log('addxzww', d, fn)
+        window.addEventListener(d, fn);
+      }
+
+      window.addEventListener('ready', () => {
+        console.log(4)
+        this.sentMsg('info', [baseUrl, this.uid, this.token])
+        // window.dispatchEvent('info', [URL, this.uid, this.token])
+      })
+      window.addEventListener('message', (data) => {
+        console.log(5, data);
+      })
+    },
+
+    methods: {
+      sentMsg(name, data) {
+        let a = new CustomEvent('message', {detail: JSON.stringify([name, data])});
+        window.dispatchEvent(a);
+      }
+    },
+
+    computed: {
+      ...mapGetters(['token', 'uid'])
     }
-  }
-};
+  };
 </script>
 
 <style scoped lang="less">
-.xzww-wrapper {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
+  @import "~assets/style/index.less";
+
+  .xzww-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: @tabBarHeight;
+    width: 100%;
+    iframe {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+  }
 </style>

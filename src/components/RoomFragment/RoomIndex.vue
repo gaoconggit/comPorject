@@ -154,6 +154,7 @@
   import ResultPopup from "./ResultPopup";
   import RoomExit from "./RoomExit";
   import MakeDownDialog from "./MakeDownDialog"
+  import {getStore} from "../../common/util/ImUtils";
 
   export default {
     name: "RoomIndex",
@@ -233,9 +234,9 @@
       }
     },
     mounted() {
-      this.tim_sig = this.userInfo.tim_sig;
-      this.tim_sig = 'eJx1z09PgzAYx-E7r6LpFaPtKAN22yYq2yB2fxjuQhgt0rgVhJpuGt*7EZeMi8-190m*eb4MAABcL1a3WZ5XH1Kl6lxzCEYADpDnDODNFdS1YGmmUqthHcAEIWS7rot7ip9q0fA0KxRv-pTtDF30ez0lGJdKFOJiMnYUsje37C3tcv93WvHajaH-Mg3ovTmPJpI*klVMcbvQZ42fljMred7uZvFkHeowrz0WbPyHSAflOLpD2yTJ3j99dJDF1K5K097I5c7cHyqNLV7uOaXjMG7np15SiSO-vISJTRwy9KDxbfwApfVXwQ__';
-      this.tim_uid = 'wawaji' + this.userInfo.id;
+      // this.tim_sig = 'eJx1z09PgzAYx-E7r6LpFaPtKAN22yYq2yB2fxjuQhgt0rgVhJpuGt*7EZeMi8-190m*eb4MAABcL1a3WZ5XH1Kl6lxzCEYADpDnDODNFdS1YGmmUqthHcAEIWS7rot7ip9q0fA0KxRv-pTtDF30ez0lGJdKFOJiMnYUsje37C3tcv93WvHajaH-Mg3ovTmPJpI*klVMcbvQZ42fljMred7uZvFkHeowrz0WbPyHSAflOLpD2yTJ3j99dJDF1K5K097I5c7cHyqNLV7uOaXjMG7np15SiSO-vISJTRwy9KDxbfwApfVXwQ__';
+      this.tim_sig = getStore('wawaji_tim_sig');
+      this.tim_uid = getStore('wawaji_tim_uid');
 
       window.addEventListener("popstate", () => {
         this.sendMsgToIM(4);

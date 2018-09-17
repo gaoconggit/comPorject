@@ -178,6 +178,21 @@ export default {
     formData.append("uid", state.uid);
     return this.postAxiosAction(url, formData);
   },
+  //充值接口调用
+  getRecharge(coinId) {
+    let url = apiData.record;
+    let formData = new FormData();
+    formData.append('api_name', 'recharge');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('coin_id', coinId);
+    formData.append('type', 1);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //拉去支付秘钥
+  getWBSignature(){
+  
+  },
   //获取个人信息
   getBaseInfo(isShowError = false) {
     let url = `${apiData.public}User.getBaseInfo`;

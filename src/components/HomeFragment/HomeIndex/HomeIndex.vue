@@ -62,7 +62,7 @@
   import ScrollView from "@/common/ScrollView";
   import SwiperList from "@/common/SwiperList";
   import api from "api/BaseService";
-  import {clickBannerItem} from "../../../common/util/Utils";
+  import {clickBannerItem, updateBaseInfo} from "../../../common/util/Utils";
   import {baseUrl} from "../../../config/config";
 
   export default {
@@ -132,6 +132,7 @@
         if (result.data.length) {
           //上拉刷新更新数据
           if (isRefresh) {
+            updateBaseInfo();
             this.listPage = 1;
             this.$refs.scrollerIndex.reset({top: 0}, 500);
             this.$refs.scrollerIndex.enablePullup();

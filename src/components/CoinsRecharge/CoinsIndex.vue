@@ -88,6 +88,10 @@
         this.vipCard = result.vip_card;
         this.charges = result.charge;
       },
+      async _getRecharge(coinId) {
+        let result = await api.getRecharge(coinId);
+        console.log(result);
+      },
       listItem(id) {
         if (id != this.selectIndex) {
           this.selectIndex = id;
@@ -96,6 +100,7 @@
       rechargeCharge() {
         console.log(this.selectIndex);
         showToast(`支付的商品ID：${this.selectIndex}`);
+        this._getRecharge(this.selectIndex);
       },
       gotoVip() {
         this.$router.push({path: '/vip'});
