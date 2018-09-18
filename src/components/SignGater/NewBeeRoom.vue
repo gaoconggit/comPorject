@@ -47,7 +47,7 @@
         }
       },
       gotoNewRoom() {
-        this.$router.push({path: '/room', query: {roomId: this.newBeeData.room_id}});
+        this.$router.push({path: '/room', query: {id: this.newBeeData.gift_id, roomId: this.newBeeData.room_id}});
         this.$emit('close-new-bee')
       },
     },

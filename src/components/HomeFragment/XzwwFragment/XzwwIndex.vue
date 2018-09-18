@@ -1,6 +1,7 @@
 <template>
   <div class="xzww-wrapper">
-    <iframe ref="iframe" src="../../../../static/web/web-mobile/index.html"></iframe>
+    <iframe v-if="production" ref="iframe" src="../../../../static/web/web-mobile/index.html"></iframe>
+    <iframe v-else src="./static/web/web-mobile/index.html"></iframe>
   </div>
 </template>
 
@@ -12,7 +13,9 @@
     name: "XzwwIndex",
     props: ["tabHeight"],
     data() {
-      return {}
+      return {
+        production: process.env.NODE === 'production' ? true : false,
+      }
     },
 
     mounted() {
@@ -22,17 +25,12 @@
         window.dispatchEvent(new Event(d));
       }
 
-      console.log(window.postMessage.children);
-
       window.addEventListenerXzww = (d, fn) => {
-        console.log('addxzww', d, fn)
         window.addEventListener(d, fn);
       }
 
       window.addEventListener('ready', () => {
-        console.log(4)
         this.sentMsg('info', [baseUrl, this.uid, this.token])
-        // window.dispatchEvent('info', [URL, this.uid, this.token])
       })
       window.addEventListener('message', (data) => {
         console.log(5, data);

@@ -187,11 +187,18 @@ export default {
     formData.append('uid', state.uid);
     formData.append('coin_id', coinId);
     formData.append('type', 1);
+    formData.append('wxpay_type', 'JSAPI');
     return this.postAxiosAction(url, formData, true);
   },
-  //拉去支付秘钥
-  getWBSignature(){
-  
+  //支付上报
+  postReportPayResult(oid, type) {
+    let url = `${apiData.public}Record.reportPayResult`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('oid', oid);
+    formData.append('pay_ret', type);
+    return this.postAxiosAction(url, formData);
   },
   //获取个人信息
   getBaseInfo(isShowError = false) {

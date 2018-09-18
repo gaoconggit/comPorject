@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import VConsole from "vconsole";
   import {mapMutations} from "vuex";
   import api from "api/BaseService";
   import {delCookie, getCookie, getStore, removeStore, setStore} from "./common/util/ImUtils";
@@ -21,6 +22,9 @@
     created() {
       this._getToken();
       this.wxShare();
+    },
+    mounted() {
+      //new VConsole();
     },
     methods: {
       ...mapMutations({

@@ -45,9 +45,6 @@
         <div class="recharges-btn" @click="rechargeCharge">
           <img src="~/img/myCoin/recharge_wecat.png" alt="">
         </div>
-        <div class="recharges-btn" @click="rechargeCharge">
-          <img src="~/img/myCoin/recharge_alipay.png" alt="">
-        </div>
       </div>
     </div>
     <promotion-bag v-if="isShowGiftBag" @close-promotion="closePromotion"/>
@@ -60,7 +57,7 @@
   import TitleBar from "@/common/TitleBar";
   import PromotionBag from "./PromotionBag";
   import api from "../../api/BaseService";
-  import {showToast} from "../../common/util/Utils";
+  import {showToast, WXPay} from "../../common/util/Utils";
 
   export default {
     name: "CoinsIndex",
@@ -88,9 +85,8 @@
         this.vipCard = result.vip_card;
         this.charges = result.charge;
       },
-      async _getRecharge(coinId) {
-        let result = await api.getRecharge(coinId);
-        console.log(result);
+      _getRecharge(coinId) {
+        WXPay(coinId);
       },
       listItem(id) {
         if (id != this.selectIndex) {
