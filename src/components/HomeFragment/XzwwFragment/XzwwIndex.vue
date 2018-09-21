@@ -1,5 +1,8 @@
 <template>
   <div class="xzww-wrapper" :style="'bottom:' + tabHeight + 'px'">
+    <!--frameset html框架
+      被用来组织一个或者多个 <frame> 元素。每个 <frame> 有各自独立的文档。
+    -->
     <frameset>
       <frame :src="xzwwURL" />
     </frameset>

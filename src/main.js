@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueLazyload from "vue-lazyload";
+/*各种页面的路由地址*/
 import routes from './router/index';
 import store from './store/';
 import {APPID, routerMode, URL} from "./config/config";

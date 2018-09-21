@@ -156,7 +156,7 @@ export default {
       })
     })
   },
-  
+
   //微信公众号分享获取签名
   getSignature(sendUrl) {
     let url = `${apiData.public}Order.getSignature`;
@@ -724,4 +724,22 @@ export default {
     formData.append('code', code);
     return this.postAxiosAction(url, formData, true);
   },
+  //获取vip信息
+  VipInformations() {
+    let url =  apiData.public+"vip.vipInfo";
+    let formData = new FormData();
+    formData.append('uid', state.uid);
+    formData.append('token', state.token);
+    return this.postAxiosAction(url, formData);
+  },
+
+  //领取vip宝箱奖励
+  VipBoxReward(er){
+    let url =  apiData.public+"vip.vipBoxReward";
+    let formData = new FormData();
+    formData.append('uid', state.uid);
+    formData.append('token', state.token);
+    formData.append('level',er);
+    return this.postAxiosAction(url, formData);
+  }
 }

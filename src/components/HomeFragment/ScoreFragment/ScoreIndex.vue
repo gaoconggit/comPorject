@@ -1,4 +1,5 @@
 <template>
+  <!--积分商城嵌套页面-->
   <div class="score-wrapper">
     <frameset>
       <frame :src="scoreURL">

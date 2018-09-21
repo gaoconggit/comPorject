@@ -1,64 +1,83 @@
 <template>
   <div class="mine-wrapper">
+    <!--标题-->
     <title-bar class="title" title="我的"/>
+    <!--用户基本信息-->
     <div class="mine-content" ref="mineContent">
+      <!--头部-->
       <header class="mine-header" ref="mineHeader">
+        <!--用户头像-->
         <div class="avatar">
           <img :src="userInfo.avatar" alt="">
         </div>
+        <!--用户消息-->
         <div class="mail-icon" @click="mineItem(1)">
           <img src="~/img/mine/message.png" alt="">
         </div>
+        <!--用户消息感叹号-->
         <div v-if="Number(userInfo.noread)" class="mail-icon-not" @click.stop="mineItem(1)">
           <img src="~/img/mine/message_unread.png" alt="">
         </div>
       </header>
+      <!--用户名跟id-->
       <div class="mine-floor" ref="mineFloor">
         <div class="mine">
+          <!--用户名-->
           <p class="name">{{userInfo.user_nicename}}</p>
+          <!--id号-->
           <p class="id">ID：{{userInfo.id}}</p>
         </div>
       </div>
+      <!--vip会员俱乐部-->
       <div class="vip-card" @click="mineItem(10)">
         <img src="~/img/mine/me_bg_3.png" alt="">
       </div>
     </div>
+    <!--用户详细信息列表-->
     <div class="mine-item">
+      <!--我的金币-->
       <div class="item" @click="mineItem(2)">
         <p class="item-icon max"><img src="~/img/com_img/icon_coin.png" alt=""></p>
         <p class="item-title">我的金币 <span class="num">{{userInfo.coin}}</span></p>
         <p class="item-text">充值</p>
       </div>
+      <!--金币明细-->
       <div class="item" @click="mineItem(3)">
         <p class="item-icon max"><img src="~/img/mine/icon_detailed.png" alt=""></p>
         <p class="item-title">金币明细</p>
         <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
       </div>
+      <!--我的娃娃-->
       <div class="item" @click="mineItem(4)">
         <p class="item-icon max"><img src="~/img/mine/icon_mine.png" alt=""></p>
         <p class="item-title">我的娃娃</p>
         <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
       </div>
+      <!--我的积分-->
       <div class="item" @click="mineItem(5)">
         <p class="item-icon max"><img src="~/img/mine/icon_integral.png" alt=""></p>
         <p class="item-title">我的积分 <span class="num">{{userInfo.coin}}</span></p>
         <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
       </div>
+      <!--常见问题-->
       <div class="item" @click="mineItem(6)">
         <p class="item-icon max"><img src="~/img/mine/icon_problem.png" alt=""></p>
         <p class="item-title">常见问题</p>
         <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
       </div>
+      <!--我的邀请码-->
       <div class="item" @click="mineItem(7)">
         <p class="item-icon max"><img src="~/img/mine/icon_invitation.png" alt=""></p>
         <p class="item-title">我的邀请码</p>
         <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
       </div>
+      <!--输入邀请码-->
       <div class="item" @click="mineItem(8)">
         <p class="item-icon max"><img src="~/img/mine/icon_input.png" alt=""></p>
         <p class="item-title">输入邀请码</p>
         <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
       </div>
+      <!--设置-->
       <div class="item" @click="mineItem(9)">
         <p class="item-icon max"><img src="~/img/mine/icon_set.png" alt=""></p>
         <p class="item-title">设置</p>

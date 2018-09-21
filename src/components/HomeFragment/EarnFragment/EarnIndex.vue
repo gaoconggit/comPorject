@@ -1,8 +1,13 @@
+<!--赚金币页面-->
 <template>
   <div class="earn-wrapper">
+    <!--页面头部标题-->
     <header class="niu-header" ref="niuHeader">
+      <!--扭蛋动图-->
       <img class="img-decorate" src="~/img/niudan/niudan_header.gif" alt="">
+      <!--免费赚金币图-->
       <img class="img-text" src="~/img/niudan/earn_header_text.png" alt="">
+      <!--扭蛋动图-->
       <img class="img-decorate" src="~/img/niudan/niudan_header.gif" alt="">
     </header>
     <scorll-view

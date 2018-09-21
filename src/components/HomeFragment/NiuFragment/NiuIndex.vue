@@ -1,8 +1,12 @@
 <template>
   <div class="niu-wrapper">
+    <!--扭蛋机头部-->
     <header class="niu-header" ref="niuHeader">
+      <!--扭蛋动片-->
       <img class="img-decorate" src="~/img/niudan/niudan_header.gif" alt="">
+      <!--扭蛋机-百分百出奖品-->
       <img class="img-text" src="~/img/niudan/niudan_header_text.png" alt="">
+      <!--扭蛋动片-->
       <img class="img-decorate" src="~/img/niudan/niudan_header.gif" alt="">
     </header>
     <scorll-view

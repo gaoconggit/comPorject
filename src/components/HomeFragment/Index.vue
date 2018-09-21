@@ -1,5 +1,6 @@
 <template>
   <div class="home-wrapper">
+    <!--首页区域-->
     <keep-alive>
       <router-view @change-tab="changeTab" @changeZIndex="changeZIndex" :tabHeight="tabHeight"></router-view>
     </keep-alive>
@@ -8,24 +9,39 @@
             iconClass="icon_img"
             v-model="tabIndex"
             @on-index-change="onIndexChange">
+      <!--首页底部的按钮-->
       <tabbar-item link="/home/index">
+        <!--单击前-->
         <img slot="icon" src="../../assets/img/index/index_select_not.png">
+        <!--单击后-->
         <img slot="icon-active" src="../../assets/img/index/index_select.png">
       </tabbar-item>
+      <!--旋转娃娃的按钮-->
       <tabbar-item link="/home/zxww">
+        <!--单击前图片-->
         <img slot="icon" src="../../assets/img/index/xzww_select_not.png">
+        <!--单击后图片-->
         <img slot="icon-active" src="../../assets/img/index/xzww_select.png">
       </tabbar-item>
+      <!--扭蛋机按钮-->
       <tabbar-item link="/home/niu">
+        <!--单击前图片-->
         <img slot="icon" src="../../assets/img/index/niu_select_not.png">
+        <!--单击后图片-->
         <img slot="icon-active" src="../../assets/img/index/niu_select.png">
       </tabbar-item>
+      <!--积分商城按钮-->
       <tabbar-item link="/home/score">
+        <!--单击前图片-->
         <img slot="icon" src="../../assets/img/index/shop_select_not.png">
+        <!--单击后图片-->
         <img slot="icon-active" src="../../assets/img/index/shop_select.png">
       </tabbar-item>
+      <!--赚金币按钮-->
       <tabbar-item link="/home/earn">
+        <!--单击前图片-->
         <img slot="icon" src="../../assets/img/index/earn_select_not.png">
+        <!--单击后图片-->
         <img slot="icon-active" src="../../assets/img/index/earn_select.png">
       </tabbar-item>
     </tabbar>

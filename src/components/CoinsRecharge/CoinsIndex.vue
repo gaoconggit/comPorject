@@ -1,10 +1,15 @@
 <template>
   <div class="coin-wrapper">
+    <!--标题-->
     <title-bar title="充值中心"/>
+    <!--充值内容页面-->
     <div class="coin-content">
+      <!--头部-->
       <header>
+        <!--用户金币数目-->
         <p class="my-coin">我的金币：<span>{{userInfo.coin}}</span></p>
       </header>
+      <!--周卡 月卡-->
       <div class="card-box">
         <div class="card" v-for="item in vipCard" @click="listItem(item.charge_id)">
           <img
@@ -19,9 +24,11 @@
                                                                             alt=""></div>
         </div>
       </div>
+      <!--vip会员-->
       <div class="goto-vip" @click="gotoVip">
         <img src="~/img/myCoin/vip.png" alt="">
       </div>
+      <!--充值列表信息-->
       <scroller class="coin-list" lock-x scrollbar-y :bounce="false">
         <grid :cols="2" :show-lr-borders="false" :show-vertical-dividers="false" class="item-wrapper">
           <grid-item v-for="(item, index) in charges" class="item-box" :key="item.charge_id"
@@ -41,6 +48,7 @@
           </grid-item>
         </grid>
       </scroller>
+      <!--微信 支付宝付款方式-->
       <div class="recharge-wrapper">
         <div class="recharges-btn" @click="rechargeCharge">
           <img src="~/img/myCoin/recharge_wecat.png" alt="">
@@ -50,6 +58,7 @@
         </div>
       </div>
     </div>
+    <!--顶部按钮-->
     <promotion-bag v-if="isShowGiftBag" @close-promotion="closePromotion"/>
   </div>
 </template>

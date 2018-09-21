@@ -13,13 +13,18 @@
       <div class="item-icon">
         <img :src="item.icon" alt="">
       </div>
+      <!--头部-->
       <div class="header">
         <p class="name">{{item.name}}</p>
       </div>
+      <!--顶部-->
       <div class="price">
+        <!--顶部进步图片-->
         <div class="coin">
+          <!--绝对路径， 这个加了~就是绝对路径了，不管你当前的.vue文件在什么路径下面。都会去匹配img配置的绝对路径中。-->
           <img src="~/img/com_img/coin_icon.png" alt="">
         </div>
+        <!--顶部金币-->
         <p class="name">{{item.coin}}</p>
       </div>
     </grid-item>

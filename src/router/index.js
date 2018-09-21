@@ -1,14 +1,23 @@
 import App from "../App";
-
+/*首页顶部按钮页面*/
 const Index = r => require([], () => r(require('../components/HomeFragment/Index')));
+/*首页整体按钮组件*/
 const HomeIndex = r => require([], () => r(require('../components/HomeFragment/HomeIndex/HomeIndex')));
+/*旋转娃娃页面组件*/
 const XzwwIndex = r => require([], () => r(require('../components/HomeFragment/XzwwFragment/XzwwIndex')));
+/*扭蛋页面组件*/
 const NiuIndex = r => require([], () => r(require('../components/HomeFragment/NiuFragment/NiuIndex')));
+/*扭蛋房间页面组件*/
 const NiuDanRoom = r => require([], () => r(require('../components/HomeFragment/NiuFragment/NiuDanRoom')));
+/*积分商城页面*/
 const ScoreIndex = r => require([], () => r(require('../components/HomeFragment/ScoreFragment/ScoreIndex')));
+/*赚金币页面*/
 const EarnIndex = r => require([], () => r(require('../components/HomeFragment/EarnFragment/EarnIndex')));
+/*我的  用户的信息页面*/
 const MineIndex = r => require([], () => r(require('../components/MineFragment/MineIndex')));
+/*充值中心列表*/
 const CoinsIndex = r => require([], () => r(require('../components/CoinsRecharge/CoinsIndex')));
+
 const RoomIndex = r => require([], () => r(require('../components/RoomFragment/RoomIndex')));
 const FrameContent = r => require([], () => r(require('../common/FrameContent')));
 const VipContent = r => require([], () => r(require('../components/MineFragment/VipContent')));

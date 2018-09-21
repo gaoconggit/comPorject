@@ -1,10 +1,13 @@
 <template>
   <div class="home-index">
+    <!--导航置顶-->
     <ul class="nav-wrapper" :class="isNavWrapperTop?'nav-wrapper-top':''" v-if="isNavWrapperTop" ref="navWrapper">
       <li class="nav-item" v-for="(nav,index) in navs" :key="nav.id" @click="navItem(index)">
         <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
       </li>
     </ul>
+
+    <!--scroll-view 是滚动条-->
     <scroll-view
       ref="scrollerIndex"
       :tabHeight="-tabHeight"
@@ -13,48 +16,66 @@
       @on-pulldown-loading="onPulldownLoading"
       @on-pullup-loading="onPullupLoading"
       @on-scroll="onScroll">
+      <!--首页-->
       <div class="home_content">
+        <!--头部
+          vue2 ref是用来给元素或子组件注册引用信息。引用信息将会注册在父组件$regs对象上。
+         -->
         <header ref="homeHeader">
+          <!--显示用户信息组件-->
           <router-link class="user_info" :to="{path:'/my',query:{}}">
+            <!--用户头像-->
             <div class="avatar">
               <img :src="userInfo.avatar" alt="">
             </div>
+            <!--用户等级-->
             <div class="vip_con">
               <img :src="vipIcon(userInfo.vip_level)" alt="">
             </div>
+            <!--用户名称-->
             <p class="name">{{userInfo.user_nicename}}</p>
           </router-link>
+          <!--显示金币组件-->
           <router-link class="coin_num" :to="{path:'/recharge',query:{}}">
             <div class="wrapper">
               <p class="num">{{showCoin(userInfo.coin)}}</p>
             </div>
           </router-link>
         </header>
+        <!--充值奖励 娃娃晒单 排行榜-->
         <div class="btn_wrapper" ref=btnWrapper>
+          <!--充值奖励-->
           <div class="btn_item" @click="rechargeBtn">
             <img src="~/img/home/recharge_btn.png" alt="">
           </div>
+          <!--娃娃晒单-->
           <div class="btn_item" @click="sunburnBtn">
             <img src="~/img/home/sunburn_btn.png" alt="">
           </div>
+          <!--排行榜-->
           <div class="btn_item" @click="rankBtn">
             <img src="~/img/home/rank_btn.png" alt="">
           </div>
         </div>
+        <!--点击banner时出现的链接  相当于轮播-->
         <swiper-list :data="banners" ref="swiper" @swiper-item="swiperItem"></swiper-list>
+        <!--首页的抓娃娃列表  全部。。。-->
         <ul class="nav-wrapper" ref="navWrapper">
           <li class="nav-item" v-for="(nav,index) in navs" :key="nav.id" @click="navItem(index)">
             <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
           </li>
         </ul>
+        <!--抓娃娃的列表-->
         <list-home :wawaList="wawaList"/>
       </div>
     </scroll-view>
+    <!-- 排行榜点击页面 -->
     <rank-list v-if="isShowRank" :isShow="isShowRank" @closeRank="closeRank" @changeZIndex="changeZIndex"/>
   </div>
 </template>
 
 <script>
+  /*用于导入由另一个模块导出的绑定。无论是否声明了 strict mode ，导入的模块都运行在严格模式下。import语句不能在嵌入式脚本中使用。*/
   import {mapGetters} from "vuex";
   import {Swiper, SwiperItem} from "vux";
   import ListHome from "./ListHome";

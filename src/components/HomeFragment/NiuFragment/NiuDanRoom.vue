@@ -4,42 +4,59 @@
 
 <template>
   <div class="niu-room">
+    <!--扭蛋头部-->
     <title-bar class="title-bar" :title="$route.query.title" left="left" :style="'background-color:#07040D'"
                @get-title-height="titleHeight"/>
+    <!--扭蛋信息-->
     <div class="niu-desc" ref="niuDesc">
+      <!--扭蛋20/次-->
       <div class="need-coin">
+        <!--扭蛋金币-->
         <div class="icon"><img src="~/img/com_img/icon_coin.png" alt=""></div>
         <p class="num">{{niudanInfo.price}}/次</p>
       </div>
-      <div class="my-coin">
+      <!--用户金币数目-->
+      <div class="my-coin" >
         <p class="coin">{{showCoin(userInfo.coin)}}</p>
       </div>
     </div>
+    <!--扭蛋机的框架-->
     <iframe v-if="production" :src="'../../../../static/dist/index.html' + $route.query.url"
             ref="iframe" class="iframe"></iframe>
     <iframe v-else :src="'./static/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
+    <!--向下箭头图标-->
     <p class="down-icon"></p>
+    <!--最近抓中记录-->
     <div class="history-wrapper">
       <div class="niu-history">
         <p class="title">最近抓中记录</p>
+        <!--扭蛋列表-->
         <ul class="niu-list">
           <li class="niu-item" v-for="item in historyList">
+            <!--用户头像-->
             <div class="icon"><img :src="item.avatar_thumb" alt=""></div>
+            <!--用户扭蛋信息-->
             <div class="info">
+              <!--扭蛋  用户扭到了数额-->
               <p class="name">{{item.user_nicename}} 扭到了 ({{item.giftname}})</p>
+              <!--扭蛋时间日期-->
               <p class="time">{{formatTime(item.ctime)}}</p>
             </div>
+            <!--扭蛋金币图片-->
             <div class="get-icon"><img :src="item.gifticon" alt=""></div>
           </li>
         </ul>
       </div>
     </div>
+    <!--扭蛋详情-->
     <div class="img-wrapper">
       <div class="niu-history img-desc">
         <p class="title">扭蛋详情</p>
+        <!--扭蛋详情图-->
         <img class="desc-img" v-for="(item,index) in niudanInfo.img" :key="index" :src="item" alt="">
       </div>
     </div>
+
     <less-coin v-if="isLessCoin" @close-less-coin="closeLessCoin"/>
   </div>
 </template>

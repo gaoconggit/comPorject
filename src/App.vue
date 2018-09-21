@@ -1,6 +1,11 @@
+<!--template是声明模板元素，可以使html标签在js中使用，可以在任意位置上使用。
+childNodes无效性如果非得获取“伪子元素”，要使用content属性
+-->
 <template>
   <div>
+  	<!--使用transition完成任何元素进入/离开的过渡组件-->
     <transition name="router-fade" mode="out-in">
+    	<!--vue实例 组件-->
       <keep-alive>
         <router-view v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
@@ -28,8 +33,8 @@
         set_userInfo: "SET_USER_INFO"
       }),
       _getToken() {
-        let token = getCookie('wawaji_token') || "a1960558963cdef71fefb224614d868d";
-        let uid = getStore("wawaji_uid") || "100180";
+        let token = getCookie('wawaji_token') || "3dfd7fd4240f133b4f0af609ecf07e0f";
+        let uid = getStore("wawaji_uid") || "100178";
         this.set_uid(uid);
         this.set_token(token);
         this._getBaseInfo();
