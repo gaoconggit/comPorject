@@ -103,8 +103,6 @@
         }
       },
       rechargeCharge() {
-        console.log(this.selectIndex);
-        showToast(`支付的商品ID：${this.selectIndex}`);
         this._getRecharge(this.selectIndex);
       },
       gotoVip() {

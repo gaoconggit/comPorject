@@ -113,7 +113,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
           "onGroupSystemNotifys": () => {
           }, //监听（多终端同步）群系统消息事件，必填
         };
-        webim.login(loginInfo, listeners, {},
+        webim.login(loginInfo, listeners, {'isLogOn': false},
           function (identifierNick) {
             console.log('登录成功');
             webim.Log.info('webim登录成功');
