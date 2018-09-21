@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="center" :class="{'active':details.type==6}">
-          <p>{{filter(details.content)}}</p>
+          <p v-html="details.content"></p>
         </div>
         <div class="goods" v-if="details.type==6">
           <div v-if="content.coin">
@@ -32,7 +32,7 @@
       </div>
       <div class="box-wrap-sys" v-else>
         <h1 class="title">{{sysDetails.title}}</h1>
-        <div class="content">{{sysDetails.content}} </div>
+        <div class="content" v-html="sysDetails.content"></div>
       </div>
       <div class="mask" @click.stop="confirmNotice"></div>
     </div>

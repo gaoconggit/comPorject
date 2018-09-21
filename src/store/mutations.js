@@ -44,6 +44,9 @@ const mutation = {
   [types.SET_SHOW_HIDE_DIALOG](state, bool) {
     state.showHideDialog = bool
   },
+  [types.SET_NOTICE_CENTER](state, obj) {
+    state.noticeCenter = obj
+  },
 };
 
 export default mutation;

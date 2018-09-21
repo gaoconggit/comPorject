@@ -27,10 +27,9 @@
   <!--兼容各种浏览器的播放器-->
   <script src="./static/js/jsmpeg.min.js"></script>
 </head>
-<body>
-<script> window.onload = function ()
-{
-	//移动端尺寸的兼容问题 init一般用于初始化
+<body ondragstart="return false">
+<script> window.onload = function () {
+  //移动端尺寸的兼容问题 init一般用于初始化
   window.viewportUnitsBuggyfill.init({hacks: window.viewportUnitsBuggyfillHacks});
 }
 </script>

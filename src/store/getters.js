@@ -25,3 +25,5 @@ export const mailDetails = state => state.mailDetails;
 export const isOneShow = state => state.isOneShow;
 
 export const showHideDialog = state => state.showHideDialog;
+
+export const noticeCenter = state => state.noticeCenter;

@@ -8,6 +8,7 @@
                @listenToStartGame="listenToStartGame" :exit-i-m="exitIM"
                @listenToCancelGame="listenToCancelGame" @listenToJoinGame="listenToJoinGame"
                @listenGrabResult="showListenGrabResult"
+               @listenToNotice="listenToNotice"
                @listenToChildEventFail="showMsgFromChildFail" commend-user-name="wodeluck" :tim_uid="tim_uid"
                :tim_sig="tim_sig" :send-msg-text="filterMessage" :begin-send-msg="isBeginSendMsg"
                :av-chat-room-id="roomId" :msg-type="msgType" :game-id="gameId"
@@ -219,6 +220,7 @@
         tcpIP: '',            //WebSocketIP
         webSocket: '',        //WebSocket连接
         isVideo: true,
+        user_setting: {},
       };
     },
     created() {
@@ -237,6 +239,7 @@
       // this.tim_sig = 'eJx1z09PgzAYx-E7r6LpFaPtKAN22yYq2yB2fxjuQhgt0rgVhJpuGt*7EZeMi8-190m*eb4MAABcL1a3WZ5XH1Kl6lxzCEYADpDnDODNFdS1YGmmUqthHcAEIWS7rot7ip9q0fA0KxRv-pTtDF30ez0lGJdKFOJiMnYUsje37C3tcv93WvHajaH-Mg3ovTmPJpI*klVMcbvQZ42fljMred7uZvFkHeowrz0WbPyHSAflOLpD2yTJ3j99dJDF1K5K097I5c7cHyqNLV7uOaXjMG7np15SiSO-vISJTRwy9KDxbfwApfVXwQ__';
       this.tim_sig = getStore('wawaji_tim_sig');
       this.tim_uid = getStore('wawaji_tim_uid');
+      this.user_setting = this.userInfo.user_setting;
 
       window.addEventListener("popstate", () => {
         this.sendMsgToIM(4);
@@ -249,7 +252,7 @@
       next();
     },
     methods: {
-      ...mapMutations({set_userInfo: 'SET_USER_INFO'}),
+      ...mapMutations({set_userInfo: 'SET_USER_INFO', set_noticeCenter: 'SET_NOTICE_CENTER'}),
       sendMsgToIM(data) {
         console.log("data:", data);
         console.log("data:", this.roomId);
@@ -267,6 +270,7 @@
         let result = await api.getJoinRoom(this.wawaId, this.roomId);
         console.log(result);
         if (result.code != 1) {
+          this.$vux.loading.hide();
           this.$router.back();
         }
         if (result.code == 1) {
@@ -290,54 +294,56 @@
             }
           }
           this.roomData = result.data;
-          if (this.userInfo.user_setting.user_setting == 1) {
-            //背景音乐
-            if (!this.bgmusic) {
-              this.bgmusic = new Howl({
-                src: [result.data.bgmusic],
-                autoplay: true,
+          if (this.user_setting != null) {
+            if (this.user_setting.bgmusic == 1) {
+              //背景音乐
+              if (!this.bgmusic) {
+                this.bgmusic = new Howl({
+                  src: [result.data.bgmusic],
+                  autoplay: true,
+                  preload: true,
+                  loop: true
+                });
+              }
+              //游戏中背景音乐
+              this.game_bgmusic = new Howl({
+                src: [result.game_bgmusic],
                 preload: true,
                 loop: true
               });
             }
-            //游戏中背景音乐
-            this.game_bgmusic = new Howl({
-              src: [result.game_bgmusic],
-              preload: true,
-              loop: true
-            });
-          }
-          if (this.userInfo.user_setting.yx == 1) {
-            //按钮音效
-            this.yx_anniu = new Howl({
-              src: [result.data.yx_anniu],
-              preload: true,
-            })
-            //倒计时音效
-            this.yx_daojishi = new Howl({
-              src: [result.data.yx_daojishi],
-              preload: true,
-            })
-            //成功音效
-            this.yx_chenggong = new Howl({
-              src: [result.data.yx_chenggong],
-              preload: true
-            })
-            //失败音效
-            this.yx_shibai = new Howl({
-              src: [result.data.yx_shibai],
-              preload: true,
-            })
-            //开始音效
-            this.yx_kaishi = new Howl({
-              src: [result.data.yx_kaishi],
-              preload: true,
-            })
-            //下抓音效
-            this.yx_xiazhua = new Howl({
-              src: [result.data.yx_xiazhua],
-              preload: true,
-            });
+            if (this.user_setting.yx == 1) {
+              //按钮音效
+              this.yx_anniu = new Howl({
+                src: [result.data.yx_anniu],
+                preload: true,
+              })
+              //倒计时音效
+              this.yx_daojishi = new Howl({
+                src: [result.data.yx_daojishi],
+                preload: true,
+              })
+              //成功音效
+              this.yx_chenggong = new Howl({
+                src: [result.data.yx_chenggong],
+                preload: true
+              })
+              //失败音效
+              this.yx_shibai = new Howl({
+                src: [result.data.yx_shibai],
+                preload: true,
+              })
+              //开始音效
+              this.yx_kaishi = new Howl({
+                src: [result.data.yx_kaishi],
+                preload: true,
+              })
+              //下抓音效
+              this.yx_xiazhua = new Howl({
+                src: [result.data.yx_xiazhua],
+                preload: true,
+              });
+            }
           }
           /*视频播放*/
           let videoWrapMain = this.$refs.videoWrapMain;
@@ -464,7 +470,6 @@
       listenToLiveOutRoom(data) {//监听到有人退出房间
         console.log("监听到有人退出房间");
         if (this.userInfo.id === data) {
-          this.exitIM = true;
           if (this.bgmusic) {
             this.bgmusic.stop();
           }
@@ -484,6 +489,7 @@
             this.yx_chenggong.stop();
           }
           this.$vux.loading.hide();
+          this.exitIM = true;
           if (this.isNewRoom) {
             setTimeout(() => {
               this.$router.push({path: '/home/index', query: {keep: 'no'}})
@@ -511,6 +517,21 @@
       broadcastToAll() {//监听操作结束，且不是本人
         console.log("监听操作结束，且不是本人");
         this._getJoinRoom();
+      },
+      listenToNotice(data) {
+        console.log("监听有人抓中了娃娃");
+        this.set_noticeCenter({
+          show: true,
+          title: data.title,
+          avatar: data.avatar_thumb
+        });
+        setTimeout(() => {
+          this.set_noticeCenter({
+            show: false,
+            title: '',
+            avatar: ''
+          });
+        }, 3000)
       },
       showListenGrabResult(data) {//监听抓取结果
         console.log("监听抓取结果:", data);

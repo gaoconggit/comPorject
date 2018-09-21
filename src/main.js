@@ -10,9 +10,8 @@ import {APPID, DESC, routerMode, TITLE, URL} from "./config/config";
 import {mapMutations, mapState} from "vuex";
 import FastClick from 'fastClick';
 import {LoadingPlugin, ToastPlugin, AlertPlugin, WechatPlugin} from 'vux';
-import {delCookie, getCookie, getQueryString, getStore, removeStore, setCookie, setStore} from './common/util/ImUtils';
+import {delCookie, getCookie, getQueryString, removeStore, setCookie, setStore} from './common/util/ImUtils';
 import api from "./api/BaseService";
-import {showToast} from "./common/util/Utils";
 
 Vue.use(VueLazyload);
 Vue.use(LoadingPlugin);
@@ -91,7 +90,6 @@ if (process.env.NODE_ENV === "production") {
 const wx = Vue.wechat;
 Vue.prototype.wxShare = function (title = TITLE, desc = DESC, link = URL) {
   const url = encodeURIComponent(location.href.split('#')[0]);
-  console.log('当URL', url);
   api.getSignature(url)
     .then((res) => {
       wx.config(res.data);

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!is_show_chat">
     <scroller class="barrage-wrap" lock-x scrollbar-y ref="scrollerChat">
       <div class="chat-box" ref="chatBox">
         <p class="tips">禁止传播违法违规、封建迷行、暴力血腥、低俗色情、招嫖诈骗、违禁品等不良信息，坚决维护青少钱群体精神文明健康。</p>
@@ -54,6 +54,7 @@
         });
       },
       avChatRoomId: function () {
+        console.log(1234)
         this.initIM();
       },
       exitIM: function () {
@@ -62,7 +63,7 @@
         }
       }
     },
-    props: ['tim_uid', 'tim_sig', 'sendMsgText', 'beginSendMsg', 'avChatRoomId', 'commendUserName', 'exitIM', 'msgType', 'roomId', 'gameId', 'notice', 'reservationRandomNum'],
+    props: ['is_show_chat', 'tim_uid', 'tim_sig', 'sendMsgText', 'beginSendMsg', 'avChatRoomId', 'commendUserName', 'exitIM', 'msgType', 'roomId', 'gameId', 'notice', 'reservationRandomNum', 'is_again_login'],
     mounted() {
       console.log("props tim_uid", this.tim_uid);
     },
@@ -72,9 +73,14 @@
       exitIMm() {
         console.log("退出IM");
         this.quitBigGroup();
-        this.logout();
+        //this.logout();
       },
       initIM() {
+        console.log('从新渲染');
+        if (this.is_again_login) {
+          console.log('重新登录');
+          sdkLogin();
+        }
         this.selType = webim.SESSION_TYPE.GROUP;
         let selToID = this.avChatRoomId;//当前选中聊天id（当聊天类型为私聊时，该值为好友帐号，否则为群号）
         this.selToID = this.avChatRoomId;
@@ -322,14 +328,10 @@
             options,
             function (resp) {
               //JoinedSuccess:加入成功; WaitAdminApproval:等待管理员审批
-              if (resp.JoinedStatus && resp.JoinedStatus == 'JoinedSuccess') {
-                webim.Log.info('进群成功');
-                selToID = groupId;
-                console.log("进群成功:", _this.selToID, groupId);
-                _this.selToID = groupId;
-              } else {
-                alert('进群失败');
-              }
+              webim.Log.info('进群成功');
+              selToID = groupId;
+              console.log("进群成功:", _this.selToID, groupId);
+              _this.selToID = groupId;
             },
             function (err) {
               alert(err.ErrorInfo);
@@ -342,6 +344,7 @@
           webim.login(loginInfo, listeners, options,
             function (identifierNick) {
               //identifierNick为登录用户昵称(没有设置时，为帐号)，无登录态时为空
+              console.log('登录成功');
               webim.Log.info('webim登录成功');
               applyJoinBigGroup('0');
               applyJoinBigGroup(selToID); //加入大群
@@ -546,6 +549,9 @@
                   }
                   break;
                 case 12://滚动公告推送
+                  if (_msg.user_id != 0) {
+                    this.$emit('listenToNotice', _msg.new_notice);
+                  }
                   break;
                 case 13://
                   break;

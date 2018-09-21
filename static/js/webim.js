@@ -2137,22 +2137,22 @@ var webim = { // namespace object webim
 
         this.error = function (logStr) {
             try {
-                on //&& console.error(logStr);
+                on && console.error(logStr);
             } catch (e) {}
         };
         this.warn = function (logStr) {
             try {
-                on //&& console.warn(logStr);
+                on && console.warn(logStr);
             } catch (e) {}
         };
         this.info = function (logStr) {
             try {
-                on //&& console.info(logStr);
+                on && console.info(logStr);
             } catch (e) {}
         };
         this.debug = function (logStr) {
             try {
-                on //&& console.debug(logStr);
+                on && console.debug(logStr);
             } catch (e) {}
         };
     };
