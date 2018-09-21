@@ -21,10 +21,10 @@
       </div>
     </div>
     <!--扭蛋机的框架-->
-    <iframe v-if="production" :src="'../../../../static/dist/index.html' + $route.query.url"
-            ref="iframe" class="iframe"></iframe>
-    <iframe v-else :src="'./static/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
     <!--向下箭头图标-->
+    <iframe v-if="production" :src="'../../../../static/web/dist/index.html' + $route.query.url"
+            ref="iframe" class="iframe"></iframe>
+    <iframe v-else :src="'./static/web/dist/index.html' + $route.query.url" ref="iframe" class="iframe"></iframe>
     <p class="down-icon"></p>
     <!--最近抓中记录-->
     <div class="history-wrapper">
@@ -261,6 +261,7 @@
               line-height: 44px;
             }
             .name {
+              font-size: @mainFontSize;
               .over-ellip;
             }
             .time {

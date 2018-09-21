@@ -56,7 +56,7 @@
       <!--我的积分-->
       <div class="item" @click="mineItem(5)">
         <p class="item-icon max"><img src="~/img/mine/icon_integral.png" alt=""></p>
-        <p class="item-title">我的积分 <span class="num">{{userInfo.coin}}</span></p>
+        <p class="item-title">我的积分 <span class="num">{{userInfo.score}}</span></p>
         <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
       </div>
       <!--常见问题-->
@@ -250,7 +250,6 @@
         }
         .item-title {
           flex: 1;
-          .over-ellip;
           .num {
             color: @mainColor;
             font-size: @subFontSize;

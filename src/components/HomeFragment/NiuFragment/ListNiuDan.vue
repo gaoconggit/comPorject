@@ -46,7 +46,6 @@
           query: {
             title: item.name,
             id: item.id,
-            // url: `${baseUrl}niudan/index.php?base_url=${baseUrl}api/public/&token=${this.userInfo.token}&uid=${this.userInfo.id}&room_id=${item.id}`
             url: `?base_url=${baseUrl}api/public/&token=${this.token}&uid=${this.uid}&room_id=${item.id}`
           },
           meta: {keepAlive: false}

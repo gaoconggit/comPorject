@@ -106,8 +106,15 @@
             console.log("is_select:", arr);
             this.unList = arr;
           } else {
-
             this.unList = this.unList.concat(arr);
+          }
+          if (isRefresh) {
+            this.emptySelect();
+            this.$refs.unDeliveryScroller.reset({top: 0}, 500);
+            this.$refs.unDeliveryScroller.enablePullup();
+            this.$refs.unDeliveryScroller.donePulldown();
+          } else {
+            this.$refs.unDeliveryScroller.reset();
           }
           if (result.data.length < 10) {
             this.$refs.unDeliveryScroller.disablePullup();
@@ -119,14 +126,6 @@
         } else {
           this.unList = [];
           this.$refs.unDeliveryScroller.disablePullup();
-        }
-        if (isRefresh) {
-          this.emptySelect();
-          this.$refs.unDeliveryScroller.reset({top: 0}, 500);
-          this.$refs.unDeliveryScroller.enablePullup();
-          this.$refs.unDeliveryScroller.donePulldown();
-        } else {
-          this.$refs.unDeliveryScroller.reset();
         }
       },
       onPullDown() {

@@ -115,6 +115,10 @@
         width: 356px !important;
         height: 436px !important;
         .img-spread;
+        img {
+          background-image: url('~img/home-list.png');
+          background-size: cover;
+        }
       }
       .tag_left, .tag_right {
         position: absolute;

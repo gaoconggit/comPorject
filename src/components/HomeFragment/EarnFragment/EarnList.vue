@@ -9,6 +9,7 @@
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import {Grid, GridItem} from "vux";
   import {baseUrl} from "../../../config/config";
 
@@ -22,11 +23,34 @@
       clickItem(item) {
         console.log(item);
         if (/http:\/\//.test(item.url)) {
-          this.$router.push({path: '/details', query: {title: '小游戏', full: 1, url: item.url}})
+          if (item.jump_target === 'wheelgame') {
+            this.$router.push({
+              path: '/wheel',
+              query: {title: '小游戏', full: 1, url: `?base_url=${baseUrl}api/public/&token=${this.token}&uid=${this.uid}`}
+            })
+          } else {
+            this.$router.push({
+              path: '/details',
+              query: {title: '小游戏', full: 1, url: item.url}
+            })
+          }
         } else {
-          this.$router.push({path: '/details', query: {title: '小游戏', full: 1, url: `${baseUrl}${item.url}`}})
+          if (item.jump_target === 'wheelgame') {
+            this.$router.push({
+              path: '/wheel',
+              query: {title: '小游戏', full: 1, url: `?base_url=${baseUrl}api/public/&token=${this.token}&uid=${this.uid}`}
+            })
+          } else {
+            this.$router.push({
+              path: '/wheel',
+              query: {title: '小游戏', full: 1, url: `${baseUrl}${item.url}`}
+            })
+          }
         }
       }
+    },
+    computed: {
+      ...mapGetters(['token', 'uid'])
     },
     components: {Grid, GridItem}
   }

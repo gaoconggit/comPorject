@@ -6,17 +6,19 @@ import VueLazyload from "vue-lazyload";
 /*各种页面的路由地址*/
 import routes from './router/index';
 import store from './store/';
-import {APPID, routerMode, URL} from "./config/config";
+import {APPID, DESC, routerMode, TITLE, URL} from "./config/config";
 import {mapMutations, mapState} from "vuex";
 import FastClick from 'fastClick';
-import {LoadingPlugin, ToastPlugin, AlertPlugin} from 'vux';
+import {LoadingPlugin, ToastPlugin, AlertPlugin, WechatPlugin} from 'vux';
 import {delCookie, getCookie, getQueryString, getStore, removeStore, setCookie, setStore} from './common/util/ImUtils';
 import api from "./api/BaseService";
+import {showToast} from "./common/util/Utils";
 
 Vue.use(VueLazyload);
 Vue.use(LoadingPlugin);
 Vue.use(ToastPlugin, {position: 'middle'});
 Vue.use(AlertPlugin);
+Vue.use(WechatPlugin);
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,
@@ -63,9 +65,9 @@ if (process.env.NODE_ENV === "production") {
           .then((res) => {
             console.log(res);
             if (res.code == 1) {
-              store.commit('setToken', res.data.token);
-              store.commit('setUid', res.data.id);
-              store.commit('setUserInfo', res.data);
+              store.commit('SET_TOKEN', res.data.token);
+              store.commit('SET_UID', res.data.id);
+              store.commit('SET_USER_INFO', res.data);
               setStore('wawaji_tim_uid', res.data.tim_uid);
               setStore('wawaji_tim_sig', res.data.user_sig);
               next();
@@ -85,6 +87,72 @@ if (process.env.NODE_ENV === "production") {
     }
   })
 }
+
+const wx = Vue.wechat;
+Vue.prototype.wxShare = function (title = TITLE, desc = DESC, link = URL) {
+  const url = encodeURIComponent(location.href.split('#')[0]);
+  console.log('当URL', url);
+  api.getSignature(url)
+    .then((res) => {
+      wx.config(res.data);
+      wx.ready(() => {
+        //分享朋友
+        wx.onMenuShareAppMessage({
+          title,
+          desc,
+          link,
+          imgUrl: URL + 'static/img/logo.png',
+          success: function () {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          },
+          cancel: (() => {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          })
+        })
+        //朋友圈
+        wx.onMenuShareTimeline({
+          title,
+          link,
+          imgUrl: URL + 'static/img/logo.png',
+          success: function () {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          },
+          cancel: (() => {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          })
+        })
+        //分享QQ
+        wx.onMenuShareQQ({
+          title,
+          desc,
+          link,
+          imgUrl: URL + 'static/img/logo.png',
+          success: function () {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          },
+          cancel: (() => {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          })
+        })
+        //分享到QQ空间
+        wx.onMenuShareQZone({
+          title,
+          desc,
+          link,
+          imgUrl: URL + 'static/img/logo.png',
+          success: function () {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          },
+          cancel: (() => {
+            store.commit('SET_SHOW_HIDE_DIALOG', false);
+          })
+        })
+      })
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+};
 
 /* eslint-disable no-new */
 new Vue({

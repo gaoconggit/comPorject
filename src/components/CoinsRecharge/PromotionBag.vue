@@ -14,6 +14,12 @@
         <div class="money">
           <img :src="moneyImg(parseInt(showGiftBag.money)/100)" alt="">
         </div>
+        <div class="coin_per">
+          <img :src="coinPerImg(parseInt(showGiftBag.coin_per_day))" alt="">
+        </div>
+        <div class="btn-wrapper" @click="buyBag">
+          <img src="~/img/special/btn_wecat.png" alt="">
+        </div>
       </div>
     </transition-scale>
   </div>
@@ -21,7 +27,7 @@
 
 <script>
   import TransitionScale from "@/common/TransitionScale";
-  import {formatSeconds} from "../../common/util/Utils";
+  import {formatSeconds, WXPay} from "../../common/util/Utils";
   import api from "../../api/BaseService";
 
   export default {
@@ -47,6 +53,9 @@
         } else {
           this.$emit('close-promotion');
         }
+      },
+      buyBag() {
+        WXPay(this.showGiftBag.charge_id);
       },
       closePromotion() {
         this.showBog = false;
@@ -143,6 +152,29 @@
             img = "";
         }
         return img;
+      },
+      coinPerImg(num) {
+        let img = "";
+        switch (num) {
+          case 10:
+            img = require("img/special/return_10.png");
+            break;
+          case 15:
+            img = require("img/special/return_15.png");
+            break;
+          case 20:
+            img = require("img/special/return_20.png");
+            break;
+          case 25:
+            img = require("img/special/return_25.png");
+            break;
+          case 30:
+            img = require("img/special/return_30.png");
+            break;
+          default:
+            img = "";
+        }
+        return img;
       }
     },
     components: {TransitionScale}
@@ -212,6 +244,23 @@
         right: 40px;
         width: 160px;
         height: 70px;
+        .img-spread;
+      }
+      .coin_per {
+        position: absolute;
+        bottom: 182px;
+        right: 142px;
+        width: 25px;
+        height: 17px;
+        .img-spread;
+      }
+      .btn-wrapper {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        width: 244px;
+        height: 78px;
+        transform: translateX(-50%);
         .img-spread;
       }
     }

@@ -5,25 +5,13 @@ import * as types from "./mutation-types";
 import {setCookie, setStore} from "../common/util/ImUtils";
 
 const mutation = {
-  setUid(state, uid) {
-    setStore('wawaji_uid', uid);
-    state.uid = uid;
-  },
   [types.SET_UID](state, uid) {
     setStore('wawaji_uid', uid);
     state.uid = uid;
   },
-  setToken(state, token) {
-    setCookie('wawaji_token', token);
-    state.token = token;
-  },
   [types.SET_TOKEN](state, token) {
     setCookie('wawaji_token', token);
     state.token = token;
-  },
-  setUserInfo(state, userInfo) {
-    setStore("wawaji_userInfo", JSON.stringify(userInfo));
-    state.userInfo = userInfo;
   },
   [types.SET_USER_INFO](state, userInfo) {
     setStore("wawaji_userInfo", JSON.stringify(userInfo));
@@ -47,9 +35,15 @@ const mutation = {
   [types.SET_MAIL_DETAILS](state, details) {
     state.mailDetails = details
   },
+  [types.SET_MAIL_DETAILS](state, details) {
+    state.mailDetails = details
+  },
   isOneShow(state) {
     state.isOneShow = false;
-  }
+  },
+  [types.SET_SHOW_HIDE_DIALOG](state, bool) {
+    state.showHideDialog = bool
+  },
 };
 
 export default mutation;

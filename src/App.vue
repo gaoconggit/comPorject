@@ -17,6 +17,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
 </template>
 
 <script>
+  import VConsole from "vconsole";
   import {mapMutations} from "vuex";
   import api from "api/BaseService";
   import {delCookie, getCookie, getStore, removeStore, setStore} from "./common/util/ImUtils";
@@ -25,6 +26,10 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
     name: "App",
     created() {
       this._getToken();
+      this.wxShare();
+    },
+    mounted() {
+      //new VConsole();
     },
     methods: {
       ...mapMutations({
@@ -33,8 +38,8 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
         set_userInfo: "SET_USER_INFO"
       }),
       _getToken() {
-        let token = getCookie('wawaji_token') || "3dfd7fd4240f133b4f0af609ecf07e0f";
-        let uid = getStore("wawaji_uid") || "100178";
+        let token = getCookie('wawaji_token') || "9bdd822e03292069171cd3f36ad84361";
+        let uid = getStore("wawaji_uid") || "100185";
         this.set_uid(uid);
         this.set_token(token);
         this._getBaseInfo();

@@ -35,6 +35,7 @@ const DistriDetail = r => require([], () => r(require('../components/MyWawa/Dist
 const AddressAll = r => require([], () => r(require('../components/MyWawa/AddressAll')));
 const FillAddress = r => require([], () => r(require('../components/MyWawa/FillAddress')));
 const MailDetails = r => require([], () => r(require('../components/MyWawa/MailDetails')));
+const WheelSurf = r => require([], () => r(require('../components/HomeFragment/EarnFragment/WheelSurf')));
 
 export default [{
   path: '/',
@@ -75,5 +76,6 @@ export default [{
     {path: '/maildetails', name: '订单详情', component: MailDetails},
     {path: '/invitation', name: '我的邀请码', component: InvitationCode},
     {path: '/invitationinput', name: '输入邀请码', component: InvitationInput},
+    {path: '/wheel', name: '转盘', component: WheelSurf},
   ]
 }];

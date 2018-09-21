@@ -110,7 +110,6 @@ export default {
       axios({
         method: 'get',
         url: baseUrl + url,
-        params,
         cancelToken: new CancelToken(c => {
           cancel = c;
         })
@@ -159,12 +158,8 @@ export default {
 
   //微信公众号分享获取签名
   getSignature(sendUrl) {
-    let url = `${apiData.public}Order.getSignature`;
-    let formData = new FormData()
-    formData.append('token', state.token);
-    formData.append('uid', state.uid);
-    formData.append('url', sendUrl);
-    return this.postAxiosAction(url, formData);
+    let url = `${apiData.public}Order.getSignature&token=${state.token}&uid=${state.uid}&url=${sendUrl}`;
+    return this.getAxiosAction(url);
   },
   //微信登录
   loginWeChat(code) {
@@ -181,6 +176,28 @@ export default {
     formData.append("api_name", "online");
     formData.append("token", state.token);
     formData.append("uid", state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //充值接口调用
+  getRecharge(coinId) {
+    let url = apiData.record;
+    let formData = new FormData();
+    formData.append('api_name', 'recharge');
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('coin_id', coinId);
+    formData.append('type', 1);
+    formData.append('wxpay_type', 'JSAPI');
+    return this.postAxiosAction(url, formData, true);
+  },
+  //支付上报
+  postReportPayResult(oid, type) {
+    let url = `${apiData.public}Record.reportPayResult`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('oid', oid);
+    formData.append('pay_ret', type);
     return this.postAxiosAction(url, formData);
   },
   //获取个人信息

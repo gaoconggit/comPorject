@@ -53,9 +53,6 @@
         <div class="recharges-btn" @click="rechargeCharge">
           <img src="~/img/myCoin/recharge_wecat.png" alt="">
         </div>
-        <div class="recharges-btn" @click="rechargeCharge">
-          <img src="~/img/myCoin/recharge_alipay.png" alt="">
-        </div>
       </div>
     </div>
     <!--顶部按钮-->
@@ -69,7 +66,7 @@
   import TitleBar from "@/common/TitleBar";
   import PromotionBag from "./PromotionBag";
   import api from "../../api/BaseService";
-  import {showToast} from "../../common/util/Utils";
+  import {showToast, WXPay} from "../../common/util/Utils";
 
   export default {
     name: "CoinsIndex",
@@ -97,6 +94,9 @@
         this.vipCard = result.vip_card;
         this.charges = result.charge;
       },
+      _getRecharge(coinId) {
+        WXPay(coinId);
+      },
       listItem(id) {
         if (id != this.selectIndex) {
           this.selectIndex = id;
@@ -105,6 +105,7 @@
       rechargeCharge() {
         console.log(this.selectIndex);
         showToast(`支付的商品ID：${this.selectIndex}`);
+        this._getRecharge(this.selectIndex);
       },
       gotoVip() {
         this.$router.push({path: '/vip'});
@@ -152,21 +153,21 @@
         margin: 8px 0;
         .card {
           position: relative;
-          width: 376px;
-          height: 192px;
+          width: 366px;
+          height: 182px;
           font-weight: 600;
           .img-spread;
           & > span {
             position: absolute;
           }
           .extra-rate {
-            top: 20px;
-            left: 196px;
-            padding: 0 12px;
+            top: 19px;
+            left: 192px;
+            padding: 0 10px;
             height: 32px;
             line-height: 32px;
             color: @whiteColor;
-            font-size: @subFontSize;
+            font-size: @minFontSize;
             font-weight: 600;
             background-color: @warnColor;
             &::before {
@@ -181,8 +182,8 @@
           }
           .actual-coin {
             top: 72px;
-            left: 36px;
-            font-size: @maxFontSize;
+            left: 30px;
+            font-size: @mainFontSize;
             color: @whiteColor;
           }
           .return-coin {
@@ -190,13 +191,15 @@
             left: 110px;
             width: 100px;
             font-size: @subFontSize;
+            font-weight: 700;
             color: @warnColor;
             text-align: center;
           }
           .money {
-            top: 126px;
+            top: 120px;
             left: 28px;
             color: @whiteColor;
+            font-size: @subFontSize;
           }
           .desc-text {
             position: absolute;

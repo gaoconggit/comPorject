@@ -3,7 +3,7 @@
     <!--导航置顶-->
     <ul class="nav-wrapper" :class="isNavWrapperTop?'nav-wrapper-top':''" v-if="isNavWrapperTop" ref="navWrapper">
       <li class="nav-item" v-for="(nav,index) in navs" :key="nav.id" @click="navItem(index)">
-        <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
+        <img :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
       </li>
     </ul>
 
@@ -83,7 +83,7 @@
   import ScrollView from "@/common/ScrollView";
   import SwiperList from "@/common/SwiperList";
   import api from "api/BaseService";
-  import {clickBannerItem} from "../../../common/util/Utils";
+  import {clickBannerItem, updateBaseInfo} from "../../../common/util/Utils";
   import {baseUrl} from "../../../config/config";
 
   export default {
@@ -153,6 +153,7 @@
         if (result.data.length) {
           //上拉刷新更新数据
           if (isRefresh) {
+            updateBaseInfo();
             this.listPage = 1;
             this.$refs.scrollerIndex.reset({top: 0}, 500);
             this.$refs.scrollerIndex.enablePullup();
@@ -398,10 +399,10 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      height: 90px;
+      height: 80px;
       .btn_item {
-        width: 214px;
-        height: 84px;
+        width: 210px;
+        height: 78px;
         img {
           width: 100%;
           height: 100%;
@@ -409,10 +410,10 @@
       }
     }
     .nav-wrapper {
-      margin-bottom: 8px;
+      margin-top: -6px;
       display: flex;
       justify-content: center;
-      height: 130px;
+      height: 120px;
       transition: all 0.3s;
       z-index: 2 !important;
       &.nav-wrapper-top {
@@ -424,12 +425,9 @@
         box-shadow: 4px 4px 12px #888;
       }
       .nav-item {
-        width: 130px;
-        height: 130px;
-        .nav-icon {
-          width: 100%;
-          height: 100%;
-        }
+        width: 120px;
+        height: 120px;
+        .img-spread;
       }
     }
   }

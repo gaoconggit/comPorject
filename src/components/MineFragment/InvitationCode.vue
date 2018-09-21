@@ -24,19 +24,21 @@
       </div>
     </div>
     <div class="bottom-img">
-      <div class="icon" @click="shareGoto('wechat')"><img src="~/img/invitation/share_weixin.png" alt=""></div>
-      <div class="icon" @click="shareGoto('friend')"><img src="~/img/invitation/share_ic_friend.png" alt=""></div>
-      <div class="icon" @click="shareGoto('qq')"><img src="~/img/invitation/share_qq.png" alt=""></div>
-      <div class="icon" @click="shareGoto('qqkong')"><img src="~/img/invitation/share_qqkongjian.png" alt=""></div>
+      <div class="icon" @click="shareGoto"><img src="~/img/invitation/share_weixin.png" alt=""></div>
+      <div class="icon" @click="shareGoto"><img src="~/img/invitation/share_ic_friend.png" alt=""></div>
+      <div class="icon" @click="shareGoto"><img src="~/img/invitation/share_qq.png" alt=""></div>
+      <div class="icon" @click="shareGoto"><img src="~/img/invitation/share_qqkongjian.png" alt=""></div>
     </div>
+    <share-dialog v-if="isShowHideDialog" @on-hide="onHide"/>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import {Qrcode} from "vux";
   import TitleBar from "@/common/TitleBar";
+  import ShareDialog from "@/common/ShareDialog";
   import api from "../../api/BaseService";
-  import {APPID, URL} from "../../config/config";
 
   const crypto = require("crypto");
 
@@ -46,30 +48,18 @@
       return {
         myCodeData: [],         //我的邀请码
         codeRule: [],           //邀请码规则
+        isShowHideDialog: false,
       }
     },
-    created() {
-      api.getSignature(decodeURIComponent(location.href.split('#')[0]))
-        .then((res) => {
-          console.log("分享获取签名", res);
-          if (res.code == 1) {
-            wx.config({
-              debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-              appId: res.data.appId, // 必填，公众号的唯一标识
-              timestamp: res.data.timestamp, // 必填，生成签名的时间戳
-              nonceStr: res.data.nonceStr, // 必填，生成签名的随机串
-              signature: res.data.signature,// 必填，签名
-              jsApiList: res.data.jsApiList// 必填，需要使用的JS接口列表
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    watch: {
+      showHideDialog() {
+        this.isShowHideDialog = this.showHideDialog;
+      }
     },
     mounted() {
       this._getMyCode();
       this._getCodeRule();
+      this.isShowHideDialog = this.showHideDialog;
     },
     methods: {
       async _getMyCode() {
@@ -80,53 +70,17 @@
         let result = await api.getCodeRule();
         this.codeRule = result.data;
       },
-      shareGoto(val) {
-        if (val === 'wechat') {
-          console.log(1234)
-          wx.onMenuShareAppMessage({
-            title: '我是分享微信好友标题', // 分享标题
-            desc: '我是分享微信好友描述', // 分享描述
-            link: URL, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: 'http://wawa.app.xiaozhuschool.com/default.jpg', // 分享图标
-            type: '', // 分享类型,music、video或link，不填默认为link
-            success: function (res) {
-// 用户点击了分享后执行的回调函数
-              console.log('我是分享微信好友，QQ好友成功的回调:', res)
-            }
-          });
-        }
-        if (val === 'friend') {
-          console.log(4567)
-          wx.onMenuShareTimeline({
-            title: '我是分享微信好友标题', // 分享标题
-            link: URL, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: 'http://wawa.app.xiaozhuschool.com/default.jpg', // 分享图标
-            success: function (res) {
-              // 用户点击了分享后执行的回调函数
-              console.log('我是分享朋友圈成功的回调:', res)
-            }
-          })
-        }
-        if (val === 'qqkong') {
-          console.log(4567)
-          wx.onMenuShareQZone({
-            title: '我是分享QQ空间标题', // 分享标题
-            desc: '我是分享QQ空间标题', // 分享描述
-            link: URL, // 分享链接
-            imgUrl: 'http://wawa.app.xiaozhuschool.com/default.jpg', // 分享图标
-            success: function (res) {
-              // 用户确认分享后执行的回调函数
-              console.log('我是分享QQ空间成功的回调:', res)
-            },
-            cancel: function (res) {
-              // 用户取消分享后执行的回调函数
-              console.log('我是分享QQ空间失败的回调:', res)
-            }
-          });
-        }
+      shareGoto() {
+        this.$store.commit('SET_SHOW_HIDE_DIALOG', true);
+      },
+      onHide() {
+        this.$store.commit('SET_SHOW_HIDE_DIALOG', false);
       },
     },
-    components: {Qrcode, TitleBar}
+    computed: {
+      ...mapGetters(['showHideDialog'])
+    },
+    components: {Qrcode, TitleBar, ShareDialog}
   }
 </script>
 
