@@ -143,10 +143,10 @@ export function clickBannerItem(_this, item) {
   }
 }
 
-export async function WXPay(id) {
+/*公众号支付*/
+export async function WXPay(id, callback = null) {
   let result = await api.getRecharge(id);
   console.log(result);
-  console.log(vm.$wechat);
   if (result.code == 1) {
     vm.$wechat.chooseWXPay({
       timestamp: result.data.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
@@ -159,16 +159,25 @@ export async function WXPay(id) {
         console.log("支付成功的回调", res)
         api.postReportPayResult(result.data.inner_oid, 3);
         showToast('支付成功', 'text', 500);
+        if (callback) {
+          callback(1)
+        }
       },
       cancel: function (res) {
         console.log("支付取消的回调", res)
         api.postReportPayResult(result.data.inner_oid, 4);
         showToast('支付取消', 'text', 500);
+        if (callback) {
+          callback(2)
+        }
       },
       error: function (err) {
         console.log("支付失败的回调", err)
         api.postReportPayResult(result.data.inner_oid, result.code);
         showToast('支付失败', 'text', 500);
+        if (callback) {
+          callback(3)
+        }
       }
     });
   } else {

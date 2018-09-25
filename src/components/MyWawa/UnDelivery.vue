@@ -22,15 +22,15 @@
       <div class="btn deliver" @click="applyWawa"><img src="~/img/wawa/button_deliver.png" alt=""></div>
       <div class="btn exchange" @click="changeWawa">
         <img src="~/img/wawa/button_exchange.png" alt="">
-        <p>(可兑换{{selectCoin}}金币)</p>
+        <p>(可兑换{{selectScore}}积分)</p>
       </div>
     </div>
-    <transition-scale v-if="isChangeCoin">
+    <transition-scale v-if="isChangeScore">
       <div class="change-wrapper">
         <div class="box">
           <div class="close" @click="changeCoinClose"><img src="~/img/com_img/close.png" alt=""></div>
           <p class="title">确认兑换</p>
-          <p class="desc">可以兑换{{selectCoin}}个金币</p>
+          <p class="desc">可以兑换{{selectScore}}个积分</p>
           <div class="change-btn" @click="confirmChangeCoin"><p>确认兑换</p></div>
         </div>
       </div>
@@ -54,8 +54,8 @@
         unHeight: 0,
         unList: [],         //未发货的列表
         page: 1,            //默认页码
-        selectCoin: 0,      //选中可兑换的金币
-        isChangeCoin: false,  //娃娃兑换金币
+        selectScore: 0,      //选中可兑换的积分
+        isChangeScore: false,  //娃娃兑换积分
       }
     },
     mounted() {
@@ -68,12 +68,12 @@
       },
       isSelect() {
         if (this.isSelect.length) {
-          this.selectCoin = 0;
+          this.selectScore = 0;
           this.isSelect.forEach((item) => {
-            this.selectCoin += parseInt(item.needcoin, 10);
+            this.selectScore += parseInt(item.needscore, 10);
           })
         } else {
-          this.selectCoin = 0;
+          this.selectScore = 0;
           let arr = this.unList;
           arr.forEach((item) => {
             item.is_select = false;
@@ -157,6 +157,7 @@
           gifticon: item.gifticon,
           giftname: item.giftname,
           needcoin: item.needcoin,
+          needscore: item.needscore,
           is_receive: item.is_receive,
           is_newbee: item.is_newbee,
           ctime: item.ctime
@@ -170,12 +171,10 @@
       //申请发货
       applyWawa() {
         if (this.isSelect.length) {
-          console.log(this.isSelect);
           let arr = [];
           this.isSelect.forEach((item) => {
             arr.push(item.w_id);
           })
-          console.log(arr.join());
           api.getWawaMail(arr.join())
             .then((res) => {
               console.log(res);
@@ -198,51 +197,45 @@
         this.isSelect.forEach((item) => {
           console.log(item);
           if (parseInt(item.is_newbee)) {
-            showToast(item.giftname + '不能兑换金币', 'cancel', 2000, '300px');
+            showToast(item.giftname + '不能兑换积分', 'cancel', 2000, '300px');
             return false;
           }
-          if (!parseInt(item.needcoin)) {
-            showToast(item.giftname + '为活动娃娃，不能兑换金币', 'cancel', 2000, '300px');
+          if (!parseInt(item.needscore)) {
+            showToast(item.giftname + '为活动娃娃，不能兑换积分', 'cancel', 2000, '300px');
             return false;
           }
         })
-        let isNewbee = true;
-        let isNeedcoin = true;
-        isNewbee = this.isSelect.every((item) => {
-          if (parseInt(item.is_newbee)) {
-            return false;
-          } else {
-            return true;
-          }
+        let isNeedscore = -1;//积分为0的娃娃不可兑换
+        isNeedscore = this.isSelect.findIndex((item) => {
+          return parseInt(item.needscore) <= 0;
         });
-        isNeedcoin = this.isSelect.every((item) => {
-          if (!parseInt(item.needcoin)) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-        if (isNeedcoin && isNewbee && this.selectCoin) {
-          this.isChangeCoin = true;
+        if (isNeedscore !== -1) {
+          showToast(this.isSelect[isNeedscore].giftname + "不能兑换积分");
+          return;
+        }
+        if (this.selectScore) {
+          this.isChangeScore = true;
         } else {
           showToast('请选择需要兑换的娃娃');
         }
       },
       async confirmChangeCoin() {
-        console.log(1234)
-        let arr = this.isSelect;
-        let result = await api.getWawaConvertCoin(arr.join());
+        let arr = [];
+        this.isSelect.forEach((item) => {
+          arr.push(item.w_id);
+        })
+        let result = await api.getWawaConvertScore(arr.join());
         if (result.code == 1) {
           showToast(result.msg, 'success');
         } else {
           showToast(result.msg, 'cancel')
         }
-        this.isChangeCoin = false;
+        this.isChangeScore = false;
         this.page = 1;
         this._getMyWawaList(1, true);
       },
       changeCoinClose() {
-        this.isChangeCoin = false
+        this.isChangeScore = false
       }
     },
     computed: {

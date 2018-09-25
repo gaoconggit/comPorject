@@ -98,6 +98,7 @@
         let result = await api.getUserNoticeGoods(this.details.id);
         if (result.code == 1) {
           showToast(result.msg, 'success');
+          updateBaseInfo();
         } else {
           showToast(result.msg, 'cancel');
         }

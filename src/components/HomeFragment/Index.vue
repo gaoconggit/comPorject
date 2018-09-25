@@ -60,7 +60,7 @@
   import PublicNotice from "../../components/SignGater/PublicNotice";
   import NewBeeRoom from "../../components/SignGater/NewBeeRoom";
   import api from "../../api/BaseService";
-  import {showToast} from "../../common/util/Utils";
+  import {showToast, updateBaseInfo} from "../../common/util/Utils";
 
   export default {
     name: "HomeFragment",
@@ -186,6 +186,7 @@
           this.$store.commit('isOneShow');
           this.isPublicNotice = false;
         }
+        updateBaseInfo();
       },
       //获取新手场房间信息
       onIndexChange(index) {
@@ -235,6 +236,7 @@
       closeNewBee() {
         this.$store.commit('isOneShow', false);
         this.$router.push({path: '/recharge'});
+        updateBaseInfo();       //更新个人信息
         this.isNewBee = false;
       }
     },

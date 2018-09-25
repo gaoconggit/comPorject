@@ -25,6 +25,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
   import api from "api/BaseService";
   import {delCookie, escape2Html, getCookie, getStore, removeStore, setStore} from "./common/util/ImUtils";
   import {SDK_APPID, ACCOUNT_TYPE} from "./config/config";
+  import {updateBaseInfo} from "./common/util/Utils";
 
   export default {
     name: "App",
@@ -161,6 +162,9 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
                   if (_msg.user_id != 0) {
                     this.listenToNotice(_msg.new_notice);
                   }
+                  break;
+                case 20://监听支付成功
+                  updateBaseInfo();
                   break;
               }
             } else if (bigMsg.elems[0].type == 'TIMTextElem') {//聊天的

@@ -605,9 +605,18 @@ export default {
     formData.append('size', 10);
     return this.postAxiosAction(url, formData);
   },
-  //兑换娃娃
+  //兑换娃娃为金币
   getWawaConvertCoin(list) {
     let url = `${apiData.public}Wawa.convertCoin`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('w_list', list);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //兑换娃娃为金币
+  getWawaConvertScore(list) {
+    let url = `${apiData.public}Wawa.convertScore`;
     let formData = new FormData();
     formData.append('token', state.token);
     formData.append('uid', state.uid);
@@ -635,6 +644,15 @@ export default {
     formData.append('charge_id', chargeId);
     formData.append('pay_type', payType);
     return this.postAxiosAction(url, formData, true);
+  },
+  //娃娃邮费客户端支付成功
+  postRechordPaySuccess(orderId){
+    let url = `${apiData.public}Record.mailWawaPaySuccess`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('waybillno', orderId);
+    return this.postAxiosAction(url, formData);
   },
   //获取游戏历史记录
   getHistoryList(page = 1) {

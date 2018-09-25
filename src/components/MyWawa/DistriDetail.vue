@@ -30,10 +30,10 @@
       </div>
     </div>
     <div v-if="!isFree" class="select-type">
-      <div class="postage">
+      <div class="postage" @click="gotoPay(mailInfo.charge_rule[0].charge_id)">
         <p class="num">{{mailInfo.charge_rule[0].name}}</p>
       </div>
-      <div class="free-postage">
+      <div class="free-postage" @click="gotoPay(mailInfo.charge_rule[1].charge_id)">
         <p class="num">免邮费福利</p>
         <p class="num coin">{{mailInfo.charge_rule[1].name}}</p>
       </div>
@@ -52,7 +52,7 @@
   import TitleBar from "@/common/TitleBar";
   import WawaListItem from "@/common/WawaListItem";
   import {selectAddress} from "../../store/getters";
-  import {showToast} from "../../common/util/Utils";
+  import {showToast, updateBaseInfo, WXPay} from "../../common/util/Utils";
   import api from "../../api/BaseService";
 
   export default {
@@ -91,6 +91,7 @@
           console.log(result);
           if (result.code == 1) {
             this.emptySelect();
+            updateBaseInfo();
             this.$router.back();
             showToast('邮寄成功，请前往我的订单中查看', 'success', 1000, '300px');
           } else {
@@ -99,7 +100,40 @@
         } else {
           showToast('请选择收货地址')
         }
-      }
+      },
+      async gotoPay(id) {      //支付
+        if (this.selectAddress.addr_id) {
+          let arr = [];
+          this.isSelect.forEach((item) => {
+            arr.push(item.w_id);
+          });
+          let result = await api.getConfirmMail(this.selectAddress.addr_id, arr, id, 1);
+          console.log(result);
+          if (result.code == 1) {
+            WXPay(id, (code) => {
+              if (code === 1) {
+                api.postRechordPaySuccess(result.data.inner_oid)
+                  .then((res) => {
+                    console.log(res);
+                    updateBaseInfo();
+                    showToast('邮寄成功，请前往我的订单中查看', 'success', 1000, '300px');
+                    this.$router.back();
+                  })
+                  .catch((err) => {
+                    console.log(err)
+                  })
+              } else if (code === 3) {
+                this.$router.back();
+                showToast('邮寄失败，请重新选择邮寄', 'cancel', 1000, '300px');
+              }
+            });
+          } else {
+            showToast(result.msg, 'cancel', 1000, '300px');
+          }
+        } else {
+          showToast('请选择收货地址')
+        }
+      },
     },
     computed: {
       ...mapGetters(['isSelect', 'selectAddress', 'mailInfo'])
