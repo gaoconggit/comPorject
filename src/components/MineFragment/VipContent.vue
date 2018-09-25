@@ -4,7 +4,7 @@
  */
  <template>
      <div class="vip-wrapper">
-         <title-bar title="VIP会员俱乐部"/>
+         <title-bar title="VIP会员俱乐部" class="vip-fixed"/>
          <div class="vip-content">
             <header class="vip-headers">
               <div class="avatar">
@@ -133,9 +133,8 @@
  <script>
 import {mapGetters} from "vuex"
 import TitleBar from "@/common/TitleBar";
-/*请求*/
 import BaseService from "../../api/BaseService.js";
-import {showToast} from "../../common/util/Utils";
+import {showToast,updateBaseInfo} from "../../common/util/Utils";
 
 export default {
   name: "VipContent",
@@ -183,6 +182,7 @@ export default {
           console.log(result.data);
           showToast("成功领取"+result.data.reward_coin+"金币", 'success');
           this.$refs.audios.play();
+          updateBaseInfo();
           /*this.open_box_music;*/
 
           this.VipInformations();
@@ -317,7 +317,7 @@ export default {
    }
    .vip-wrapper {
      background: linear-gradient(to bottom, @mainColor 5%, #fff 50%);
-     .title {
+     .vip-fixed{
        position: fixed;
        top: 0;
        left: 0;
@@ -339,11 +339,11 @@ export default {
      }
      .vip-content{
        position: relative;
-       top:0px;
+       top:@titleBarHeight;
        background:linear-gradient(#ff8eac,white);
        .vip-headers{
          position: relative;
-         top: 0;
+         top: 0px;
          z-index: 2;
          width:710px;
          height: 200px;
@@ -390,6 +390,7 @@ export default {
          position: relative;
          z-index: 3;
          width:100%;
+         margin-bottom: 20px;
          .vip-club{
            .club-content{
              width:660px;
@@ -398,20 +399,28 @@ export default {
              overflow: hidden;
              .clearfix;
              .imgs{
-               width:220px;
-               height:200px;
+               width:216px;
+               height:196px;
                float: left;
+               border:1px solid #efefef;
+               border-collapse:collapse;
+               position: relative;
                .club-imgs{
                  width:100%;
                  height:100%;
+                 position: absolute;
+                 top:50%;
+                 left:50%;
+                 transform: translateX(-50%) translateY(-50%);
                }
                p{
                  width:100%;
                  height:50px;
-                 margin-top: -50px;
                  font-size:@minFontSize;
                  text-align: center;
                  line-height:50px;
+                 position: absolute;
+                 bottom:0px;
 
                }
              }
@@ -427,8 +436,9 @@ export default {
              font-size:@minFontSize;
              line-height: 76px;
              position: absolute;
-             right:0px;
+             right:3%;
              top:0px;
+
              .location{
                width:30px;
                height: 30px;

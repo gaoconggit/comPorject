@@ -758,5 +758,27 @@ export default {
     formData.append('token', state.token);
     formData.append('level',er);
     return this.postAxiosAction(url, formData);
-  }
+  },
+
+  //用户资料
+    RoomUserData(id){
+    let url =  apiData.mywawa;
+    let formData = new FormData();
+    formData.append('api_name','audience_detail');
+    formData.append('user_id', id);
+    formData.append('token', state.token);
+    return this.postAxiosAction(url, formData);
+  },
+
+  //观众娃娃列表
+  spectatorDolls(id,page=1,size=10){
+    let url =  apiData.mywawa;
+    let formData = new FormData();
+    formData.append('api_name','audience_wawa');
+    formData.append('user_id', id);
+    formData.append('token', state.token);
+    formData.append('page', page);
+    formData.append('size', size);
+    return this.postAxiosAction(url, formData);
+  },
 }
