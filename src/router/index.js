@@ -37,6 +37,7 @@ const FillAddress = r => require([], () => r(require('../components/MyWawa/FillA
 const MailDetails = r => require([], () => r(require('../components/MyWawa/MailDetails')));
 const WheelSurf = r => require([], () => r(require('../components/HomeFragment/EarnFragment/WheelSurf')));
 const RoomUserData = r => require([], () => r(require('../components/RoomFragment/RoomUserData')));
+const RedEnvelopes = r => require([], () => r(require('../components/RedEnvelopes/RedEnvelopes')));
 
 export default [{
   path: '/',
@@ -79,5 +80,6 @@ export default [{
     {path: '/invitationinput', name: '输入邀请码', component: InvitationInput},
     {path: '/wheel', name: '转盘', component: WheelSurf},
     {path: '/user', name: '用户资料', component: RoomUserData},
+    {path: '/envelopes', name: '用户资料', component: RedEnvelopes},
   ]
 }];
