@@ -22,14 +22,14 @@
         </div>
       </header>
       <scroll-view :tabHeight="-tabHeight" ref="scrollerName"
-                lock-x
-                scrollbarY
-                bounce
-                use-pulldown
-                use-pullup
-                @on-pulldown-loading="onPulldown"
-                @on-pullup-loading="onPullup"
-                v-model="status">
+                   lock-x
+                   scrollbarY
+                   bounce
+                   use-pulldown
+                   use-pullup
+                   @on-pulldown-loading="onPulldown"
+                   @on-pullup-loading="onPullup"
+                   v-model="status">
         <div class="User-Info">
           <div class="wawa" v-for="(item,index) in userDolls">
             <div class="wawaImg">
@@ -50,13 +50,14 @@
   import BaseService from "../../api/BaseService.js";
   import ScrollView from "@/common/ScrollView";
   import {getTimeDate} from "@/common/util/Utils";
+
   export default {
     name: "RoomUserData",
-    components: {TitleBar,ScrollView,},
+    components: {TitleBar, ScrollView,},
     data() {
       return {
-        tabHeight:'',
-        id:100008,
+        tabHeight: '',
+        id: this.$route.query.userId,
         userData: {},
         userDolls: [],
         sex: '',
@@ -64,15 +65,15 @@
           pullupStatus: "default",
           pulldownStatus: "default",
         },
-        page:1,
+        page: 1,
       }
     },
     methods: {
-      getTimeDates:function(time){
+      getTimeDates: function (time) {
         return getTimeDate(time);
       },
-      getTitleHeight:function(data){
-        this.tabHeight=this.$refs.userHeader.clientHeight+data+2;
+      getTitleHeight: function (data) {
+        this.tabHeight = this.$refs.userHeader.clientHeight + data + 2;
       },
       roomUserData: function (r) {
         BaseService.RoomUserData(r)
@@ -83,11 +84,11 @@
           console.log(err);
         })
       },
-      spectatorDolls: function (r, p=1,isRefresh=false) {
-        BaseService.spectatorDolls(r,p)
+      spectatorDolls: function (r, p = 1, isRefresh = false) {
+        BaseService.spectatorDolls(r, p)
           .then((result) => {
             this.$refs.scrollerName.donePulldown();
-            if (result.data.length){
+            if (result.data.length) {
               if (isRefresh) {
                 this.page = 1;
                 this.$refs.scrollerName.reset({top: 0}, 500);
@@ -109,7 +110,7 @@
               } else {
                 this.$refs.scrollerName.donePullup();
               }
-            }else if (p > 1) {
+            } else if (p > 1) {
               this.$refs.scrollerName.disablePullup();
               console.log("没有更多娃娃了1");
             } else {
@@ -137,16 +138,19 @@
       },
       /*刷新*/
       onPulldown: function () {
-        this.page=1;
-        this.spectatorDolls(this.id,this.page,true)
+        this.page = 1;
+        this.spectatorDolls(this.id, this.page, true)
       },
       /*页码加一  加载  请求数据*/
       onPullup: function () {
-        this.page+=1;
-        this.spectatorDolls(this.id,this.page,false);
+        this.page += 1;
+        this.spectatorDolls(this.id, this.page, false);
       },
     },
     mounted() {
+      if (!this.$route.query.userId) {
+        this.$router.back();
+      }
       this.roomUserData(this.id);
       this.spectatorDolls(this.id)
     },

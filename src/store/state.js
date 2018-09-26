@@ -15,7 +15,7 @@ const state = {
   mailDetails: {},          //邮寄娃娃详情
   isOneShow: true,          //签到，公告只展示一次
   showHideDialog: false,    //展示分享界面
-  noticeCenter: {}          //滚动公告内容,
+  noticeCenter: {},         //滚动公告内容,
 };
 
 export default state;
