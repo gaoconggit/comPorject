@@ -6,38 +6,37 @@
   <div class="put-wrapper" :class="{'active':isShowRob||isShowCode}">
     <title-bar title="提现"/>
     <header class="put-header" :class="{'active':isShowRob||isShowCode}">
-      <p class="put-money"><span class="price">188.8</span> <span class="unit">元</span></p>
+      <p class="put-money"><span class="price">{{parseInt(userInfo.redpacket)/100}}</span> <span class="unit">元</span>
+      </p>
     </header>
     <div class="center">
       <h2 class="sub-title">请选择提现金额</h2>
       <ul class="box">
-        <li class="item-money" v-for="item in list" :key="item.charge_id" @click="selectItem(item)">
+        <li class="item-money" v-for="item in list" :key="item.id" @click="selectItem(item)">
           <div class="select-icon"><img
-            :src="item.is_unit?item.is_select?require('img/envelopes/item_yes_bg.png'):require('img/envelopes/item_bg.png'):require('img/envelopes/item_no_bg.png')"
+            :src="item.total_convert?item.is_select?require('img/envelopes/item_yes_bg.png'):require('img/envelopes/item_bg.png'):require('img/envelopes/item_no_bg.png')"
             alt="">
           </div>
-          <p class="wrap">{{item.money}}元</p>
+          <p class="wrap">{{item.money/100}}元</p>
           <p class="text">限时提现</p>
         </li>
       </ul>
       <div class="submit-btn" @click="submitClick">
         <img src="~/img/envelopes/submit_btn.png" alt="">
       </div>
-      <p class="desc-test">兑换码成功生成后，请关注卫星公众号“德趣通科技”输入获取的兑换码，领取微信红包</p>
+      <p class="desc-test">兑换码成功生成后，请关注微信公众号“德趣通科技”输入获取的兑换码，领取微信红包</p>
     </div>
     <transition-scale v-if="isShowRob">
       <div class="rob-wrapper">
         <div class="center">
           <div class="close" @click="()=>{isShowRob = false}"><img src="~/img/com_img/close.png" alt=""></div>
-          <h3 class="title">限时提现 <span class="money">20元</span></h3>
+          <h3 class="title">限时提现 <span class="money">{{selected.money/100}}元</span></h3>
           <div class="qiang-btn" @click="gotoEbvelop"><img src="~/img/envelopes/qiang.png" alt=""></div>
-          <p class="limit">今日份额：<span class="orange">10/10</span></p>
+          <p class="limit">今日份额：<span class="orange">{{selected.allow_convert}}/{{selected.total_convert}}</span></p>
           <div class="rule-box">
             <p>规则说明</p>
             <br>
-            <p>每天中午12:00开始提现。</p>
-            <p>每天限量10份，先到先得，抢完为止。</p>
-            <p>每人每天只能抢得1次“20元提现”机会。</p>
+            <p v-html="descContent(selected.description)"></p>
           </div>
         </div>
       </div>
@@ -46,7 +45,7 @@
       <div class="code-wrapper">
         <div class="center">
           <div class="close" @click="()=>{isShowCode = false}"><img src="~/img/com_img/close.png" alt=""></div>
-          <p class="text code">您的兑换码：<span class="orange">3970KLE</span></p>
+          <p class="text code">您的兑换码：<span class="orange">{{formData.conv_code}}</span></p>
           <p class="text desc">请关注微信公众号“德趣通科技”领取。</p>
           <p class="text desc">兑换明细可以在红包明细中查看。</p>
         </div>
@@ -56,58 +55,43 @@
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import TitleBar from "@/common/TitleBar";
   import TransitionScale from "@/common/TransitionScale";
+  import api from "../../api/BaseService";
+  import {showToast, updateBaseInfo} from "../../common/util/Utils";
 
   export default {
     name: "PutForward",
     data() {
       return {
-        list: [{
-          charge_id: 1,
-          money: 10,
-          is_unit: true,
-          is_select: false,
-        }, {
-          charge_id: 2,
-          money: 20,
-          is_unit: true,
-          is_select: false,
-        }, {
-          charge_id: 3,
-          money: 30,
-          is_unit: true,
-          is_select: false,
-        }, {
-          charge_id: 4,
-          money: 40,
-          is_unit: false,
-          is_select: false,
-        }, {
-          charge_id: 5,
-          money: 50,
-          is_unit: false,
-          is_select: false,
-        }, {
-          charge_id: 6,
-          money: 60,
-          is_unit: false,
-          is_select: false,
-        },],
-        isShowRob: false,
-        isShowCode: false,
+        list: [],         //提现列表
+        selected: {},     //选中的数据
+        formData: [],     //抢到后的数据
+        isShowRob: false, //是否展示抢红包弹窗
+        isShowCode: false,//是否展示抢到红包结果弹窗
       }
     },
+    mounted() {
+      this._getRedPacketRules();
+    },
     methods: {
+      async _getRedPacketRules() {
+        let result = await api.getRedPacketRules();
+        result.data.forEach((v) => {
+          v.is_select = false;
+        });
+        this.list = result.data;
+      },
       selectItem(item) {
-        if (!item.is_unit) {
+        if (!item.allow_convert) {
           return;
         }
         if (!item.is_select) {
           let arr = this.list;
           arr.forEach((v) => {
             v.is_select = false;
-            if (v.charge_id === item.charge_id) {
+            if (v.id === item.id) {
               v.is_select = true;
             }
           })
@@ -115,24 +99,39 @@
       },
       //提交提现金额
       submitClick() {
-        let id;
         this.list.forEach((v) => {
           if (v.is_select) {
-            console.log(v);
-            id = v.charge_id;
+            this.selected = v;
           }
         });
-        if (!!id) {
-          console.log('提现');
+        if (this.selected.hasOwnProperty('id')) {
           this.isShowRob = true;
         }
       },
       //抢名额
-      gotoEbvelop() {
-        console.log('抢名额');
-        this.isShowRob = false;
-        this.isShowCode = true;
+      async gotoEbvelop() {
+        if (parseInt(this.selected.allow_convert) === 0) {
+          showToast('今天的名额已达到上线，请明天再来吧~');
+          return;
+        }
+        let result = await api.postRedPacketForm(this.selected.id);
+        if (result.code == 1) {
+          this.formData = result.data;
+          this.isShowRob = false;
+          this.isShowCode = true;
+          updateBaseInfo();
+        } else {
+          this.isShowRob = false;
+          this.isShowCode = false;
+          showToast(result.msg, 'cancel', 1000);
+        }
+      },
+      descContent(value) {
+        return value.replace(/\n/g, '<br />');
       }
+    },
+    computed: {
+      ...mapGetters(['userInfo'])
     },
     components: {TitleBar, TransitionScale}
   }

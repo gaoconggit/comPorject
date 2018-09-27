@@ -17,7 +17,7 @@
       <!--返回按钮-->
       <div class="header">
         <div class="back" @click="backRoom"><img src="~/img/room/game_back.png" alt=""></div>
-        <div class="now-player">
+        <div class="now-player" @click="nowUserInfo">
           <div class="player-wrap" v-if="roomData.now_user!=null">
             <div class="now-avatar"><img :src="roomData.now_user.avatar" alt=""></div>
             <div class="now-user">
@@ -709,6 +709,14 @@
           api.getRoomGameCancel(this.roomId);
         }
         this[name] = false;
+      },
+      //查看当前玩家个人信息
+      nowUserInfo() {
+        if (this.roomData.now_user) {
+          if (this.roomData.now_user.user_id !== this.userInfo.id) {
+            this.$router.push({path: '/user', query: {userId: this.roomData.now_user.user_id}})
+          }
+        }
       },
       numMax(num) {
         if (Number(num) > 9999) {

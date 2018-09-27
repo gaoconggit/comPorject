@@ -155,7 +155,7 @@ export default {
       })
     })
   },
-
+  
   //微信公众号分享获取签名
   getSignature(sendUrl) {
     let url = `${apiData.public}Order.getSignature&token=${state.token}&uid=${state.uid}&url=${sendUrl}`;
@@ -646,7 +646,7 @@ export default {
     return this.postAxiosAction(url, formData, true);
   },
   //娃娃邮费客户端支付成功
-  postRechordPaySuccess(orderId){
+  postRechordPaySuccess(orderId) {
     let url = `${apiData.public}Record.mailWawaPaySuccess`;
     let formData = new FormData();
     formData.append('token', state.token);
@@ -761,44 +761,45 @@ export default {
   },
   //获取vip信息
   VipInformations() {
-    let url =  apiData.public+"vip.vipInfo";
+    let url = apiData.public + "vip.vipInfo";
     let formData = new FormData();
     formData.append('uid', state.uid);
     formData.append('token', state.token);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //领取vip宝箱奖励
-  VipBoxReward(er){
-    let url =  apiData.public+"vip.vipBoxReward";
+  VipBoxReward(er) {
+    let url = apiData.public + "vip.vipBoxReward";
     let formData = new FormData();
     formData.append('uid', state.uid);
     formData.append('token', state.token);
-    formData.append('level',er);
+    formData.append('level', er);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //用户资料
-    RoomUserData(id){
-    let url =  apiData.mywawa;
+  RoomUserData(id) {
+    let url = apiData.mywawa;
     let formData = new FormData();
-    formData.append('api_name','audience_detail');
+    formData.append('api_name', 'audience_detail');
     formData.append('user_id', id);
     formData.append('token', state.token);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //观众娃娃列表
-  spectatorDolls(id,page=1,size=10){
-    let url =  apiData.mywawa;
+  spectatorDolls(id, page = 1, size = 10) {
+    let url = apiData.mywawa;
     let formData = new FormData();
-    formData.append('api_name','audience_wawa');
+    formData.append('api_name', 'audience_wawa');
     formData.append('user_id', id);
     formData.append('token', state.token);
     formData.append('page', page);
     formData.append('size', size);
     return this.postAxiosAction(url, formData);
   },
+<<<<<<< HEAD
 
   //红包明细
  redDetailed(page=1,size=10){
@@ -810,4 +811,32 @@ export default {
     formData.append('size', size);
     return this.postAxiosAction(url, formData);
   },
+=======
+  
+  //获取红包首页月规则相关
+  getRedPacketHome() {
+    let url = `${apiData.public}Redpacket.home`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //获取红包提现规则
+  getRedPacketRules() {
+    let url = `${apiData.public}Redpacket.withdrawRules`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //红包提现
+  postRedPacketForm(id) {
+    let url = `${apiData.public}Redpacket.withdrawForm`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('rule_id', id);
+    return this.postAxiosAction(url, formData, true);
+  }
+>>>>>>> ebc77d6258dbd693d85e302246aaa79bcb9af00b
 }

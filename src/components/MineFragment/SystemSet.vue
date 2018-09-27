@@ -6,8 +6,8 @@
   <div class="system-wrapper">
     <title-bar class="title" title="设置"/>
     <group>
-      <x-switch class="switch" title="背景音乐开关" prevent-default v-model="bgmusic"></x-switch>
-      <x-switch class="switch" title="音效开关" prevent-default v-model="sound"></x-switch>
+      <x-switch class="switch" title="背景音乐开关" :value="bgmusic" @on-change="setBgMusic"></x-switch>
+      <x-switch class="switch" title="音效开关" :value="sound" @on-change="setSound"></x-switch>
     </group>
     <group>
       <cell class="switch" title="当前版本" value="2.2.0"></cell>
@@ -36,26 +36,16 @@
         this.sound = this.returnBool(this.userInfo.user_setting.yx);
       }
     },
-    watch: {
-      userInfo() {
-        console.log(this.userInfo);
-        this.bgmusic = this.returnBool(this.userInfo.user_setting.bgmusic);
-        this.sound = this.returnBool(this.userInfo.user_setting.yx);
-      },
-      bgmusic() {
-        console.log(this.bgmusic);
-        this.$vux.loading.show({text: '设置中...'})
-        let type = 0;
-        if (this.bgmusic) {
-          type = 1;
-        } else {
-          type = 2;
-        }
+    methods: {
+      setBgMusic(newVal) {
+        console.log(newVal)
+        let type = newVal ? 1 : 2;
         api.fixBgmuisc(type)
           .then((result) => {
             this.$vux.loading.hide();
             if (result.code == 1) {
               updateBaseInfo();
+              this.bgmusic = newVal;
               showToast(result.msg, 'success');
             } else {
               showToast("设置失败，请稍后重试", "cancel")
@@ -67,20 +57,15 @@
             showToast("设置失败，请稍后重试", "cancel")
           })
       },
-      sound() {
-        console.log(this.bgmusic);
-        this.$vux.loading.show({text: '设置中...'})
-        let type = 0;
-        if (this.sound) {
-          type = 1;
-        } else {
-          type = 2;
-        }
+      setSound(newVal) {
+        console.log(newVal)
+        let type = newVal ? 1 : 2;
         api.fixSound(type)
           .then((result) => {
             this.$vux.loading.hide();
             if (result.code == 1) {
               updateBaseInfo();
+              this.sound = newVal;
               showToast(result.msg, 'success');
             } else {
               showToast("设置失败，请稍后重试", "cancel")
@@ -91,9 +76,7 @@
             this.$vux.loading.hide();
             showToast("设置失败，请稍后重试", "cancel")
           })
-      }
-    },
-    methods: {
+      },
       returnBool(num) {
         if (num == 1) {
           return true;

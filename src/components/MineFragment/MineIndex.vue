@@ -41,6 +41,12 @@
         <p class="item-title">我的金币 <span class="num">{{userInfo.coin}}</span></p>
         <p class="item-text">充值</p>
       </div>
+      <!--我的红包-->
+      <div class="item" @click="mineItem(11)">
+        <p class="item-icon max"><img src="~/img/mine/icon_red.png" alt=""></p>
+        <p class="item-title">我的红包 <span class="num">{{parseInt(userInfo.redpacket)/100}}</span></p>
+        <p class="item-go"><img src="~/img/com_img/icon_bakc_black.png" alt=""></p>
+      </div>
       <!--金币明细-->
       <div class="item" @click="mineItem(3)">
         <p class="item-icon max"><img src="~/img/mine/icon_detailed.png" alt=""></p>
@@ -131,6 +137,9 @@
             break;
           case 10://vip
             this.$router.push({path: "/vip"});
+            break;
+          case 11://我的红包
+            this.$router.push({path: "/envelopes"});
             break;
         }
       }
