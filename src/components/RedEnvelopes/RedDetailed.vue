@@ -18,7 +18,7 @@
     >
       <div class="Detailed-content">
         <div class="content-list" v-for="item in detailed">
-          <p class="list-name">签到奖励</p>
+          <p class="list-name">{{item.conv_code}}</p>
           <p class="list-time">{{ item.apply_time }}</p>
           <p class="list-yuan">-{{parseInt(item.money)/100}}</p>
         </div>
@@ -154,7 +154,7 @@
           height: 60px;
           text-align: left;
           line-height: 60px;
-          font-size: 16px;
+          font-size: 32px;
           color: #c1c1c1;
         }
         .list-yuan{
