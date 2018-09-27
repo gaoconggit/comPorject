@@ -799,4 +799,15 @@ export default {
     formData.append('size', size);
     return this.postAxiosAction(url, formData);
   },
+
+  //红包明细
+ redDetailed(page=1,size=10){
+    let url =  apiData.public+'Redpacket.bills';
+    let formData = new FormData();
+    formData.append('uid', state.uid);
+    formData.append('token', state.token);
+    formData.append('page', page);
+    formData.append('size', size);
+    return this.postAxiosAction(url, formData);
+  },
 }

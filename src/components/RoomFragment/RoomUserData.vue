@@ -72,7 +72,7 @@
         return getTimeDate(time);
       },
       getTitleHeight:function(data){
-        this.tabHeight=this.$refs.userHeader.clientHeight+data+2;
+        this.tabHeight=this.$refs.userHeader.clientHeight+data;
       },
       roomUserData: function (r) {
         BaseService.RoomUserData(r)

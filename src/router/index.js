@@ -39,6 +39,7 @@ const WheelSurf = r => require([], () => r(require('../components/HomeFragment/E
 const RoomUserData = r => require([], () => r(require('../components/RoomFragment/RoomUserData')));
 const RedEnvelopes = r => require([], () => r(require('../components/RedEnvelopes/RedEnvelopes')));
 const PutForward = r => require([], () => r(require('../components/RedEnvelopes/PutForward')));
+const RedDetailed = r => require([], () => r(require('../components/RedEnvelopes/RedDetailed')));
 
 export default [{
   path: '/',
@@ -83,5 +84,6 @@ export default [{
     {path: '/user', name: '用户资料', component: RoomUserData},
     {path: '/envelopes', name: '我的红包', component: RedEnvelopes},
     {path: '/putforward', name: '提现', component: PutForward},
+    {path: '/detailed', name: '红包明细', component: RedDetailed},
   ]
 }];
