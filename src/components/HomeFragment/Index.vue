@@ -179,7 +179,7 @@
       },
       async _getPublicNotice() {
         let result = await api.getPublicNotice();
-        if (result.data.pic) {
+        if (result.data) {
           this.isPublicNotice = true;
           this.publicNoticeInfo = result.data;
         } else {

@@ -799,11 +799,9 @@ export default {
     formData.append('size', size);
     return this.postAxiosAction(url, formData);
   },
-<<<<<<< HEAD
-
   //红包明细
- redDetailed(page=1,size=10){
-    let url =  apiData.public+'Redpacket.bills';
+  redDetailed(page = 1, size = 10) {
+    let url = apiData.public + 'Redpacket.bills';
     let formData = new FormData();
     formData.append('uid', state.uid);
     formData.append('token', state.token);
@@ -811,8 +809,6 @@ export default {
     formData.append('size', size);
     return this.postAxiosAction(url, formData);
   },
-=======
-  
   //获取红包首页月规则相关
   getRedPacketHome() {
     let url = `${apiData.public}Redpacket.home`;
@@ -838,5 +834,4 @@ export default {
     formData.append('rule_id', id);
     return this.postAxiosAction(url, formData, true);
   }
->>>>>>> ebc77d6258dbd693d85e302246aaa79bcb9af00b
 }

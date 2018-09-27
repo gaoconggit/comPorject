@@ -12,7 +12,7 @@
             <p class="add-coin">+{{item.add_gold}}</p>
             <div class="jb-icon"><img :src="item.img" alt=""></div>
             <div class="mask-icon" v-if="item.complete"><img src="~/img/sign/sign_complete.png" alt=""></div>
-            <div class="vip-icon" v-if="vipLevel"><img src="~/img/sign/vip.png" alt=""></div>
+            <div class="vip-icon" v-if="vipLevel&&item.type==='coin'"><img src="~/img/sign/vip.png" alt=""></div>
             <p class="day">{{item.text}}</p>
           </div>
         </div>
@@ -55,6 +55,15 @@
           v.complete = 0;
         }
         v.add_gold = list[i].coin;
+        v.type = list[i].coin ? 'coin' : 'redpack';
+        if (list[i].hasOwnProperty('redpack')) {
+          if (i < 4) {
+            v.img = require('img/sign/red_1.png');
+          } else {
+            v.img = require('img/sign/red_2.png');
+          }
+          v.add_gold = parseInt(list[i].redpack) / 100;
+        }
       });
       this.signArray = arr;
     },
@@ -77,7 +86,7 @@
       async receiveSign() {
         let result = await api.postSign();
         if (result.code == 1) {
-          showToast(result.msg + '领取' + result.data.coin + '金币', 'success');
+          showToast(`${result.msg}领取${result.data.coin || result.data.redpacket}${result.data.hasOwnProperty('coin') ? '金币' : '的红包'}`, 'success');
           this._getSignInfo();
         } else {
           showToast(result.msg, 'cancel');

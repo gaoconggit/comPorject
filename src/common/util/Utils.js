@@ -97,28 +97,32 @@ export function formatSeconds(value) {
 };
 
 //点击banner
-export function clickBannerItem(_this, item) {
+export function clickBannerItem(item) {
   let changeTab = null;
   if (item.slide_url !== "" || item.slide_content !== "") {
     //window.location.href = slide_url;
-    _this.$router.push({path: '/details', query: {url: item.slide_url}})
+    this.$router.push({path: '/details', query: {url: item.slide_url}})
   } else {
     switch (item.jump_target) {
+      case "seckill":
+        //限时秒杀
+        this.$router.push({path: "/second"});
+        break;
       case "store":
         //充值中心
-        _this.$router.push({path: "/recharge"});
+        this.$router.push({path: "/recharge"});
         break;
       case "share":
         //我的邀请码
-        // _this.$router.push({path: "/recharge"});
+        this.$router.push({path: "/invitation"});
         break;
       case "vip":
         //vip中心
-        // _this.$router.push({path: "/recharge"});
+        this.$router.push({path: "/vip"});
         break;
       case "faq":
         //常见问题
-        // _this.$router.push({path: "/recharge"});
+        this.$router.push({path: "/faq"});
         break;
       case "niudan":
         //扭蛋

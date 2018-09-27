@@ -72,13 +72,8 @@
       getTimeDates: function (time) {
         return getTimeDate(time);
       },
-<<<<<<< HEAD
-      getTitleHeight:function(data){
-        this.tabHeight=this.$refs.userHeader.clientHeight+data;
-=======
       getTitleHeight: function (data) {
         this.tabHeight = this.$refs.userHeader.clientHeight + data + 2;
->>>>>>> ebc77d6258dbd693d85e302246aaa79bcb9af00b
       },
       roomUserData: function (r) {
         BaseService.RoomUserData(r)
@@ -134,10 +129,10 @@
             this.sex = '';
             break;
           case 1 :
-            this.sex = require('../../assets/image/home/ic_man.png');
+            this.sex = require('../../assets/img/room/ic_man.png');
             break;
           case 2 :
-            this.sex = require('../../assets/image/home/ic_lady.png');
+            this.sex = require('../../assets/img/room/ic_lady.png');
             break;
         }
       },

@@ -219,7 +219,7 @@
       },
       /*点击banner*/
       swiperItem(banner) {
-        let gotoTab = clickBannerItem(this, banner);
+        let gotoTab = clickBannerItem.call(this, banner);
         console.log(gotoTab);
         if (gotoTab != null) {
           this.$emit('change-tab', gotoTab);

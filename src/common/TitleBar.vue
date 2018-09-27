@@ -78,6 +78,7 @@
   .header {
     display: flex;
     align-items: center;
+    padding: 6px 0;
     box-sizing: border-box;
     background-color: @mainColor;
     &.white {

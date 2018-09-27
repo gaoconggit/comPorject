@@ -40,6 +40,7 @@ const RoomUserData = r => require([], () => r(require('../components/RoomFragmen
 const RedEnvelopes = r => require([], () => r(require('../components/RedEnvelopes/RedEnvelopes')));
 const PutForward = r => require([], () => r(require('../components/RedEnvelopes/PutForward')));
 const RedDetailed = r => require([], () => r(require('../components/RedEnvelopes/RedDetailed')));
+const SecondKill = r => require([], () => r(require('../components/SecondKill')));
 
 export default [{
   path: '/',
@@ -85,5 +86,6 @@ export default [{
     {path: '/envelopes', name: '我的红包', component: RedEnvelopes},
     {path: '/putforward', name: '提现', component: PutForward},
     {path: '/detailed', name: '红包明细', component: RedDetailed},
+    {path: '/second', name: '限时秒杀', component: SecondKill},
   ]
 }];

@@ -18,7 +18,7 @@
             alt="">
           </div>
           <p class="wrap">{{item.money/100}}元</p>
-          <p class="text">限时提现</p>
+          <p class="text">{{item.is_prompt?'限时提现':'不限时提现'}}</p>
         </li>
       </ul>
       <div class="submit-btn" @click="submitClick">
@@ -45,9 +45,14 @@
       <div class="code-wrapper">
         <div class="center">
           <div class="close" @click="()=>{isShowCode = false}"><img src="~/img/com_img/close.png" alt=""></div>
-          <p class="text code">您的兑换码：<span class="orange">{{formData.conv_code}}</span></p>
-          <p class="text desc">请关注微信公众号“德趣通科技”领取。</p>
+          <p class="text code">您的兑换码：
+            <span class="orange">{{formData.conv_code}}</span>
+            <span @click="copyCode" class="copy-text">点击我复制</span>
+          </p>
+          <p class="text desc" ref="copyText">请关注微信公众号“德趣通科技”领取。</p>
           <p class="text desc">兑换明细可以在红包明细中查看。</p>
+          <textarea style="position: absolute;width: 0;height: 0;opacity: 0" ref="codeText"
+                    v-model="formData.conv_code"></textarea>
         </div>
       </div>
     </transition-scale>
@@ -126,9 +131,18 @@
           showToast(result.msg, 'cancel', 1000);
         }
       },
+      //点击我复制
+      copyCode() {
+        let codeText = this.$refs.codeText;
+        codeText.select();
+        let copyText = document.execCommand('Copy');
+        if (copyText) {
+          showToast('复制成功');
+        }
+      },
       descContent(value) {
         return value.replace(/\n/g, '<br />');
-      }
+      },
     },
     computed: {
       ...mapGetters(['userInfo'])
@@ -211,7 +225,7 @@
         }
         .text {
           position: absolute;
-          top: 22+30px;
+          top: 22+38px;
           width: 100%;
           text-align: center;
           font-size: @minFontSize;
@@ -304,6 +318,12 @@
         .orange {
           font-size: @maxFontSize;
           font-weight: 600;
+        }
+        .copy-text {
+          padding: 3px 6px;
+          font-size: @minFontSize;
+          color: @whiteColor;
+          background-color: @grayColor;
         }
       }
       .desc {

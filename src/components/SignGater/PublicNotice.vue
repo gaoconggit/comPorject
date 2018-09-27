@@ -4,8 +4,8 @@
 
 <template>
   <transition-scale>
-    <div class="public-wrapper" style="z-index: 3;">
-      <div class="img" @click="clickPublic"><img v-lazy="data.pic" alt=""></div>
+    <div class="public-wrapper" style="z-index: 3;" v-if="isShowPublic">
+      <div class="img" @click="clickPublic"><img v-lazy="data[publicIndex].pic" alt=""></div>
       <div class="close" @click="closePublic"><img src="~/img/com_img/close_black.png" alt=""></div>
     </div>
   </transition-scale>
@@ -18,19 +18,36 @@
   export default {
     name: "PublicNotice",
     props: ['data'],
+    data() {
+      return {
+        publicIndex: 0,     //默认展示第一个公告
+        isShowPublic: true, //默认展示第一个公告
+      }
+    },
     methods: {
       clickPublic() {
         let info = {};
-        info.slide_url = this.data.url;
-        info.jump_target = this.data.jump_target;
+        info.slide_url = this.data[this.publicIndex].url;
+        info.jump_target = this.data[this.publicIndex].jump_target;
         info.slide_content = '';
-        let gotoTab = clickBannerItem(this, info);
+        console.log(info);
+        let gotoTab = clickBannerItem.call(this, info);
         if (gotoTab != null) {
           this.$emit('change-tab', gotoTab);
         }
+        this.$emit('close-public');
       },
       closePublic() {
-        this.$emit('close-public');
+        this.publicIndex += 1;
+        //如果有多个公告轮回弹
+        if (this.data[this.publicIndex]) {
+          this.isShowPublic = false;
+          setTimeout(() => {
+            this.isShowPublic = true;
+          }, 300)
+        } else {
+          this.$emit('close-public');
+        }
       }
     },
     components: {TransitionScale}

@@ -5,7 +5,7 @@
       <header class="Red-header">
         <img src="../../assets/img/envelopes/header_bg.png" class="img-style" alt="">
         <p class="p_left" @click="envelopesBtn">红包兑换</p>
-        <p class="p_right">红包明细</p>
+        <p class="p_right" @click="envelopsDetails">红包明细</p>
         <div class="redNumber">{{parseInt(userInfo.redpacket)/100}}<span>元</span></div>
       </header>
       <div class="red_anniu" @click="invitationBtn">
@@ -50,6 +50,9 @@
       },
       invitationBtn() {
         this.$router.push('/invitation');
+      },
+      envelopsDetails() {
+        this.$router.push('/detailed');
       }
     },
     computed: {
