@@ -39,6 +39,14 @@ a:hover {
   clear: both;
 }
 
+.bg-src {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .wrapper {
   position: relative;
   margin-top: 52%;
@@ -127,6 +135,9 @@ a:hover {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0);
   z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .turnplate-pop .pop-wrapper {

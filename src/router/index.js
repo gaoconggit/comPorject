@@ -84,7 +84,7 @@ export default [{
     {path: '/wheel', name: '转盘', component: WheelSurf},
     {path: '/user', name: '用户资料', component: RoomUserData},
     {path: '/envelopes', name: '我的红包', component: RedEnvelopes},
-    {path: '/putforward', name: '提现', component: PutForward},
+    {path: '/putforward', name: '红包兑换', component: PutForward},
     {path: '/detailed', name: '红包明细', component: RedDetailed},
     {path: '/second', name: '限时秒杀', component: SecondKill},
   ]

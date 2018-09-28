@@ -148,8 +148,10 @@
         border-bottom: 1px solid @lightGrayColor;
         .item-left {
           flex: 1;
+          .over-ellip;
           p {
             line-height: 50px;
+            .over-ellip;
           }
           .time {
             font-size: @subFontSize;

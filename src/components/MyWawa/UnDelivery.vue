@@ -59,6 +59,10 @@
       }
     },
     mounted() {
+      //this.emptySelect();
+      this.isSelect.forEach((item) => {
+        this.selectScore += parseInt(item.needscore, 10);
+      })
       this._getMyWawaList();
     },
     watch: {
@@ -226,6 +230,7 @@
         })
         let result = await api.getWawaConvertScore(arr.join());
         if (result.code == 1) {
+          this.emptySelect();
           showToast(result.msg, 'success');
         } else {
           showToast(result.msg, 'cancel')
@@ -242,7 +247,6 @@
       ...mapGetters(['isSelect'])
     },
     destroyed() {
-
     },
     components: {ScrollView, WawaListItem, TransitionScale}
   }

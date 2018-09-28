@@ -76,6 +76,9 @@
       &::after {
         border: none;
       }
+      &:active {
+        background-color: transparent !important;
+      }
       .item-icon {
         margin: auto;
         width: 374px;

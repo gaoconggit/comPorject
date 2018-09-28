@@ -817,7 +817,7 @@ export default {
     formData.append('uid', state.uid);
     return this.postAxiosAction(url, formData);
   },
-  //获取红包提现规则
+  //获取红包兑换规则
   getRedPacketRules() {
     let url = `${apiData.public}Redpacket.withdrawRules`;
     let formData = new FormData();
@@ -825,7 +825,7 @@ export default {
     formData.append('uid', state.uid);
     return this.postAxiosAction(url, formData);
   },
-  //红包提现
+  //红包兑换
   postRedPacketForm(id) {
     let url = `${apiData.public}Redpacket.withdrawForm`;
     let formData = new FormData();

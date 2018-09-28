@@ -46,6 +46,9 @@
           this.cardImg = require("img/sign/month_card.png");
           break;
       }
+      if (this.data.name.indexOf('新手限时特惠')) {
+        this.titleImg = require("img/sign/title_preferential.png");
+      }
       this.cardId = this.data.id;
       this.descText = `本次签到可领取${this.data.coin}金币`;
       this.remainDay = this.data.remain_day;

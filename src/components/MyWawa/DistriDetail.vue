@@ -92,8 +92,8 @@
           if (result.code == 1) {
             this.emptySelect();
             updateBaseInfo();
-            this.$router.back();
             showToast('邮寄成功，请前往我的订单中查看', 'success', 1000, '300px');
+            this.$router.back();
           } else {
             showToast(result.msg, 'cancel', 1000, '300px');
           }
@@ -115,6 +115,7 @@
                 api.postRechordPaySuccess(result.data.inner_oid)
                   .then((res) => {
                     console.log(res);
+                    this.emptySelect();
                     updateBaseInfo();
                     showToast('邮寄成功，请前往我的订单中查看', 'success', 1000, '300px');
                     this.$router.back();
@@ -123,7 +124,7 @@
                     console.log(err)
                   })
               } else if (code === 3) {
-                this.$router.back();
+                //this.$router.back();
                 showToast('邮寄失败，请重新选择邮寄', 'cancel', 1000, '300px');
               }
             });

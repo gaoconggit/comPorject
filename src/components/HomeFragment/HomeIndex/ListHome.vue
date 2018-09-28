@@ -105,6 +105,9 @@
       &::after {
         border: none;
       }
+      &:active {
+        background-color: transparent !important;
+      }
       .weui-grid__icon {
         width: 356px !important;
         height: 436px !important;

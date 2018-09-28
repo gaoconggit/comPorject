@@ -1,16 +1,16 @@
 <!--
-** 红包提现
+** 红包兑换
 -->
 
 <template>
   <div class="put-wrapper" :class="{'active':isShowRob||isShowCode}">
-    <title-bar title="提现"/>
+    <title-bar title="红包兑换"/>
     <header class="put-header" :class="{'active':isShowRob||isShowCode}">
       <p class="put-money"><span class="price">{{parseInt(userInfo.redpacket)/100}}</span> <span class="unit">元</span>
       </p>
     </header>
     <div class="center">
-      <h2 class="sub-title">请选择提现金额</h2>
+      <h2 class="sub-title">请选择兑换金额</h2>
       <ul class="box">
         <li class="item-money" v-for="item in list" :key="item.id" @click="selectItem(item)">
           <div class="select-icon"><img
@@ -18,7 +18,7 @@
             alt="">
           </div>
           <p class="wrap">{{item.money/100}}元</p>
-          <p class="text">{{item.is_prompt?'限时提现':'不限时提现'}}</p>
+          <p class="text">{{item.is_prompt?'限时兑换':'不限时兑换'}}</p>
         </li>
       </ul>
       <div class="submit-btn" @click="submitClick">
@@ -30,10 +30,10 @@
       <div class="rob-wrapper">
         <div class="center">
           <div class="close" @click="()=>{isShowRob = false}"><img src="~/img/com_img/close.png" alt=""></div>
-          <h3 class="title">限时提现 <span class="money">{{selected.money/100}}元</span></h3>
+          <h3 class="title">限时兑换 <span class="money">{{selected.money/100}}元</span></h3>
           <div class="qiang-btn" @click="gotoEbvelop"><img src="~/img/envelopes/qiang.png" alt=""></div>
-          <p class="limit">今日份额：<span class="orange">{{selected.allow_convert}}/{{selected.total_convert}}</span></p>
-          <div class="rule-box">
+          <p class="limit">今日份额：<span class="orange">{{selected.convert_num}}/{{selected.total_convert}}</span></p>
+          <div class="rule-box" v-if="selected.is_prompt">
             <p>规则说明</p>
             <br>
             <p v-html="descContent(selected.description)"></p>
@@ -70,7 +70,7 @@
     name: "PutForward",
     data() {
       return {
-        list: [],         //提现列表
+        list: [],         //兑换列表
         selected: {},     //选中的数据
         formData: [],     //抢到后的数据
         isShowRob: false, //是否展示抢红包弹窗
@@ -89,7 +89,7 @@
         this.list = result.data;
       },
       selectItem(item) {
-        if (!item.allow_convert) {
+        if (!item.total_convert) {
           return;
         }
         if (!item.is_select) {
@@ -102,7 +102,7 @@
           })
         }
       },
-      //提交提现金额
+      //提交兑换金额
       submitClick() {
         this.list.forEach((v) => {
           if (v.is_select) {
@@ -115,7 +115,7 @@
       },
       //抢名额
       async gotoEbvelop() {
-        if (parseInt(this.selected.allow_convert) === 0) {
+        if (parseInt(this.selected.convert_num) === 0) {
           showToast('今天的名额已达到上线，请明天再来吧~');
           return;
         }
