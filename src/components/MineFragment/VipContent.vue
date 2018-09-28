@@ -65,13 +65,15 @@
                 </div>
               </div>
               <div class="vip-box boxs">
-                <p class="titles">VIP宝箱</p>
-                <div class="max-box">
-                  <div class="location">
-                    <img src="../../assets/img/vip/location.png" class="img-style" alt="">
+                <div class="box-wrap">
+                  <p class="titles">VIP宝箱</p>
+                  <div class="max-box">
+                    <div class="location">
+                      <img src="../../assets/img/vip/location.png" class="img-style" alt="">
+                    </div>
+                    <span class="box-txt">离下一个宝箱开启</span>
+                    <span class="rmb">差{{parseInt(vipData.next_box_money)/100}}元</span>
                   </div>
-                  <span>离下一个宝箱开启</span>
-                  <span class="rmb">差{{parseInt(vipData.next_box_money)/100}}元</span>
                 </div>
                 <div class="bao-box ">
                   <div class="bao-box-img">
@@ -313,10 +315,12 @@ export default {
        line-height: 76px;
        padding-left: 25px;
        box-sizing: border-box;
-
    }
    .vip-wrapper {
      background: linear-gradient(to bottom, @mainColor 5%, #fff 50%);
+     display: -webkit-flex;
+     display: flex;
+     justify-content: center;
      .vip-fixed{
        position: fixed;
        top: 0;
@@ -330,9 +334,8 @@ export default {
        border-radius: 25px;
        box-shadow: 1px 1px 5px #ccc;
        background: #fff;
-       display: block;
-       margin:auto;
        overflow: hidden;
+
      }
      .img-style{
        width:100%; height:100%;
@@ -340,7 +343,6 @@ export default {
      .vip-content{
        position: relative;
        top:@titleBarHeight;
-       background:linear-gradient(#ff8eac,white);
        .vip-headers{
          position: relative;
          top: 0px;
@@ -393,25 +395,22 @@ export default {
          margin-bottom: 20px;
          .vip-club{
            .club-content{
-             width:660px;
              height:400px;
-             margin:auto;
              overflow: hidden;
-             .clearfix;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             flex-wrap: wrap;
+
              .imgs{
                width:216px;
                height:196px;
-               float: left;
                border:1px solid #efefef;
                border-collapse:collapse;
                position: relative;
                .club-imgs{
                  width:100%;
                  height:100%;
-                 position: absolute;
-                 top:50%;
-                 left:50%;
-                 transform: translateX(-50%) translateY(-50%);
                }
                p{
                  width:100%;
@@ -420,7 +419,8 @@ export default {
                  text-align: center;
                  line-height:50px;
                  position: absolute;
-                 bottom:0px;
+                 bottom: 0px;
+
 
                }
              }
@@ -428,21 +428,25 @@ export default {
          }
          .vip-box{
            margin:20px auto;
-           position: relative;
-           .clearfix;
+           .box-wrap{
+             display: flex;
+           }
            .max-box{
              width:350px;
              height:76px;
              font-size:@minFontSize;
              line-height: 76px;
-             position: absolute;
-             right:3%;
-             top:0px;
-
+              display: flex;
+              flex: 1;
+             justify-content: flex-end;
+             padding-right: 30px;
+             .over-ellip;
+             .box-txt{
+               .over-ellip;
+             }
              .location{
                width:30px;
                height: 30px;
-               float:left;
                margin:8px 10px 0px 0px;
              }
              .rmb{
