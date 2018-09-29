@@ -41,6 +41,7 @@ const RedEnvelopes = r => require([], () => r(require('../components/RedEnvelope
 const PutForward = r => require([], () => r(require('../components/RedEnvelopes/PutForward')));
 const RedDetailed = r => require([], () => r(require('../components/RedEnvelopes/RedDetailed')));
 const SecondKill = r => require([], () => r(require('../components/SecondKill')));
+const RedeemCode = r => require([], () => r(require('../components/RedEnvelopes/RedeemCode')));
 
 export default [{
   path: '/',
@@ -87,5 +88,6 @@ export default [{
     {path: '/putforward', name: '红包兑换', component: PutForward},
     {path: '/detailed', name: '红包明细', component: RedDetailed},
     {path: '/second', name: '限时秒杀', component: SecondKill},
+    {path: '/redeemcode', name: '我的兑换码', component: RedeemCode},
   ]
 }];

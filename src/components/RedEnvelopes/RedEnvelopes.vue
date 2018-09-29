@@ -4,10 +4,13 @@
     <div class="Red-content">
       <header class="Red-header">
         <img src="../../assets/img/envelopes/header_bg.png" class="img-style" alt="">
-        <p class="p_left" @click="envelopesBtn">红包兑换</p>
+        <p class="p_left" @click="redeemCode">我的兑换码</p>
         <p class="p_right" @click="envelopsDetails">红包明细</p>
         <div class="redNumber">{{parseInt(userInfo.redpacket)/100}}<span>元</span></div>
       </header>
+      <div class="red_anniu" @click="envelopesBtn">
+        <img src="../../assets/img/envelopes/hongbdh.png" class="img-style" alt="">
+      </div>
       <div class="red_anniu" @click="invitationBtn">
         <img src="../../assets/img/envelopes/yaoqhy.png" class="img-style" alt="">
       </div>
@@ -53,7 +56,10 @@
       },
       envelopsDetails() {
         this.$router.push('/detailed');
-      }
+      },
+      redeemCode() {
+        this.$router.push('/redeemcode');
+      },
     },
     computed: {
       ...mapGetters(['userInfo'])
