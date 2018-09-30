@@ -86,7 +86,7 @@
       async receiveSign() {
         let result = await api.postSign();
         if (result.code == 1) {
-          showToast(`${result.msg}领取${result.data.coin || parseInt(result.data.redpacket) / 100}${result.data.hasOwnProperty('coin') ? '金币' : '的红包'}`, 'success');
+          showToast(`${result.msg}领取${result.data.coin || parseInt(result.data.redpacket) / 100}${result.data.hasOwnProperty('coin') ? '金币' : '元的红包'}`, 'success');
           this._getSignInfo();
         } else {
           showToast(result.msg, 'cancel');

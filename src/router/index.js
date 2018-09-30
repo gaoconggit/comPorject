@@ -1,47 +1,47 @@
 import App from "../App";
 /*首页顶部按钮页面*/
-const Index = r => require([], () => r(require('../components/HomeFragment/Index')));
+const Index = ()=>import('../components/HomeFragment/Index');
 /*首页整体按钮组件*/
-const HomeIndex = r => require([], () => r(require('../components/HomeFragment/HomeIndex/HomeIndex')));
+const HomeIndex = ()=>import('../components/HomeFragment/HomeIndex/HomeIndex');
 /*旋转娃娃页面组件*/
-const XzwwIndex = r => require([], () => r(require('../components/HomeFragment/XzwwFragment/XzwwIndex')));
+const XzwwIndex = ()=>import('../components/HomeFragment/XzwwFragment/XzwwIndex');
 /*扭蛋页面组件*/
-const NiuIndex = r => require([], () => r(require('../components/HomeFragment/NiuFragment/NiuIndex')));
+const NiuIndex = ()=>import('../components/HomeFragment/NiuFragment/NiuIndex');
 /*扭蛋房间页面组件*/
-const NiuDanRoom = r => require([], () => r(require('../components/HomeFragment/NiuFragment/NiuDanRoom')));
+const NiuDanRoom = ()=>import('../components/HomeFragment/NiuFragment/NiuDanRoom');
 /*积分商城页面*/
-const ScoreIndex = r => require([], () => r(require('../components/HomeFragment/ScoreFragment/ScoreIndex')));
+const ScoreIndex = ()=>import('../components/HomeFragment/ScoreFragment/ScoreIndex');
 /*赚金币页面*/
-const EarnIndex = r => require([], () => r(require('../components/HomeFragment/EarnFragment/EarnIndex')));
+const EarnIndex = ()=>import('../components/HomeFragment/EarnFragment/EarnIndex');
 /*我的  用户的信息页面*/
-const MineIndex = r => require([], () => r(require('../components/MineFragment/MineIndex')));
+const MineIndex = ()=>import('../components/MineFragment/MineIndex');
 /*充值中心列表*/
-const CoinsIndex = r => require([], () => r(require('../components/CoinsRecharge/CoinsIndex')));
+const CoinsIndex = ()=>import('../components/CoinsRecharge/CoinsIndex');
 
-const RoomIndex = r => require([], () => r(require('../components/RoomFragment/RoomIndex')));
-const FrameContent = r => require([], () => r(require('../common/FrameContent')));
-const VipContent = r => require([], () => r(require('../components/MineFragment/VipContent')));
-const MailIndex = r => require([], () => r(require('../components/MailFragment/MailIndex')));
-const SystemSet = r => require([], () => r(require('../components/MineFragment/SystemSet')));
-const Faq = r => require([], () => r(require('../components/MineFragment/Faq')));
-const CoinDetailed = r => require([], () => r(require('../components/MineFragment/CoinDetailed')));
-const ScoreDetailed = r => require([], () => r(require('../components/MineFragment/ScoreDetailed')));
-const InvitationCode = r => require([], () => r(require('../components/MineFragment/InvitationCode')));
-const InvitationInput = r => require([], () => r(require('../components/MineFragment/InvitationInput')));
-const WawaIndex = r => require([], () => r(require('../components/MyWawa/WawaIndex')));
-const HistoryIndex = r => require([], () => r(require('../components/Historys/HistoryIndex')));
-const HistoryDetail = r => require([], () => r(require('../components/Historys/HistoryDetail')));
-const DistriDetail = r => require([], () => r(require('../components/MyWawa/DistriDetail')));
-const AddressAll = r => require([], () => r(require('../components/MyWawa/AddressAll')));
-const FillAddress = r => require([], () => r(require('../components/MyWawa/FillAddress')));
-const MailDetails = r => require([], () => r(require('../components/MyWawa/MailDetails')));
-const WheelSurf = r => require([], () => r(require('../components/HomeFragment/EarnFragment/WheelSurf')));
-const RoomUserData = r => require([], () => r(require('../components/RoomFragment/RoomUserData')));
-const RedEnvelopes = r => require([], () => r(require('../components/RedEnvelopes/RedEnvelopes')));
-const PutForward = r => require([], () => r(require('../components/RedEnvelopes/PutForward')));
-const RedDetailed = r => require([], () => r(require('../components/RedEnvelopes/RedDetailed')));
-const SecondKill = r => require([], () => r(require('../components/SecondKill')));
-const RedeemCode = r => require([], () => r(require('../components/RedEnvelopes/RedeemCode')));
+const RoomIndex = ()=>import('../components/RoomFragment/RoomIndex');
+const FrameContent = ()=>import('../common/FrameContent');
+const VipContent = ()=>import('../components/MineFragment/VipContent');
+const MailIndex = ()=>import('../components/MailFragment/MailIndex');
+const SystemSet = ()=>import('../components/MineFragment/SystemSet');
+const Faq = ()=>import('../components/MineFragment/Faq');
+const CoinDetailed = ()=>import('../components/MineFragment/CoinDetailed');
+const ScoreDetailed = ()=>import('../components/MineFragment/ScoreDetailed');
+const InvitationCode = ()=>import('../components/MineFragment/InvitationCode');
+const InvitationInput = ()=>import('../components/MineFragment/InvitationInput');
+const WawaIndex = ()=>import('../components/MyWawa/WawaIndex');
+const HistoryIndex = ()=>import('../components/Historys/HistoryIndex');
+const HistoryDetail = ()=>import('../components/Historys/HistoryDetail');
+const DistriDetail = ()=>import('../components/MyWawa/DistriDetail');
+const AddressAll = ()=>import('../components/MyWawa/AddressAll');
+const FillAddress = ()=>import('../components/MyWawa/FillAddress');
+const MailDetails = ()=>import('../components/MyWawa/MailDetails');
+const WheelSurf = ()=>import('../components/HomeFragment/EarnFragment/WheelSurf');
+const RoomUserData = ()=>import('../components/RoomFragment/RoomUserData');
+const RedEnvelopes = ()=>import('../components/RedEnvelopes/RedEnvelopes');
+const PutForward = ()=>import('../components/RedEnvelopes/PutForward');
+const RedDetailed = ()=>import('../components/RedEnvelopes/RedDetailed');
+const RedeemCode = ()=>import('../components/RedEnvelopes/RedeemCode');
+const SecondKill = () => import('../components/SecondKill');
 
 export default [{
   path: '/',

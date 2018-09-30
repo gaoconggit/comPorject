@@ -39,6 +39,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
         isBeginSendMsg: false,
         isNotice: false,
         isAgainLogin: false,
+        timer: null,        //延迟登录IM
       }
     },
     created() {
@@ -49,9 +50,20 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
       //this.isBeginSendMsg = new Date().getTime();//IM需要监听发生变化
       console.log('APP Page');
       this.roomId = 0;
-      this.$nextTick(() => {
-        this._initIM();
-      })
+      if (this.$route.path !== '/room') {
+        this.$nextTick(() => {
+          this._initIM();
+        })
+      }
+
+      this.loginInfo = {
+        'sdkAppID': SDK_APPID, //用户所属应用id,必填
+        'appIDAt3rd': SDK_APPID, //用户所属应用id，必填
+        'accountType': ACCOUNT_TYPE, //用户所属应用帐号类型，必填
+        'identifier': "admin", //当前用户ID,必须是否字符串类型，选填
+        'identifierNick': "null", //当前用户昵称，选填
+        'userSig': this.tim_sig, //当前用户身份凭证，必须是字符串类型，选填
+      };
     },
     watch: {
       noticeCenter() {
@@ -61,9 +73,17 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
         console.log(to, from);
         if (from.path === '/room') {
           console.log("从房间中退出来");
-          setTimeout(() => {
+          this.timer = setTimeout(() => {
             this._initIM();
           }, 1000);
+        }
+        if (to.path === '/room') {
+          clearInterval(this.timer);
+          this.timer = null;
+        } else {
+          if (to.path === '/home/index') {
+            this.logout();
+          }
         }
       }
     },
@@ -96,14 +116,6 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
         }
       },
       _initIM() {
-        let loginInfo = {
-          'sdkAppID': SDK_APPID, //用户所属应用id,必填
-          'appIDAt3rd': SDK_APPID, //用户所属应用id，必填
-          'accountType': ACCOUNT_TYPE, //用户所属应用帐号类型，必填
-          'identifier': "admin", //当前用户ID,必须是否字符串类型，选填
-          'identifierNick': "null", //当前用户昵称，选填
-          'userSig': this.tim_sig, //当前用户身份凭证，必须是字符串类型，选填
-        };
         //监听事件
         const listeners = {
           "jsonpCallback": () => {
@@ -114,7 +126,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
           "onGroupSystemNotifys": () => {
           }, //监听（多终端同步）群系统消息事件，必填
         };
-        webim.login(loginInfo, listeners, {'isLogOn': false},
+        webim.login(this.loginInfo, listeners, {'isLogOn': false},
           function (identifierNick) {
             console.log('登录成功');
             webim.Log.info('webim登录成功');
@@ -137,6 +149,22 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
             }
           );
         }
+      },
+      logout() {
+        //登出
+        webim.logout((resp) => {
+            webim.Log.info('登出成功');
+            console.log("登出成功", resp);
+            this.loginInfo.identifier = null;
+            this.loginInfo.userSig = null;
+            let indexUrl = window.location.href;
+            let pos = indexUrl.indexOf('?');
+            if (pos >= 0) {
+              indexUrl = indexUrl.substring(0, pos);
+            }
+            window.location.href = indexUrl;
+          }
+        );
       },
       onBigGroupMsgNotify(msgList) {
         for (let i = msgList.length - 1; i >= 0; i--) { //遍历消息，按照时间从后往前

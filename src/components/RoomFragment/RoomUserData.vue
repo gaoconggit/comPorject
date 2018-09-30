@@ -46,6 +46,7 @@
 </template>
 
 <script>
+  import {mapGetters} from "vuex";
   import TitleBar from "@/common/TitleBar";
   import BaseService from "../../api/BaseService.js";
   import ScrollView from "@/common/ScrollView";
@@ -57,7 +58,7 @@
     data() {
       return {
         tabHeight: '',
-        id: this.$route.query.userId,
+        id: 0,
         userData: {},
         userDolls: [],
         sex: '',
@@ -147,13 +148,28 @@
         this.spectatorDolls(this.id, this.page, false);
       },
     },
+    created() {
+      console.log(this.$route.query);
+    },
     mounted() {
-      if (!this.$route.query.userId) {
+      /*if (!this.$route.query.userId) {
+        this.$router.back();
+      }*/
+      if (!this.nowUserId) {
         this.$router.back();
       }
+      console.log(this.nowUserId);
+      this.id = this.nowUserId;
+      console.log('id', this.id);
       this.roomUserData(this.id);
       this.spectatorDolls(this.id)
     },
+    computed: {
+      ...mapGetters(['nowUserId'])
+    },
+    destroyed() {
+      this.$store.commit('SET_NOW_USER_ID', 0);
+    }
   }
 </script>
 

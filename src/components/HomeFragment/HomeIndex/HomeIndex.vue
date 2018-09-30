@@ -35,6 +35,11 @@
             <!--用户名称-->
             <p class="name">{{userInfo.user_nicename}}</p>
           </router-link>
+          <!--显示我的红包组件-->
+          <router-link class="redpacket" :to="{path:'/envelopes'}">
+            <div class="red-icon"><img src="~/img/mine/icon_red.png" alt=""></div>
+            <p class="num">&nbsp;&nbsp;{{parseInt(userInfo.redpacket)/100}}<span>元</span></p>
+          </router-link>
           <!--显示金币组件-->
           <router-link class="coin_num" :to="{path:'/recharge',query:{}}">
             <div class="wrapper">
@@ -333,11 +338,12 @@
         padding: 8px 20px 0;
         align-items: center;
         a {
-          flex: 1;
+          //flex: 1;
           color: #000;
         }
         .user_info {
           position: relative;
+          width: 300px;
           height: 120px;
           .avatar {
             position: absolute;
@@ -365,7 +371,7 @@
           .name {
             padding: 0 20px;
             height: 50px;
-            width: 220px;
+            width: 160px;
             line-height: 50px;
             position: absolute;
             left: 100px;
@@ -375,6 +381,29 @@
             border-top-right-radius: 60px;
             border-bottom-right-radius: 60px;
             .over-ellip;
+          }
+        }
+        .redpacket {
+          position: absolute;
+          right: 200px;
+          width: 200px;
+          display: flex;
+          align-items: center;
+          .red-icon {
+            height: 60px;
+            .img-spread;
+          }
+          .num {
+            width: 200px;
+            height: 50px;
+            line-height: 50px;
+            color: #000;
+            background-color: @whiteColor;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            span {
+              font-size: @minFontSize;
+            }
           }
         }
         .coin_num {

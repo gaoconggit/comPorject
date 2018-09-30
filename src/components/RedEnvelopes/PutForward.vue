@@ -115,16 +115,13 @@
       },
       //抢名额
       async gotoEbvelop() {
-        if (parseInt(this.selected.convert_num) === 0) {
-          showToast('今天的名额已达到上线，请明天再来吧~');
-          return;
-        }
         let result = await api.postRedPacketForm(this.selected.id);
         if (result.code == 1) {
           this.formData = result.data;
           this.isShowRob = false;
           this.isShowCode = true;
           updateBaseInfo();
+          this._getRedPacketRules();
         } else {
           this.isShowRob = false;
           this.isShowCode = false;

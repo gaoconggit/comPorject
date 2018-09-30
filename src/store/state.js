@@ -16,6 +16,7 @@ const state = {
   isOneShow: true,          //签到，公告只展示一次
   showHideDialog: false,    //展示分享界面
   noticeCenter: {},         //滚动公告内容,
+  nowUserId: 0,             //房间查看玩家信息
 };
 
 export default state;

@@ -2,18 +2,28 @@
   <div class="room-wrapper">
     <div class="video-wrapper">
       <canvas class="video-wrap-main" ref="videoWrapMain"></canvas>
-      <web-i-m @broadcastToAll="broadcastToAll" @listenToCancelReservation="listenToCancelReservation"
+      <!--<web-i-m @broadcastToAll="broadcastToAll" @listenToCancelReservation="listenToCancelReservation"
                @listenToReservation="listenToReservation" @listenToLiveOutRoom="listenToLiveOutRoom"
                @listenToEnterInRoom="listenToEnterInRoom" @listenToGameOver="listenToGameOver"
                @listenToStartGame="listenToStartGame" :exit-i-m="exitIM"
                @listenToCancelGame="listenToCancelGame" @listenToJoinGame="listenToJoinGame"
                @listenGrabResult="showListenGrabResult"
                @listenToNotice="listenToNotice"
-               @listenToChildEventFail="showMsgFromChildFail" commend-user-name="wodeluck" :tim_uid="tim_uid"
+               commend-user-name="wodeluck" :tim_uid="tim_uid"
                :tim_sig="tim_sig" :send-msg-text="filterMessage" :begin-send-msg="isBeginSendMsg"
                :av-chat-room-id="roomId" :msg-type="msgType" :game-id="gameId"
                :reservation-random-num="reservationRandomNum"
-               :room-id="roomId"/>
+               :room-id="roomId"/>-->
+      <web-i-m @broadcastToAll="broadcastToAll" @listenToCancelReservation="listenToCancelReservation"
+                @listenToReservation="listenToReservation" @listenToLiveOutRoom="listenToLiveOutRoom"
+                @listenToEnterInRoom="listenToEnterInRoom" @listenToGameOver="listenToGameOver"
+                @listenToStartGame="listenToStartGame" :exit-i-m="exitIM"
+                @listenToCancelGame="listenToCancelGame" @listenToJoinGame="listenToJoinGame"
+                @listenGrabResult="showListenGrabResult"
+                @listenToNotice="listenToNotice"
+                :tim_sig="tim_sig" :send-msg-text="filterMessage" :begin-send-msg="isBeginSendMsg"
+                :msg-type="msgType" :game-id="gameId"
+                :room-id="roomId"/>
       <!--返回按钮-->
       <div class="header">
         <div class="back" @click="backRoom"><img src="~/img/room/game_back.png" alt=""></div>
@@ -138,7 +148,7 @@
       v-if="isMakeDown"
       :makeCountDown="makeCountDown"
       @mask-cancel="closeComp('isMakeDown')"
-      @mask-confirm="_gameStart"/>
+      @mask-confirm="confirmGame"/>
   </div>
 </template>
 
@@ -224,6 +234,7 @@
       };
     },
     created() {
+      console.log('---query---', this.$route.query);
       if (!this.$route.query.hasOwnProperty('id')) {
         this.$router.push({path: "/"});
       } else {
@@ -252,11 +263,15 @@
       next();
     },
     methods: {
-      ...mapMutations({set_userInfo: 'SET_USER_INFO', set_noticeCenter: 'SET_NOTICE_CENTER'}),
+      ...mapMutations({
+        set_userInfo: 'SET_USER_INFO',
+        set_noticeCenter: 'SET_NOTICE_CENTER',
+        set_nowUserId: 'SET_NOW_USER_ID',
+      }),
       sendMsgToIM(data) {
         console.log("data:", data);
         console.log("data:", this.roomId);
-        this.isBeginSendMsg = new Date().getTime();//IM需要监听发生变化
+        this.isBeginSendMsg = Date.now();//IM需要监听发生变化
         this.msgType = data;
       },
       async _getBaseInfo() {
@@ -347,11 +362,9 @@
           }
           /*视频播放*/
           let videoWrapMain = this.$refs.videoWrapMain;
-          console.log("video", this.video);
           if (this.isVideo) {
-            console.log(123456)
             this.isVideo = false;
-            new JSMpeg.Player('ws://47.105.32.106:8080/room18/channel1', {canvas: videoWrapMain});
+            new JSMpeg.Player(this.roomData.video1_h5, {canvas: videoWrapMain});
           }
           setTimeout(() => {
             this.sendMsgToIM(3);
@@ -489,8 +502,10 @@
             this.yx_chenggong.stop();
           }
           this.$vux.loading.hide();
-          this.exitIM = true;
+          //this.exitIM = true;
+          console.log('-------------', this.isNewRoom);
           if (this.isNewRoom) {
+            this.$store.commit('isOneShow', true);
             setTimeout(() => {
               this.$router.push({path: '/home/index', query: {keep: 'no'}})
             }, 500)
@@ -544,7 +559,7 @@
             this.sendMsgToIM(1);
           }
         }
-        if (data.user_id == this.userInfo.id) {
+        if (data.user_id === this.userInfo.id) {
           if (parseInt(data.success)) {
             if (this.yx_chenggong) {
               this.yx_chenggong.play();
@@ -575,10 +590,9 @@
           //this.setState({isGameStart: false});
           console.log(1234);
           this._getJoinRoom();
+        } else {
+          this._getJoinRoom();
         }
-      },
-      showMsgFromChildFail(data) {  //监听未抓中
-        console.log("未抓中:", data);
       },
       roomGameCmd(opera) {
         console.log(opera);
@@ -595,8 +609,8 @@
         this.webSocket.send(JSON.stringify(sendObj));
         if (opera === 'grab') {
           console.log("5,", this.countDownNum);
-          // clearInterval(this.timer);
-          // this.timer = null;
+          clearInterval(this.timer);
+          this.timer = null;
           this.countDownNum = -1;
           if (this.yx_xiazhua) {
             this.yx_xiazhua.play();
@@ -624,7 +638,6 @@
         }
       },
       backRoom(bool = false) {
-        console.log("退出房间");
         if (Number(this.roomData.baosong_num) || this.isNewRoom) {
           api.getRoomExit(this.roomId)
             .then((result) => {
@@ -634,6 +647,7 @@
                 console.log("getRoomExit:", result.data.baosong_remain_count);
                 if (this.roomData.baosong_num > result.data.baosong_remain_count && result.data.baosong_remain_count) {
                   this.isExitRoom = true;
+                  this.isBoolBack = true;
                   this.exitRoomData = result.data;
                 } else {
                   this.vidoe = null;
@@ -706,16 +720,22 @@
       //关闭组件
       closeComp(name) {
         if (name === 'resultPopup' || name === 'isMakeDown') {
+          this.isRoomWait = false;
           api.getRoomGameCancel(this.roomId);
         }
         this[name] = false;
       },
+      //
+      confirmGame() {
+        this.isMakeDown = false;
+        this.isRoomWait = false;
+        this._gameStart();
+      },
       //查看当前玩家个人信息
       nowUserInfo() {
-        if (this.roomData.now_user) {
-          if (this.roomData.now_user.user_id !== this.userInfo.id) {
-            this.$router.push({path: '/user', query: {userId: this.roomData.now_user.user_id}})
-          }
+        if (this.roomData.now_user.id != this.userInfo.id) {
+          this.$router.push({path: "/user"});
+          this.set_nowUserId(this.roomData.now_user.id)
         }
       },
       numMax(num) {
@@ -779,7 +799,17 @@
         return imageUri;
       }
     },
-    components: {Actionsheet, Scroller, Popup, WebIM, DescWrapper, LessCoin, ResultPopup, RoomExit, MakeDownDialog},
+    components: {
+      Actionsheet,
+      Scroller,
+      Popup,
+      WebIM,
+      DescWrapper,
+      LessCoin,
+      ResultPopup,
+      RoomExit,
+      MakeDownDialog
+    },
     updated() {
       if (this.countDownNum < 0) {
         clearInterval(this.timer);
@@ -799,7 +829,6 @@
       }
       if (!this.countDownResult) {
         api.getRoomGameCancel(this.roomId);
-        console.log("乌拉拉");
         this.resultPopup = false;
         clearInterval(this.resultTimer);
         this.resultTimer = null;

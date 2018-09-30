@@ -200,10 +200,10 @@
       changeWawa() {
         this.isSelect.forEach((item) => {
           console.log(item);
-          if (parseInt(item.is_newbee)) {
+          /*if (parseInt(item.is_newbee)) {
             showToast(item.giftname + '不能兑换积分', 'cancel', 2000, '300px');
             return false;
-          }
+          }*/
           if (!parseInt(item.needscore)) {
             showToast(item.giftname + '为活动娃娃，不能兑换积分', 'cancel', 2000, '300px');
             return false;

@@ -24,7 +24,7 @@ Vue.use(VueLazyload, {
   error: './assets/img/lazyload.png',
   loading: './assets/img/lazyload.png',
   attempt: 1,
-  listenEvents: ['scroll'],
+  listenEvents: ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend', 'touchmove'],
 });
 
 Vue.config.productionTip = false;

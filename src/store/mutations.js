@@ -38,14 +38,17 @@ const mutation = {
   [types.SET_MAIL_DETAILS](state, details) {
     state.mailDetails = details
   },
-  isOneShow(state) {
-    state.isOneShow = false;
+  isOneShow(state, bool = false) {
+    state.isOneShow = bool;
   },
   [types.SET_SHOW_HIDE_DIALOG](state, bool) {
     state.showHideDialog = bool
   },
   [types.SET_NOTICE_CENTER](state, obj) {
     state.noticeCenter = obj
+  },
+  [types.SET_NOW_USER_ID](state, id) {
+    state.nowUserId = id
   },
 };
 

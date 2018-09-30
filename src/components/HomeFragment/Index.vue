@@ -127,6 +127,11 @@
           default:
             this.tabIndex = 0;
         }
+      },
+      isOneShow() {
+        if (this.isOneShow) {
+          this._getSignInfo();
+        }
       }
     },
     mounted() {
@@ -179,7 +184,7 @@
       },
       async _getPublicNotice() {
         let result = await api.getPublicNotice();
-        if (result.data) {
+        if (result.data.length) {
           this.isPublicNotice = true;
           this.publicNoticeInfo = result.data;
         } else {
@@ -233,10 +238,12 @@
         this.$store.commit('isOneShow', false);
         this.isPublicNotice = false;
       },
-      closeNewBee() {
-        this.$store.commit('isOneShow', false);
-        this.$router.push({path: '/recharge'});
-        updateBaseInfo();       //更新个人信息
+      closeNewBee(bool) {
+        if (!bool) {
+          this.$store.commit('isOneShow', false);
+          this.$router.push({path: '/recharge'});
+          updateBaseInfo();       //更新个人信息
+        }
         this.isNewBee = false;
       }
     },
