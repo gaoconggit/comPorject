@@ -20,6 +20,7 @@
         <div class="content-list" v-for="item in redeem">
           <p class="list-name">{{item.conv_code}}</p>
           <p class="list-time">{{ item.apply_time }}</p>
+          <p class="list-status">{{item.status_msg}}</p>
           <p class="list-yuan">{{parseInt(item.money)/100}}元</p>
         </div>
       </div>
@@ -171,6 +172,16 @@
           text-align: center;
           line-height: 150px;
           color: @mainColor;
+          font-size: @maxFontSize;
+        }
+        .list-status{
+          width:150px;
+          height: 100%;
+          position: absolute;
+          right: 130px;
+          top: 0;
+          text-align:center;
+          line-height: 150px;
           font-size: @maxFontSize;
         }
       }
