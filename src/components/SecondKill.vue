@@ -5,21 +5,28 @@
 <template>
   <div class="second-wrapper">
     <title-bar title="限时秒杀"/>
-    <div class="second-center">
+    <div class="second-center" v-if="skillList.length">
       <div class="now-second">
         <div class="time-count">
-          <p>xx时xx分xx秒 后结束</p>
+          <p class="time-box">
+            <span class="time">{{countDown1.d}}</span>天
+            <span class="time">{{countDown1.h}}</span>时
+            <span class="time">{{countDown1.m}}</span>分
+            <span class="time">{{countDown1.s}}</span>秒
+            后结束</p>
         </div>
         <div class="goods">
           <div class="goods-price">
-            <div class="good"><img src="~/img/second/snatch.png" alt=""></div>
-            <p class="coin">900金币</p>
+            <div class="good"><img :src="skillList[0].icon" alt=""></div>
+            <p class="coin">{{skillList[0].name}}</p>
           </div>
           <div class="goods-desc">
-            <p class="price">秒杀价：<span class="num">9.90</span>元</p>
-            <p class="now-price">原价：29.90元</p>
-            <p class="quantum">限量 20个</p>
-            <div class="goto-btn"><img src="~/img/second/go_now.png" alt=""></div>
+            <p class="price">秒杀价：<span class="num">{{skillList[0].money}}</span>元</p>
+            <p class="now-price">原价：{{skillList[0].old_money}}元</p>
+            <p class="quantum">限量 {{skillList[0].seckill_stock}}个</p>
+            <div class="goto-btn" @click="startSecond(1,!!countDown1.t,skillList[0].id)">
+              <img :src="countDown1.t>0?require('img/second/go_now.png'):require('img/second/go_out.png')" alt="">
+            </div>
           </div>
         </div>
       </div>
@@ -30,18 +37,25 @@
       </div>
       <div class="now-second out-second">
         <div class="time-count">
-          <p>00 时 00 分 00 秒 已枪完</p>
+          <p class="time-box">
+            <span class="time">{{countDown2.d}}</span>天
+            <span class="time">{{countDown2.h}}</span>时
+            <span class="time">{{countDown2.m}}</span>分
+            <span class="time">{{countDown2.s}}</span>秒
+            后结束</p>
         </div>
         <div class="goods">
           <div class="goods-price">
-            <div class="good"><img src="~/img/second/snatch.png" alt=""></div>
-            <p class="coin">900金币</p>
+            <div class="good"><img :src="skillList[1].icon" alt=""></div>
+            <p class="coin">{{skillList[1].name}}</p>
           </div>
           <div class="goods-desc">
-            <p class="price">秒杀价：<span class="num">9.90</span>元</p>
-            <p class="now-price">原价：29.90元</p>
-            <p class="quantum">限量 20个</p>
-            <div class="goto-btn"><img src="~/img/second/go_out.png" alt=""></div>
+            <p class="price">秒杀价：<span class="num">{{skillList[1].money}}</span>元</p>
+            <p class="now-price">原价：{{skillList[1].old_money}}元</p>
+            <p class="quantum">限量 {{skillList[1].seckill_stock}}个</p>
+            <div class="goto-btn" @click="startSecond(1,!!countDown1.t,skillList[1].id)">
+              <img :src="countDown2.t>0?require('img/second/go_now.png'):require('img/second/go_out.png')" alt="">
+            </div>
           </div>
         </div>
       </div>
@@ -51,10 +65,105 @@
 
 <script>
   import TitleBar from "@/common/TitleBar";
+  import api from "../api/BaseService";
+  import {secondTime, showToast, WXPay} from "../common/util/Utils";
 
   export default {
     name: "SecondKill",
-    components: {TitleBar}
+    data() {
+      return {
+        skillList: [],      //秒杀列表
+        second: 0,
+        countDown1: {t: 0},
+        countDown2: {t: 0},
+        timer1: null,
+        timer2: null,
+      }
+    },
+    mounted() {
+      this._getSeckillList();
+    },
+    methods: {
+      async _getSeckillList() {
+        let result = await api.getSeckillList();
+        this.skillList = result.data;
+
+        let endTime1 = new Date(result.data[0].end_time).getTime() || 0;
+        let endTime12 = new Date(result.data[1].end_time).getTime() || 0;
+        if (endTime1 > 0) {
+          this.countDown1 = secondTime(endTime1);
+          this.timer1 = setInterval(() => {
+            let remainTime = secondTime(endTime1);
+            if (remainTime.t > 0) {
+              console.log('timer1:', remainTime);
+              this.countDown1 = remainTime;
+            } else {
+              clearInterval(this.timer1);
+            }
+          }, 1000)
+        }
+        if (endTime12 > 0) {
+          this.countDown2 = secondTime(endTime12);
+          this.timer2 = setInterval(() => {
+            let remainTime = secondTime(endTime12);
+            if (remainTime.t > 0) {
+              console.log('timer2:', remainTime);
+              this.countDown2 = remainTime;
+            } else {
+              clearInterval(this.timer2);
+            }
+          }, 1000)
+        }
+      },
+      async _postSeckillStart(goods_id) {
+        let result = await api.postSeckillStart(goods_id);
+        console.log(result);
+        if (result.code == 1) {
+          if (result.data.hasOwnProperty('appId')) {
+            this.$wechat.chooseWXPay({
+              timestamp: result.data.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+              nonceStr: result.data.nonceStr, // 支付签名随机串，不长于 32 位
+              package: result.data.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+              signType: result.data.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              paySign: result.data.paySign, // 支付签名
+              success: function (res) {
+                // 支付成功后的回调函数
+                console.log("支付成功的回调", res)
+                api.postReportPayResult(result.data.oid, 3);
+                showToast('支付成功', 'text', 500);
+              },
+              cancel: function (res) {
+                console.log("支付取消的回调", res)
+                api.postReportPayResult(result.data.oid, 4);
+                showToast('支付取消', 'text', 500);
+              },
+              error: function (err) {
+                console.log("支付失败的回调", err)
+                api.postReportPayResult(result.data.oid, result.code);
+                showToast('支付失败', 'text', 500);
+              }
+            });
+          }
+        } else {
+          showToast(result.msg);
+        }
+      },
+      startSecond(type, bool, goodId) {
+        if (bool) {
+          this._postSeckillStart(goodId);
+        } else {
+          showToast('不好意思，已经抢完了哟~')
+        }
+      }
+    },
+    components: {
+      TitleBar
+    },
+    destroyed() {
+      console.log(this.timer1);
+      clearInterval(this.timer1);
+      clearInterval(this.timer2);
+    }
   }
 </script>
 
@@ -100,6 +209,13 @@
           -moz-border-radius: 20px;
           border-radius: 20px;
           text-align: center;
+          .time-box {
+            padding: 6px;
+          }
+          .time {
+            font-weight: 600;
+            background-color: @auxColor;
+          }
         }
         .goods {
           margin-top: 20px;
@@ -126,11 +242,13 @@
             }
           }
           .coin {
+            width: 115+30+40px;
             padding-top: 12px;
             padding-bottom: 12px;
             color: @secondColor;
             text-align: center;
             background-color: #FFCC95;
+            .over-ellip;
           }
         }
         .goods-desc {

@@ -81,9 +81,9 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
           clearInterval(this.timer);
           this.timer = null;
         } else {
-          if (to.path === '/home/index') {
+          /*if (to.path === '/home/index') {
             this.logout();
-          }
+          }*/
         }
       }
     },

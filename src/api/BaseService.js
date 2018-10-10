@@ -155,7 +155,7 @@ export default {
       })
     })
   },
-
+  
   //微信公众号分享获取签名
   getSignature(sendUrl) {
     let url = `${apiData.public}Order.getSignature&token=${state.token}&uid=${state.uid}&url=${sendUrl}`;
@@ -767,7 +767,7 @@ export default {
     formData.append('token', state.token);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //领取vip宝箱奖励
   VipBoxReward(er) {
     let url = apiData.public + "vip.vipBoxReward";
@@ -777,7 +777,7 @@ export default {
     formData.append('level', er);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //用户资料
   RoomUserData(id) {
     let url = apiData.mywawa;
@@ -787,7 +787,7 @@ export default {
     formData.append('token', state.token);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //观众娃娃列表
   spectatorDolls(id, page = 1, size = 10) {
     let url = apiData.mywawa;
@@ -835,7 +835,7 @@ export default {
     return this.postAxiosAction(url, formData, true);
   },
   //红包兑换列表
-  redeemCode(page=1,size=10) {
+  redeemCode(page = 1, size = 10) {
     let url = `${apiData.public}Redpacket.convCodes`;
     let formData = new FormData();
     formData.append('token', state.token);
@@ -844,5 +844,21 @@ export default {
     formData.append('size', size);
     return this.postAxiosAction(url, formData, true);
   },
-
+  //获取秒杀列表
+  getSeckillList() {
+    let url = `${apiData.public}Seckill.goods_list`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    return this.postAxiosAction(url, formData);
+  },
+  //开始秒杀
+  postSeckillStart(id) {
+    let url = `${apiData.public}Seckill.start_sec`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('goods_id', id);
+    return this.postAxiosAction(url, formData);
+  }
 }

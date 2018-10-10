@@ -53,7 +53,21 @@ export function getTimeDate(val, isYear = false) {
   } else {
     return `${Zerofill(varYear)}-${Zerofill(varMonth)}-${Zerofill(varDate)} ${Zerofill(varHours)}:${Zerofill(varMinutes)}`;
   }
-};
+}
+
+/*返回倒计时*/
+export function secondTime(time) {
+  let nowTime = Date.now();
+  let nTime = new Date(time).getTime();
+  
+  let t = (nTime - nowTime) > 0 ? nTime - nowTime : 0;//倒计时总数
+  let d = Zerofill(Math.floor(t / (60 * 60 * 24 * 1000)));//天
+  let h = Zerofill(Math.floor(t / (60 * 60 * 1000) % 24));//时
+  let m = Zerofill(Math.floor(t / (60 * 1000) % 60));//分
+  let s = Zerofill(Math.floor(t / 1000 % 60));//秒
+  
+  return {t, d, h, m, s};
+}
 
 //更新个人信息
 export function updateBaseInfo() {
