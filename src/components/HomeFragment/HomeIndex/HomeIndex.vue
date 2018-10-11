@@ -37,8 +37,9 @@
           </router-link>
           <!--显示我的红包组件-->
           <router-link class="redpacket" :to="{path:'/envelopes'}">
-            <div class="red-icon"><img src="~/img/mine/icon_red.png" alt=""></div>
-            <p class="num">&nbsp;&nbsp;{{parseInt(userInfo.redpacket)/100}}<span>元</span></p>
+            <div class="wrapper">
+              <p class="num">{{parseInt(userInfo.redpacket)/100}}<span> 元</span></p>
+            </div>
           </router-link>
           <!--显示金币组件-->
           <router-link class="coin_num" :to="{path:'/recharge',query:{}}">
@@ -389,18 +390,15 @@
           width: 200px;
           display: flex;
           align-items: center;
-          .red-icon {
-            height: 60px;
-            .img-spread;
+          .wrapper{
+            width: 178px;
+            height: 65px;
+            .background-url('~img/home/red_bg.png');
           }
           .num {
-            width: 200px;
-            height: 50px;
+            margin-left: 64px;
             line-height: 50px;
-            color: #000;
-            background-color: @whiteColor;
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
+            .over-ellip;
             span {
               font-size: @minFontSize;
             }

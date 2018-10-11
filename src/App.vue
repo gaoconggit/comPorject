@@ -96,7 +96,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
       }),
       _getToken() {
         let token = getCookie('wawaji_token') || "05045c4b1cc059fcdd284a0eec5acafe";
-        let uid = getStore("wawaji_uid") || "100191";
+        let uid = getStore("wawaji_uid") || "100196";
         this.set_uid(uid);
         this.set_token(token);
         this._getBaseInfo();
