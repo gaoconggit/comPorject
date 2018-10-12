@@ -75,6 +75,7 @@
         formData: [],     //抢到后的数据
         isShowRob: false, //是否展示抢红包弹窗
         isShowCode: false,//是否展示抢到红包结果弹窗
+        oneClick: true,   //禁止重复点击
       }
     },
     mounted() {
@@ -115,17 +116,22 @@
       },
       //抢名额
       async gotoEbvelop() {
-        let result = await api.postRedPacketForm(this.selected.id);
-        if (result.code == 1) {
-          this.formData = result.data;
-          this.isShowRob = false;
-          this.isShowCode = true;
-          updateBaseInfo();
-          this._getRedPacketRules();
-        } else {
-          this.isShowRob = false;
-          this.isShowCode = false;
-          showToast(result.msg, 'cancel', 1000);
+        if (this.oneClick) {
+          this.onclick = false;
+          let result = await api.postRedPacketForm(this.selected.id);
+          if (result.code == 1) {
+            this.formData = result.data;
+            this.isShowRob = false;
+            this.isShowCode = true;
+            updateBaseInfo();
+            this._getRedPacketRules();
+          } else {
+            this.isShowRob = false;
+            this.isShowCode = false;
+            showToast(result.msg, 'cancel', 1000);
+          }
+
+          setTime(() => this.oneClick = true, 500);
         }
       },
       //点击我复制
