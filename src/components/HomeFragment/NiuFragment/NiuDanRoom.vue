@@ -16,9 +16,11 @@
         <p class="num">{{niudanInfo.price}}/次</p>
       </div>
       <!--用户金币数目-->
-      <div class="my-coin" >
-        <p class="coin">{{showCoin(userInfo.coin)}}</p>
-      </div>
+      <router-link class="coin_num" :to="{path:'/recharge',query:{}}">
+        <div class="my-coin" >
+          <p class="coin">{{showCoin(userInfo.coin)}}</p>
+        </div>
+      </router-link>
     </div>
     <!--扭蛋机的框架-->
     <!--向下箭头图标-->
