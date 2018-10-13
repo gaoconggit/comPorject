@@ -2,6 +2,18 @@
   <div class="room-wrapper">
     <div class="video-wrapper">
       <canvas class="video-wrap-main" ref="videoWrapMain"></canvas>
+      <odl-web-i-m @broadcastToAll="broadcastToAll" @listenToCancelReservation="listenToCancelReservation"
+                   @listenToReservation="listenToReservation" @listenToLiveOutRoom="listenToLiveOutRoom"
+                   @listenToEnterInRoom="listenToEnterInRoom" @listenToGameOver="listenToGameOver"
+                   @listenToStartGame="listenToStartGame" :exit-i-m="exitIM"
+                   @listenToCancelGame="listenToCancelGame" @listenToJoinGame="listenToJoinGame"
+                   @listenGrabResult="showListenGrabResult"
+                   @listenToNotice="listenToNotice"
+                   commend-user-name="wodeluck" :tim_uid="tim_uid"
+                   :tim_sig="tim_sig" :send-msg-text="filterMessage" :begin-send-msg="isBeginSendMsg"
+                   :av-chat-room-id="roomId" :msg-type="msgType" :game-id="gameId"
+                   :reservation-random-num="reservationRandomNum"
+                   :room-id="roomId"/>
       <!--<web-i-m @broadcastToAll="broadcastToAll" @listenToCancelReservation="listenToCancelReservation"
                @listenToReservation="listenToReservation" @listenToLiveOutRoom="listenToLiveOutRoom"
                @listenToEnterInRoom="listenToEnterInRoom" @listenToGameOver="listenToGameOver"
@@ -9,21 +21,9 @@
                @listenToCancelGame="listenToCancelGame" @listenToJoinGame="listenToJoinGame"
                @listenGrabResult="showListenGrabResult"
                @listenToNotice="listenToNotice"
-               commend-user-name="wodeluck" :tim_uid="tim_uid"
                :tim_sig="tim_sig" :send-msg-text="filterMessage" :begin-send-msg="isBeginSendMsg"
-               :av-chat-room-id="roomId" :msg-type="msgType" :game-id="gameId"
-               :reservation-random-num="reservationRandomNum"
+               :msg-type="msgType" :game-id="gameId"
                :room-id="roomId"/>-->
-      <web-i-m @broadcastToAll="broadcastToAll" @listenToCancelReservation="listenToCancelReservation"
-                @listenToReservation="listenToReservation" @listenToLiveOutRoom="listenToLiveOutRoom"
-                @listenToEnterInRoom="listenToEnterInRoom" @listenToGameOver="listenToGameOver"
-                @listenToStartGame="listenToStartGame" :exit-i-m="exitIM"
-                @listenToCancelGame="listenToCancelGame" @listenToJoinGame="listenToJoinGame"
-                @listenGrabResult="showListenGrabResult"
-                @listenToNotice="listenToNotice"
-                :tim_sig="tim_sig" :send-msg-text="filterMessage" :begin-send-msg="isBeginSendMsg"
-                :msg-type="msgType" :game-id="gameId"
-                :room-id="roomId"/>
       <!--返回按钮-->
       <div class="header">
         <div class="back" @click="backRoom"><img src="~/img/room/game_back.png" alt=""></div>
@@ -93,9 +93,9 @@
         <div v-else-if="isRoomWait" class="game-start-box" @click="_getRoomWait">
           <div class="game-start-btn"><img src="~/img/room/game_pre_cancel.png" alt=""></div>
         </div>
-        <div class="my-coin" @click="()=>{$router.push({path:'/recharge'})}">
+        <router-link class="my-coin" :to="{path:'/recharge',query:{}}">
           <p class="coin">{{numMax(userInfo.coin)}}</p>
-        </div>
+        </router-link>
       </div>
       <div v-if="isGameStart" class="opera-box-yes">
         <div class="opera-btn">
@@ -130,7 +130,7 @@
       v-if="resultPopup"
       @close-result-popup="closeComp('resultPopup')"
       @again-game-start="againGameStart"
-      @new-room-exit="backRoom(true)"
+      @new-room-exit="backRoom"
       :isNewRoom="isNewRoom"
       :isBaosong="Number(roomData.baosong_num)-Number(roomData.baosong_progress)"
       :resultType="isResultSuccess"
@@ -149,6 +149,11 @@
       :makeCountDown="makeCountDown"
       @mask-cancel="closeComp('isMakeDown')"
       @mask-confirm="confirmGame"/>
+    <now-game-back
+      v-if="isTrueBack"
+      @back-cancel="closeComp('isTrueBack')"
+      @back-confirm="backConfirm"
+    />
   </div>
 </template>
 
@@ -160,11 +165,13 @@
   import api from "../../api/BaseService";
   import {showToast, maxNum, updateBaseInfo} from "../../common/util/Utils";
   import WebIM from "@/common/webIM";
+  import odlWebIM from "@/common/oldwebIM";
   import DescWrapper from "./DescWrapper";
   import LessCoin from "./LessCoin"
   import ResultPopup from "./ResultPopup";
   import RoomExit from "./RoomExit";
   import MakeDownDialog from "./MakeDownDialog"
+  import NowGameBack from "./NowGameBack"
   import {getStore} from "../../common/util/ImUtils";
 
   export default {
@@ -215,6 +222,7 @@
         reservationRandomNum: '',//当前预约用户id
         isBeginSendMsg: '',
         isGameStart: false, //是否开始
+        isTrueBack: false,  //正在游戏中是否退出房间
         isRoomWait: false,  //是否预约成功
         exitIM: false,       //是否退出IM
         countDownNum: -1,     //倒计时
@@ -236,10 +244,9 @@
     created() {
       console.log('---query---', this.$route.query);
       if (!this.$route.query.hasOwnProperty('id')) {
-        this.$router.push({path: "/"});
+        this.$router.push({path: "/home/index"});
       } else {
         this.wawaId = this.$route.query.id;
-        this.roomId = this.$route.query.roomId;
         this._getBaseInfo();
         this._getJoinRoom();
         this._getQuickMessage();
@@ -252,9 +259,26 @@
       this.tim_uid = getStore('wawaji_tim_uid');
       this.user_setting = this.userInfo.user_setting;
 
+      //监听物理返回按钮
       window.addEventListener("popstate", () => {
-        this.sendMsgToIM(4);
+        if (this.isGameStart) {
+          this.isTrueBack = true;
+        } else {
+          this.sendMsgToIM(4);
+        }
       }, false)
+    },
+    watch: {
+      isTrueBack(newVal, oldVal) {
+        if (newVal === true) {
+          //拦截物理返回
+          let state = {
+            title: "",
+            url: this.$router.path // 这个url可以随便填，只是为了不让浏览器显示的url地址发生变化，对页面其实无影响
+          };
+          window.history.pushState(state, state.title, state.url);
+        }
+      },
     },
     beforeRouteLeave(to, from, next) {
       if (this.bgmusic) {
@@ -279,10 +303,11 @@
         this.set_userInfo(result.data);
       },
       async _getJoinRoom() {
+        let roomId = this.$route.query.roomId;
         this.$vux.loading.show({
           text: "加载中..."
         });
-        let result = await api.getJoinRoom(this.wawaId, this.roomId);
+        let result = await api.getJoinRoom(this.wawaId, roomId);
         console.log(result);
         if (result.code != 1) {
           this.$vux.loading.hide();
@@ -502,16 +527,9 @@
             this.yx_chenggong.stop();
           }
           this.$vux.loading.hide();
-          //this.exitIM = true;
+          this.exitIM = true;
           console.log('-------------', this.isNewRoom);
-          if (this.isNewRoom) {
-            this.$store.commit('isOneShow', true);
-            setTimeout(() => {
-              this.$router.push({path: '/home/index', query: {keep: 'no'}})
-            }, 500)
-          } else {
-            this.$router.back(-1);
-          }
+          this.$router.back(-1);
         } else {
           this._getRoomAudience(this.roomId);
         }
@@ -552,6 +570,9 @@
         console.log("监听抓取结果:", data);
         if (data.user_id === this.userInfo.id) {
           if (parseInt(data.success)) {
+            if (this.isNewRoom) {
+              this.$store.commit('isOneShow', true);
+            }
             this.sendMsgText = "抓中了一个娃娃";
             this.sendMsgToIM(1);
           } else {
@@ -637,7 +658,31 @@
           }
         }
       },
-      backRoom(bool = false) {
+      //前往充值中心
+      gotoRecharge() {
+        this.$router.push({path: '/recharge'})
+      },
+      //正在游戏中退出房间
+      backConfirm() {
+        this.isTrueBack = false;
+        this.backRoom(1, true);
+      },
+      //退出房间
+      backRoom(a, bool = false) {
+        if (bool) {
+          this.backRoomFunc();
+        } else {
+          if (this.isGameStart) {
+            this.isTrueBack = true;
+            console.log('开始游戏是否退出');
+          } else {
+            this.backRoomFunc();
+          }
+        }
+        // clearInterval(this.timer);
+        // this.timer = null;
+      },
+      backRoomFunc() {
         if (Number(this.roomData.baosong_num) || this.isNewRoom) {
           api.getRoomExit(this.roomId)
             .then((result) => {
@@ -664,8 +709,6 @@
         } else {
           this.sendMsgToIM(4);
         }
-        // clearInterval(this.timer);
-        // this.timer = null;
       },
       //减积分
       scoreReduce() {
@@ -804,11 +847,13 @@
       Scroller,
       Popup,
       WebIM,
+      odlWebIM,
       DescWrapper,
       LessCoin,
       ResultPopup,
       RoomExit,
-      MakeDownDialog
+      MakeDownDialog,
+      NowGameBack
     },
     updated() {
       if (this.countDownNum < 0) {
@@ -843,9 +888,37 @@
       }
     },
     beforeDestroyed() {
-      this.sendMsgToIM(4);
-      this.backRoom();
-      window.removeEventListener('popstate');
+      //this.sendMsgToIM(4);
+      //this.backRoom();
+      /*if (this.bgmusic) {
+        this.bgmusic.stop();
+      }
+      if (this.yx_anniu) {
+        this.yx_anniu.stop();
+      }
+      if (this.yx_shibai) {
+        this.yx_shibai.stop();
+      }
+      if (this.yx_xiazhua) {
+        this.yx_xiazhua.stop();
+      }
+      if (this.yx_daojishi) {
+        this.yx_daojishi.stop();
+      }
+      if (this.yx_chenggong) {
+        this.yx_chenggong.stop();
+      }*/
+    },
+    destroyed() {
+      clearInterval(this.timer);
+      this.timer = null;
+      this.countDownNum = -1;
+      clearInterval(this.resultTimer);
+      this.resultTimer = null;
+      this.countDownResult = -1;
+      clearInterval(this.makeCountTimer);
+      this.makeCountTimer = null;
+      this.makeCountDown = -1;
     }
   };
 </script>

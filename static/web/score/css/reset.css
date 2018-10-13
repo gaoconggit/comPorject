@@ -41,6 +41,7 @@ body {
     width: 100%;
     /*max-width: 750px !important;*/
     margin: 0 auto;
+    overflow-x: hidden;
 }
 
 ol, ul {

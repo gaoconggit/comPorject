@@ -69,7 +69,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
       noticeCenter() {
         this.isNotice = this.noticeCenter.show;
       },
-      $route(to, from) {
+     $route(to, from) {
         console.log(to, from);
         if (from.path === '/room') {
           console.log("从房间中退出来");
@@ -81,9 +81,9 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
           clearInterval(this.timer);
           this.timer = null;
         } else {
-          /*if (to.path === '/home/index') {
+          if (to.path === '/home/index') {
             this.logout();
-          }*/
+          }
         }
       }
     },
@@ -157,12 +157,12 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
             console.log("登出成功", resp);
             this.loginInfo.identifier = null;
             this.loginInfo.userSig = null;
-            let indexUrl = window.location.href;
+            /*let indexUrl = window.location.href;
             let pos = indexUrl.indexOf('?');
             if (pos >= 0) {
               indexUrl = indexUrl.substring(0, pos);
             }
-            window.location.href = indexUrl;
+            window.location.href = indexUrl;*/
           }
         );
       },

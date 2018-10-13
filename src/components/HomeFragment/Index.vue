@@ -60,7 +60,7 @@
   import PublicNotice from "../../components/SignGater/PublicNotice";
   import NewBeeRoom from "../../components/SignGater/NewBeeRoom";
   import api from "../../api/BaseService";
-  import {showToast, updateBaseInfo} from "../../common/util/Utils";
+  import {updateBaseInfo} from "../../common/util/Utils";
 
   export default {
     name: "HomeFragment",
@@ -240,10 +240,10 @@
       },
       closeNewBee(bool) {
         if (!bool) {
-          this.$store.commit('isOneShow', false);
           this.$router.push({path: '/recharge'});
           updateBaseInfo();       //更新个人信息
         }
+        this.$store.commit('isOneShow', false);
         this.isNewBee = false;
       }
     },

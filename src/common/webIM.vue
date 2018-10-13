@@ -312,7 +312,7 @@
                   'LastedMsgTime': msg.getTime() //消息时间戳
                 };
                 webim.c2CMsgReaded(opts);
-                alert('收到一条c2c消息(好友消息或者全员推送消息): 发送人=' + fromAccountNick + ", 内容=" + contentHtml);
+                //alert('收到一条c2c消息(好友消息或者全员推送消息): 发送人=' + fromAccountNick + ", 内容=" + contentHtml);
                 break;
             }
             break;
@@ -395,7 +395,7 @@
                   break;
               }
             } else if (bigMsg.elems[0].type == 'TIMTextElem') {//聊天的
-              alert('liaotian');
+              //alert('liaotian');
               this.msgList.push(bigMsg.elems[0].content.text);
             } else {
               console.log(bigMsg.elems[0]);
@@ -436,7 +436,7 @@
         const sysMsgStr = "收到一条群系统消息: type=" + type + ", typeCh=" + typeCh + ",群ID=" + group_id + ", 群名称=" + group_name + ", 内容=" + msg_content + ", 时间=" + webim.Tool.formatTimeStamp(msg_time);
         console.log(sysMsgStr);
         webim.Log.warn(sysMsgStr);
-        alert(sysMsgStr);
+        //alert(sysMsgStr);
       },
     },
     destroyed() {

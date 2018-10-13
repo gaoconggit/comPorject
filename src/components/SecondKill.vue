@@ -7,7 +7,7 @@
     <title-bar title="限时秒杀"/>
     <div class="second-center" v-if="skillList.length">
       <div class="now-second">
-        <div class="time-count">
+        <div class="time-count" :class="{'active':parseInt(skillList[1].seckill_stock)>0}">
           <p class="time-box">
             <span class="time">{{countDown1.d}}</span>天
             <span class="time">{{countDown1.h}}</span>时
@@ -17,15 +17,18 @@
         </div>
         <div class="goods">
           <div class="goods-price">
-            <div class="good"><img :src="skillList[0].icon" alt=""></div>
+            <div class="good"><img :src="skillList[0].icon" alt="秒杀商品"></div>
             <p class="coin">{{skillList[0].name}}</p>
           </div>
           <div class="goods-desc">
             <p class="price">秒杀价：<span class="num">{{skillList[0].money}}</span>元</p>
             <p class="now-price">原价：{{skillList[0].old_money}}元</p>
             <p class="quantum">限量 {{skillList[0].seckill_stock}}个</p>
-            <div class="goto-btn" @click="startSecond(1,!!countDown1.t,skillList[0].id)">
-              <img :src="countDown1.t>0?require('img/second/go_now.png'):require('img/second/go_out.png')" alt="">
+            <div class="goto-btn"
+                 @click="startSecond(parseInt(skillList[0].seckill_stock),!!countDown1.t,skillList[0].id)">
+              <img
+                :src="countDown1.t>0&&parseInt(skillList[0].seckill_stock)>0?require('img/second/go_now.png'):require('img/second/go_out.png')"
+                alt="">
             </div>
           </div>
         </div>
@@ -36,7 +39,7 @@
         <p></p>
       </div>
       <div class="now-second out-second">
-        <div class="time-count">
+        <div class="time-count" :class="{'active':parseInt(skillList[1].seckill_stock)>0}">
           <p class="time-box">
             <span class="time">{{countDown2.d}}</span>天
             <span class="time">{{countDown2.h}}</span>时
@@ -46,15 +49,18 @@
         </div>
         <div class="goods">
           <div class="goods-price">
-            <div class="good"><img :src="skillList[1].icon" alt=""></div>
+            <div class="good"><img :src="skillList[1].icon" alt="秒杀商品"></div>
             <p class="coin">{{skillList[1].name}}</p>
           </div>
           <div class="goods-desc">
             <p class="price">秒杀价：<span class="num">{{skillList[1].money}}</span>元</p>
             <p class="now-price">原价：{{skillList[1].old_money}}元</p>
             <p class="quantum">限量 {{skillList[1].seckill_stock}}个</p>
-            <div class="goto-btn" @click="startSecond(1,!!countDown1.t,skillList[1].id)">
-              <img :src="countDown2.t>0?require('img/second/go_now.png'):require('img/second/go_out.png')" alt="">
+            <div class="goto-btn"
+                 @click="startSecond(parseInt(skillList[1].seckill_stock),!!countDown1.t,skillList[1].id)">
+              <img
+                :src="countDown2.t>0&&parseInt(skillList[1].seckill_stock)>0?require('img/second/go_now.png'):require('img/second/go_out.png')"
+                alt="">
             </div>
           </div>
         </div>
@@ -66,7 +72,7 @@
 <script>
   import TitleBar from "@/common/TitleBar";
   import api from "../api/BaseService";
-  import {secondTime, showToast, WXPay} from "../common/util/Utils";
+  import {secondTime, showToast, updateBaseInfo} from "../common/util/Utils";
 
   export default {
     name: "SecondKill",
@@ -88,8 +94,8 @@
         let result = await api.getSeckillList();
         this.skillList = result.data;
 
-        let endTime1 = new Date(result.data[0].end_time).getTime() || 0;
-        let endTime12 = new Date(result.data[1].end_time).getTime() || 0;
+        let endTime1 = parseInt(result.data[0].end_time + '000') || 0;
+        let endTime12 = parseInt(result.data[1].end_time + '000') || 0;
         if (endTime1 > 0) {
           this.countDown1 = secondTime(endTime1);
           this.timer1 = setInterval(() => {
@@ -107,7 +113,6 @@
           this.timer2 = setInterval(() => {
             let remainTime = secondTime(endTime12);
             if (remainTime.t > 0) {
-              console.log('timer2:', remainTime);
               this.countDown2 = remainTime;
             } else {
               clearInterval(this.timer2);
@@ -120,7 +125,7 @@
         console.log(result);
         if (result.code == 1) {
           if (result.data.hasOwnProperty('appId')) {
-            let {data} = result.data;
+            let {data} = result;
             this.$wechat.chooseWXPay({
               timestamp: data.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
               nonceStr: data.nonceStr, // 支付签名随机串，不长于 32 位
@@ -131,10 +136,12 @@
                 // 支付成功后的回调函数
                 console.log("支付成功的回调", res)
                 api.postReportPayResult(data.oid, 3);
+                this._getSeckillList();
                 showToast('支付成功', 'text', 500);
               },
               cancel: function (res) {
                 console.log("支付取消的回调", res)
+                updateBaseInfo();
                 api.postReportPayResult(data.oid, 4);
                 showToast('支付取消', 'text', 500);
               },
@@ -150,10 +157,14 @@
         }
       },
       startSecond(type, bool, goodId) {
+        if (type <= 0) {
+          showToast('不好意思，已经抢完了哟~');
+          return;
+        }
         if (bool) {
           this._postSeckillStart(goodId);
         } else {
-          showToast('不好意思，已经抢完了哟~')
+          showToast('不好意思，时间已经结束了')
         }
       }
     },
@@ -198,18 +209,20 @@
         &.out-second {
           .time-count {
             margin-top: 50px;
-            background-color: @lightGrayColor;
           }
         }
         .time-count {
           margin: 260px auto 0;
           padding: 6px 20px;
           display: inline-block;
-          background-color: @mainColor;
+          background-color: @lightGrayColor;
           -webkit-border-radius: 20px;
           -moz-border-radius: 20px;
           border-radius: 20px;
           text-align: center;
+          &.active {
+            background-color: @mainColor;
+          }
           .time-box {
             padding: 6px;
           }
@@ -225,22 +238,23 @@
           justify-content: center;
           align-items: center;
           width: 100%;
+          height: auto;
           -webkit-box-sizing: border-box;
           -moz-box-sizing: border-box;
           box-sizing: border-box;
         }
         .goods-price {
           margin: 0 40px;
+          margin-right: 60px;
           .good, .coin {
             border: 4px solid @borderColor;
           }
           .good {
-            padding: 16px 30px;
+            padding: 20px 34px;
+            width: 115px;
+            height: 115px;
             border-bottom: none;
-            img {
-              width: 115px;
-              height: 115px;
-            }
+            .img-spread;
           }
           .coin {
             width: 115+30+40px;

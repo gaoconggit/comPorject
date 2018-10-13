@@ -121,6 +121,12 @@
           updateBaseInfo();
         }
       },
+      isOneShow(bool){
+        if(bool){
+          this._getCategory();
+          updateBaseInfo();
+        }
+      }
     },
     created() {
       this.$vux.loading.show({
@@ -312,7 +318,7 @@
       }
     },
     computed: {
-      ...mapGetters(["userInfo", 'token', 'uid'])
+      ...mapGetters(["userInfo", 'token', 'uid','isOneShow'])
     },
     components: {
       ScrollView,

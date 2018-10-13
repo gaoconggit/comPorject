@@ -38,7 +38,7 @@
       },
       rechargeGo() {
         this.$emit('close-less-coin');
-        this.$router.push({path: '/recharge'})
+        this.$router.push('/recharge')
       }
     },
     components: {TransitionScale}

@@ -42,7 +42,7 @@
 <script>
   import TransitionScale from "@/common/TransitionScale";
   import api from "../../api/BaseService";
-  import {showToast} from "../../common/util/Utils";
+  import {showToast, updateBaseInfo} from "../../common/util/Utils";
 
   export default {
     name: "MailContent",

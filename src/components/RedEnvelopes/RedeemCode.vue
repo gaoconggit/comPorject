@@ -174,15 +174,14 @@
           color: @mainColor;
           font-size: @maxFontSize;
         }
-        .list-status{
-          width:150px;
+        .list-status {
           height: 100%;
           position: absolute;
           right: 130px;
           top: 0;
-          text-align:center;
+          text-align: center;
           line-height: 150px;
-          font-size: @maxFontSize;
+          font-size: @mainFontSize;
         }
       }
     }

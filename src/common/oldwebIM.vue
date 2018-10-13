@@ -406,7 +406,7 @@
           isAccessFormalEnv = false;//访问测试环境
         }
 
-        const isLogOn = true;//是否在浏览器控制台打印sdk日志
+        const isLogOn = false;//是否在浏览器控制台打印sdk日志
 
         //其他对象，选填
         const options = {
