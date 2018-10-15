@@ -27,6 +27,8 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
   import {SDK_APPID, ACCOUNT_TYPE} from "./config/config";
   import {updateBaseInfo} from "./common/util/Utils";
 
+  const webim = newWebIm();
+
   export default {
     name: "App",
     data() {
@@ -55,35 +57,22 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
           this._initIM();
         })
       }
-
-      this.loginInfo = {
-        'sdkAppID': SDK_APPID, //用户所属应用id,必填
-        'appIDAt3rd': SDK_APPID, //用户所属应用id，必填
-        'accountType': ACCOUNT_TYPE, //用户所属应用帐号类型，必填
-        'identifier': "admin", //当前用户ID,必须是否字符串类型，选填
-        'identifierNick': "null", //当前用户昵称，选填
-        'userSig': this.tim_sig, //当前用户身份凭证，必须是字符串类型，选填
-      };
     },
     watch: {
       noticeCenter() {
         this.isNotice = this.noticeCenter.show;
       },
-     $route(to, from) {
+      $route(to, from) {
         console.log(to, from);
         if (from.path === '/room') {
           console.log("从房间中退出来");
           this.timer = setTimeout(() => {
-            this._initIM();
+            //this._initIM();
           }, 1000);
         }
         if (to.path === '/room') {
           clearInterval(this.timer);
           this.timer = null;
-        } else {
-          if (to.path === '/home/index') {
-            this.logout();
-          }
         }
       }
     },
@@ -115,116 +104,11 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
           removeStore('wawaji_userInfo')
         }
       },
-      _initIM() {
-        //监听事件
-        const listeners = {
-          "jsonpCallback": () => {
-          }, //IE9(含)以下浏览器用到的jsonp回调函数,移动端可不填，pc端必填
-          "onBigGroupMsgNotify": this.onBigGroupMsgNotify, //监听新消息(大群)事件，必填
-          "onMsgNotify": () => {
-          },//监听新消息(私聊(包括普通消息和全员推送消息)，普通群(非直播聊天室)消息)事件，必填
-          "onGroupSystemNotifys": () => {
-          }, //监听（多终端同步）群系统消息事件，必填
-        };
-        webim.login(this.loginInfo, listeners, {'isLogOn': false},
-          function (identifierNick) {
-            console.log('登录成功');
-            webim.Log.info('webim登录成功');
-            applyJoinBigGroup('0');
-          },
-          function (err) {
-            console.log("error:", err.ErrorInfo);
-          }
-        );
 
-        function applyJoinBigGroup(groupId) {
-          var options = {
-            'GroupId': groupId//群id
-          };
-          webim.applyJoinBigGroup(options, (resp) => {
-              webim.Log.info('进群成功');
-              console.log("进群成功:", groupId, resp);
-            }, (err) => {
-              alert(err.ErrorInfo);
-            }
-          );
-        }
-      },
-      logout() {
-        //登出
-        webim.logout((resp) => {
-            webim.Log.info('登出成功');
-            console.log("登出成功", resp);
-            this.loginInfo.identifier = null;
-            this.loginInfo.userSig = null;
-            /*let indexUrl = window.location.href;
-            let pos = indexUrl.indexOf('?');
-            if (pos >= 0) {
-              indexUrl = indexUrl.substring(0, pos);
-            }
-            window.location.href = indexUrl;*/
-          }
-        );
-      },
-      onBigGroupMsgNotify(msgList) {
-        for (let i = msgList.length - 1; i >= 0; i--) { //遍历消息，按照时间从后往前
-          const msg = msgList[i];
-          //console.warn(msg);
-          // this.msgList.push();
-          this.webTimMsgNotify(msg);
-          webim.Log.warn('receive a new avchatroom group msg: ' + msg.getFromAccountNick());
-          //显示收到的消息
-          // showMsg(msg);
-        }
-      },
-      webTimMsgNotify(msg) {
-        try {
-          if (msg) {
-            console.log(msg);
-            const bigMsg = msg;
-            let _msg = msg.elems[0].content.text ? msg.elems[0].content.text : '';
-            if (_msg.indexOf('{') == 0) {
-              _msg = JSON.parse(escape2Html(_msg));
-              switch (_msg.type) {
-                case 12://滚动公告推送
-                  if (_msg.user_id != 0) {
-                    this.listenToNotice(_msg.new_notice);
-                  }
-                  break;
-                case 20://监听支付成功
-                  updateBaseInfo();
-                  break;
-              }
-            } else if (bigMsg.elems[0].type == 'TIMTextElem') {//聊天的
-              alert('liaotian');
-              this.msgList.push(bigMsg.elems[0].content.text);
-            } else {
-              console.log(bigMsg.elems[0]);
-            }
-          }
-        } catch (e) {
-          console.log("消息处理失败", e)
-        }
-      },
       //发送心跳
       _postOnline() {
         api.postOnline();
       },
-      listenToNotice(data) {
-        console.log(data);
-        this.set_noticeCenter({
-          show: true,
-          title: data.title,
-          avatar: data.avatar_thumb
-        });
-        setTimeout(() => {
-          this.set_noticeCenter({
-            show: false,
-            title: '',
-            avatar: ''
-          });
-        }, 3000)
-      }
     },
     computed: {...mapGetters(['noticeCenter'])},
     destroyed() {

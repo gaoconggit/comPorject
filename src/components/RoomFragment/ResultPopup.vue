@@ -13,7 +13,7 @@
           <p>没抓到，就差一点</p>
         </div>
         <div class="btn-wrapper">
-          <div class="cancel again" @click="againGame"><p>在玩一局({{countDownResult}})</p></div>
+          <div class="cancel again" @click="againGame"><p>再玩一局({{countDownResult}})</p></div>
         </div>
       </div>
       <div class="box-success" v-if="resultType">
@@ -26,7 +26,7 @@
           </div>
           <div class="new-room" v-if="isNewRoom"><p>太厉害了，晋级成功！新手场，白白！</p></div>
           <div class="btn-wrapper success" v-if="!isNewRoom">
-            <div class="cancel again" @click="againGame"><p>在玩一局({{countDownResult}})</p></div>
+            <div class="cancel again" @click="againGame"><p>再玩一局({{countDownResult}})</p></div>
             <div class="cancel" @click="showShare"><p>炫耀一下</p></div>
           </div>
           <div class="btn-wrapper success" v-if="isNewRoom">
@@ -54,6 +54,7 @@
       },
       showShare() {
         console.log("炫耀一下");
+        this.$router.push('/invitation');
       },
       newRoomSure() {
         this.$emit("new-room-exit");

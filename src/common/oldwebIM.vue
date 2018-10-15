@@ -11,11 +11,13 @@
 </template>
 
 <script>
-  import webim from 'webim';
+  //import newWebIm from "webIM";
   import {mapState, mapGetters} from 'vuex'
   import {Scroller} from "vux";
   import {getStore, escape2Html} from "./util/ImUtils";
   import {SDK_APPID, ACCOUNT_TYPE} from "../config/config";
+
+  const webim = newWebIm();
 
   export default {
     components: {Scroller},
@@ -346,7 +348,7 @@
               //identifierNick为登录用户昵称(没有设置时，为帐号)，无登录态时为空
               console.log('登录成功');
               webim.Log.info('webim登录成功');
-              applyJoinBigGroup('0');
+              //applyJoinBigGroup('0');
               applyJoinBigGroup(selToID); //加入大群
               // hideDiscussForm(); //隐藏评论表单
               // initEmotionUL(); //初始化表情

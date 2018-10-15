@@ -121,11 +121,20 @@
           updateBaseInfo();
         }
       },
-      isOneShow(bool){
-        if(bool){
+      isOneShow(bool) {
+        if (bool) {
           this._getCategory();
           updateBaseInfo();
         }
+      },
+      roomListStatus(data) {
+        let arr = this.wawaList;
+        for (let len = arr.length, i = 0; i < len; i++) {
+          if (arr[i].giftid == data.gift_id) {
+            arr[i].status = parseInt(data.status);
+          }
+        }
+        this.wawaList = arr;
       }
     },
     created() {
@@ -318,7 +327,7 @@
       }
     },
     computed: {
-      ...mapGetters(["userInfo", 'token', 'uid','isOneShow'])
+      ...mapGetters(["userInfo", 'token', 'uid', 'isOneShow', 'roomListStatus'])
     },
     components: {
       ScrollView,
@@ -396,7 +405,7 @@
           width: 200px;
           display: flex;
           align-items: center;
-          .wrapper{
+          .wrapper {
             width: 178px;
             height: 65px;
             .background-url('~img/home/red_bg.png');

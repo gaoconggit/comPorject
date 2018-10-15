@@ -7,14 +7,15 @@
 *
 * */
 
-let baseUrl = '';
-let routerMode = 'hash';
-let imageUrl = '';
+let baseUrl = '';//请求地址
+let routerMode = 'hash';//路由类型
+let imageUrl = '';//图片地址
 
 if (process.env.NODE_ENV === 'development') {
   baseUrl = "http://wawaji.whxyzx.cn/wawaji/";
 } else if (process.env.NODE_ENV === 'production') {
-  baseUrl = "http://wawaji.whxyzx.cn/wawaji/";
+  // baseUrl = "http://wawaji.whxyzx.cn/wawaji/";
+  baseUrl = "https://wwj.whxyzx.cn/wawaji/";
 }
 
 const SDK_APPID = 1400058881;     //腾讯IM的appid
@@ -23,7 +24,8 @@ const ACCOUNT_TYPE = 20972;       //腾讯IM的account_type
 const APPID = 'wx51c749f31ff97876';//微信公众号唯一标识
 // const APPID = 'wx54c4e3c9a78ae9ff';//APP
 
-const URL = 'http://wawaji.whxyzx.cn/h5_login/';//微信公众号地址
+//const URL = 'http://wawaji.whxyzx.cn/h5_login/';//微信公众号地址
+const URL = 'https://wwj.whxyzx.cn/h5_login/';//微信公众号地址
 
 const TITLE = '掌上抓娃娃';//标题
 const DESC = '新手免费抓！百分之百前爪场，强抓爪不送爪！手残党那就来保送场！还有无挡板房间等你来捡漏！邀请好友送金币';//描述

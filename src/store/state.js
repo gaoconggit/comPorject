@@ -7,6 +7,7 @@ const state = {
   uid: '',                   //用户ID
   token: '',                //用户TOKEN
   userInfo: {},             //用户信息
+  roomListStatus: {},        //房间发生变化
   historyDetail: {},        //单个游戏历史记录
   isSelect: [],             //已选择邮寄的娃娃
   mailInfo: [],             //邮寄娃娃规则

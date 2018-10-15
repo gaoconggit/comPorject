@@ -10,6 +10,8 @@ export const token = state => state.token;
 
 export const userInfo = state => state.userInfo;
 
+export const roomListStatus = state => state.roomListStatus;
+
 export const history = state => state.historyDetail;
 
 export const isSelect = state => state.isSelect;

@@ -8,6 +8,8 @@ export const SET_TOKEN = "SET_TOKEN";
 
 export const SET_USER_INFO = "SET_USER_INFO";
 
+export const SET_ROOM_LIST_STATUS = "SET_ROOM_LIST_STATUS";
+
 export const SET_HISTORY = "SET_HISTORY";
 
 export const SET_IS_SELECT = "SET_IS_SELECT";

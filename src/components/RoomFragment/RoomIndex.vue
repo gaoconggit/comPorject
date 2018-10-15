@@ -164,7 +164,7 @@
   import {Actionsheet, Scroller, Popup, TransferDom} from "vux";
   import api from "../../api/BaseService";
   import {showToast, maxNum, updateBaseInfo} from "../../common/util/Utils";
-  import WebIM from "@/common/webIM";
+  //import WebIM from "@/common/webIM";
   import odlWebIM from "@/common/oldwebIM";
   import DescWrapper from "./DescWrapper";
   import LessCoin from "./LessCoin"
@@ -289,7 +289,6 @@
     methods: {
       ...mapMutations({
         set_userInfo: 'SET_USER_INFO',
-        set_noticeCenter: 'SET_NOTICE_CENTER',
         set_nowUserId: 'SET_NOW_USER_ID',
       }),
       sendMsgToIM(data) {
@@ -389,7 +388,7 @@
           let videoWrapMain = this.$refs.videoWrapMain;
           if (this.isVideo) {
             this.isVideo = false;
-            new JSMpeg.Player(this.roomData.video1_h5, {canvas: videoWrapMain});
+            this.player = new JSMpeg.Player(this.roomData.video1_h5, {canvas: videoWrapMain});
           }
           setTimeout(() => {
             this.sendMsgToIM(3);
@@ -428,7 +427,7 @@
             this.move_time = result.data.move_time;
             this.top_time = result.data.top_time;
             this.mactype = result.data.mactype;
-            this.webSocket = new WebSocket(`ws://${this.tcpIP}:${this.webPort}`);
+            this.webSocket = new WebSocket(`wss://${this.tcpIP}:${this.webPort}`);
             console.log("+++++++++", this.webSocket, "++++++");
             this.countDown('countDownNum', 30);
             this._getBaseInfo();
@@ -506,7 +505,7 @@
         this._getRoomAudience(this.roomId);
       },
       listenToLiveOutRoom(data) {//监听到有人退出房间
-        console.log("监听到有人退出房间");
+        console.log("监听到有人退出房间", data, this.userInfo.id);
         if (this.userInfo.id === data) {
           if (this.bgmusic) {
             this.bgmusic.stop();
@@ -527,9 +526,10 @@
             this.yx_chenggong.stop();
           }
           this.$vux.loading.hide();
-          this.exitIM = true;
+          this.exitIM = true
           console.log('-------------', this.isNewRoom);
-          this.$router.back(-1);
+          // this.$router.back(-1);
+          this.$router.push('/home/index');
         } else {
           this._getRoomAudience(this.roomId);
         }
@@ -553,18 +553,7 @@
       },
       listenToNotice(data) {
         console.log("监听有人抓中了娃娃");
-        this.set_noticeCenter({
-          show: true,
-          title: data.title,
-          avatar: data.avatar_thumb
-        });
-        setTimeout(() => {
-          this.set_noticeCenter({
-            show: false,
-            title: '',
-            avatar: ''
-          });
-        }, 3000)
+        this._getRoomHistory(this.roomData.id);
       },
       showListenGrabResult(data) {//监听抓取结果
         console.log("监听抓取结果:", data);
@@ -664,13 +653,14 @@
       },
       //正在游戏中退出房间
       backConfirm() {
-        this.isTrueBack = false;
-        this.backRoom(1, true);
+        this.webSocket.close(1000);
+        this.webSocket = null;
+        this.sendMsgToIM(4);
       },
       //退出房间
       backRoom(a, bool = false) {
         if (bool) {
-          this.backRoomFunc();
+          console.log(a, bool);
         } else {
           if (this.isGameStart) {
             this.isTrueBack = true;
@@ -679,8 +669,6 @@
             this.backRoomFunc();
           }
         }
-        // clearInterval(this.timer);
-        // this.timer = null;
       },
       backRoomFunc() {
         if (Number(this.roomData.baosong_num) || this.isNewRoom) {
@@ -846,7 +834,7 @@
       Actionsheet,
       Scroller,
       Popup,
-      WebIM,
+      //WebIM,
       odlWebIM,
       DescWrapper,
       LessCoin,
@@ -890,7 +878,7 @@
     beforeDestroyed() {
       //this.sendMsgToIM(4);
       //this.backRoom();
-      /*if (this.bgmusic) {
+      if (this.bgmusic) {
         this.bgmusic.stop();
       }
       if (this.yx_anniu) {
@@ -907,9 +895,10 @@
       }
       if (this.yx_chenggong) {
         this.yx_chenggong.stop();
-      }*/
+      }
     },
     destroyed() {
+      this.player.destroy();
       clearInterval(this.timer);
       this.timer = null;
       this.countDownNum = -1;

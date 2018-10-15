@@ -6,12 +6,24 @@ import VueLazyload from "vue-lazyload";
 /*各种页面的路由地址*/
 import routes from './router/index';
 import store from './store/';
-import {APPID, DESC, routerMode, TITLE, URL} from "./config/config";
+import {ACCOUNT_TYPE, APPID, DESC, routerMode, SDK_APPID, TITLE, URL} from "./config/config";
 import {mapMutations, mapState} from "vuex";
 import FastClick from 'fastClick';
 import {LoadingPlugin, ToastPlugin, AlertPlugin, WechatPlugin} from 'vux';
-import {delCookie, getCookie, getQueryString, removeStore, setCookie, setStore} from './common/util/ImUtils';
+import {
+  delCookie,
+  escape2Html,
+  getCookie,
+  getQueryString,
+  getStore,
+  removeStore,
+  setCookie,
+  setStore
+} from './common/util/ImUtils';
 import api from "./api/BaseService";
+import {updateBaseInfo} from "./common/util/Utils";
+
+const webim = newWebIm();
 
 Vue.use(VueLazyload);
 Vue.use(LoadingPlugin);
@@ -87,6 +99,7 @@ if (process.env.NODE_ENV === "production") {
   })
 }
 
+//初始化微信分享
 const wx = Vue.wechat;
 Vue.prototype.wxShare = function (title = TITLE, desc = DESC, link = URL) {
   const url = encodeURIComponent(location.href.split('#')[0]);
@@ -150,6 +163,117 @@ Vue.prototype.wxShare = function (title = TITLE, desc = DESC, link = URL) {
     .catch((err) => {
       console.log(err);
     })
+};
+
+//初始化IM消息
+Vue.prototype._initIM = function () {
+  let _this = this;
+  let loginInfo = {
+    'sdkAppID': SDK_APPID, //用户所属应用id,必填
+    'appIDAt3rd': SDK_APPID, //用户所属应用id，必填
+    'accountType': ACCOUNT_TYPE, //用户所属应用帐号类型，必填
+    'identifier': "admin", //当前用户ID,必须是否字符串类型，选填
+    'identifierNick': "null", //当前用户昵称，选填
+    'userSig': getStore("wawaji_tim_sig"), //当前用户身份凭证，必须是字符串类型，选填
+  };
+  
+  //监听事件
+  const listeners = {
+    "jsonpCallback": () => {
+    }, //IE9(含)以下浏览器用到的jsonp回调函数,移动端可不填，pc端必填
+    "onBigGroupMsgNotify": onBigGroupMsgNotify, //监听新消息(大群)事件，必填
+    "onMsgNotify": () => {
+    },//监听新消息(私聊(包括普通消息和全员推送消息)，普通群(非直播聊天室)消息)事件，必填
+    "onGroupSystemNotifys": () => {
+    }, //监听（多终端同步）群系统消息事件，必填
+  };
+  
+  webim.login(loginInfo, listeners, {'isLogOn': false},
+    function (identifierNick) {
+      console.log('登录成功');
+      webim.Log.info('webim登录成功');
+      applyJoinBigGroup('0');
+    },
+    function (err) {
+      console.log("error:", err.ErrorInfo);
+    }
+  );
+  
+  function applyJoinBigGroup(groupId) {
+    let options = {
+      'GroupId': groupId//群id
+    };
+    webim.applyJoinBigGroup(options, (resp) => {
+        webim.Log.info('进群成功');
+        console.log("进群成功:", groupId, resp);
+      }, (err) => {
+        alert(err.ErrorInfo);
+      }
+    );
+  }
+  
+  function onBigGroupMsgNotify(msgList) {
+    for (let i = msgList.length - 1; i >= 0; i--) { //遍历消息，按照时间从后往前
+      const msg = msgList[i];
+      //console.warn(msg);
+      // this.msgList.push();
+      webTimMsgNotify(msg);
+      webim.Log.warn('receive a new avchatroom group msg: ' + msg.getFromAccountNick());
+      //显示收到的消息
+      // showMsg(msg);
+    }
+  }
+  
+  function webTimMsgNotify(msg) {
+    try {
+      if (msg) {
+        console.log(msg);
+        const bigMsg = msg;
+        let _msg = msg.elems[0].content.text ? msg.elems[0].content.text : '';
+        if (_msg.indexOf('{') == 0) {
+          _msg = JSON.parse(escape2Html(_msg));
+          switch (_msg.type) {
+            case 12://滚动公告推送
+              if (_msg.user_id != 0) {
+                listenToNotice(_msg.new_notice);
+              }
+              break;
+            case 19://滚动公告推送
+              //_msg
+              _this.$store.commit('SET_ROOM_LIST_STATUS', _msg);
+              break;
+            case 20://监听支付成功
+              updateBaseInfo();
+              break;
+          }
+        } else if (bigMsg.elems[0].type == 'TIMTextElem') {//聊天的
+          alert('liaotian');
+          this.msgList.push(bigMsg.elems[0].content.text);
+        } else {
+          console.log(bigMsg.elems[0]);
+        }
+      }
+    } catch (e) {
+      console.log("消息处理失败", e)
+    }
+  }
+  
+  function listenToNotice(data) {
+    console.log(data);
+    _this.$store.commit('SET_NOTICE_CENTER', {
+      show: true,
+      title: data.title,
+      avatar: data.avatar_thumb
+    })
+    
+    setTimeout(() => {
+      _this.$store.commit('SET_NOTICE_CENTER', {
+        show: false,
+        title: '',
+        avatar: ''
+      });
+    }, 3000)
+  }
 };
 
 /* eslint-disable no-new */

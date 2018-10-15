@@ -13,6 +13,9 @@ const mutation = {
     setCookie('wawaji_token', token);
     state.token = token;
   },
+  [types.SET_ROOM_LIST_STATUS](state, obj) {
+    state.roomListStatus = obj;
+  },
   [types.SET_USER_INFO](state, userInfo) {
     setStore("wawaji_userInfo", JSON.stringify(userInfo));
     state.userInfo = userInfo;
