@@ -58,11 +58,6 @@
       avChatRoomId: function () {
         console.log(1234)
         this.initIM();
-      },
-      exitIM: function () {
-        if (this.exitIM) {
-          this.exitIMm();
-        }
       }
     },
     props: ['is_show_chat', 'tim_uid', 'tim_sig', 'sendMsgText', 'beginSendMsg', 'avChatRoomId', 'commendUserName', 'exitIM', 'msgType', 'roomId', 'gameId', 'notice', 'reservationRandomNum', 'is_again_login'],
@@ -72,11 +67,6 @@
     beforeRouteLeave(to, from, next) {
     },
     methods: {
-      exitIMm() {
-        console.log("退出IM");
-        this.quitBigGroup();
-        //this.logout();
-      },
       initIM() {
         console.log('从新渲染');
         if (this.is_again_login) {
@@ -443,17 +433,19 @@
       },
       quitBigGroup() {
         var options = {
-          'GroupId': this.avChatRoomId //群id
+          'GroupId': this.selToID //群id
         };
         webim.quitBigGroup(
           options,
           function (resp) {
+            console.log('退出群成功', resp);
             webim.Log.info('退群成功');
             // $("#video_sms_list").find("li").remove();
             //webim.Log.error('进入另一个大群:'+avChatRoomId2);
             //applyJoinBigGroup(avChatRoomId2);//加入大群
           },
           function (err) {
+            console.log('退出房间失败', err);
             // alert(err.ErrorInfo);
           }
         );
@@ -519,6 +511,10 @@
                   break;
                 case 4://离开房间
                   this.$emit('listenToLiveOutRoom', _msg.user_id);
+                  if (_msg.user_id === this.userInfo.id) {
+                    console.log("退出IM");
+                    this.quitBigGroup();
+                  }
                   break;
                 case 5://用户预约抓娃娃
                   this.$emit('listenToReservation', [_msg.user_id, this.reservationRandomNum]);

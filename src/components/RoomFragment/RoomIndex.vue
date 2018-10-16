@@ -239,6 +239,7 @@
         webSocket: '',        //WebSocket连接
         isVideo: true,
         user_setting: {},
+        player: null,         //当前视频是否在播放
       };
     },
     created() {
@@ -297,6 +298,9 @@
         this.isBeginSendMsg = Date.now();//IM需要监听发生变化
         this.msgType = data;
       },
+      quitRoomToIM() {
+        this.exitIM = Date.now();//IM需要监听发生变化
+      },
       async _getBaseInfo() {
         let result = await api.getBaseInfo();
         this.set_userInfo(result.data);
@@ -326,12 +330,12 @@
           this.spendcoin = result.data.spendcoin;
           this.isNewRoom = parseInt(result.data.is_newbee);
           this.isMultiple = !!Number(result.data.result_type);
-          if (result.data.now_user != null) {
+          /*if (result.data.now_user != null) {//再次进入时，判断是否为自己
             if (result.data.now_user.id == this.userInfo.id) {
               this.isGameStart = true;
               //this._gameStart();
             }
-          }
+          }*/
           this.roomData = result.data;
           if (this.user_setting != null) {
             if (this.user_setting.bgmusic == 1) {
@@ -386,8 +390,8 @@
           }
           /*视频播放*/
           let videoWrapMain = this.$refs.videoWrapMain;
-          if (this.isVideo) {
-            this.isVideo = false;
+          if (!this.player) {
+            console.log('视频是否在播放');
             this.player = new JSMpeg.Player(this.roomData.video1_h5, {canvas: videoWrapMain});
           }
           setTimeout(() => {
@@ -505,7 +509,7 @@
         this._getRoomAudience(this.roomId);
       },
       listenToLiveOutRoom(data) {//监听到有人退出房间
-        console.log("监听到有人退出房间", data, this.userInfo.id);
+        console.log("监听到有人退出房间", data === this.userInfo.id);
         if (this.userInfo.id === data) {
           if (this.bgmusic) {
             this.bgmusic.stop();
@@ -526,8 +530,7 @@
             this.yx_chenggong.stop();
           }
           this.$vux.loading.hide();
-          this.exitIM = true
-          console.log('-------------', this.isNewRoom);
+          this.quitRoomToIM();
           // this.$router.back(-1);
           this.$router.push('/home/index');
         } else {
@@ -572,16 +575,19 @@
         if (data.user_id === this.userInfo.id) {
           if (parseInt(data.success)) {
             if (this.yx_chenggong) {
+              if (!this.isNewRoom) {
+                this.countDown('countDownResult', 6, "resultTimer");
+              }
               this.yx_chenggong.play();
             }
           } else {
             if (this.yx_shibai) {
+              this.countDown('countDownResult', 6, "resultTimer");
               this.yx_shibai.play();
             }
           }
-          if (!this.isNewRoom) {
-            this.countDown('countDownResult', 6, "resultTimer");
-          }
+
+          //this.countDown('countDownResult', 6, "resultTimer");
           //this.soundPool.pause();
           if (this.game_bgmusic) {
             this.game_bgmusic.stop();
@@ -593,16 +599,10 @@
           this.isGameStart = false;
           this.resultPopup = true;
           updateBaseInfo();
-          this._getJoinRoom();
           this.webSocket.close(1000);
           this.webSocket = null;
-        } else if (data.user_id == 0 || data.user_id == null) {
-          //this.setState({isGameStart: false});
-          console.log(1234);
-          this._getJoinRoom();
-        } else {
-          this._getJoinRoom();
         }
+        this._getJoinRoom();
       },
       roomGameCmd(opera) {
         console.log(opera);
@@ -653,6 +653,8 @@
       },
       //正在游戏中退出房间
       backConfirm() {
+
+        this.exitIM = Date.now();
         this.webSocket.close(1000);
         this.webSocket = null;
         this.sendMsgToIM(4);
@@ -898,7 +900,7 @@
       }
     },
     destroyed() {
-      this.player.destroy();
+      this.player = null;
       clearInterval(this.timer);
       this.timer = null;
       this.countDownNum = -1;

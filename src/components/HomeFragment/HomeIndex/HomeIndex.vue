@@ -113,12 +113,16 @@
       };
     },
     watch: {
-      $route(to, form) {
+      $route(to, from) {
         let query = to.query;
         let path = to.path;
         if (query.keep) {
           this._getCategory();
           updateBaseInfo();
+        }
+
+        if (from.path === '/room') {
+          this.$refs.scrollerIndex.reset();
         }
       },
       isOneShow(bool) {
