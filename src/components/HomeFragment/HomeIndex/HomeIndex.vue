@@ -66,7 +66,7 @@
         <!--点击banner时出现的链接  相当于轮播-->
         <swiper-list :data="banners" ref="swiper" @swiper-item="swiperItem"></swiper-list>
         <!--首页的抓娃娃列表  全部。。。-->
-        <ul class="nav-wrapper" ref="navWrapper">
+        <ul class="nav-wrapper" ref="navWrapper" v-if="navlength != 1">
           <li class="nav-item" v-for="(nav,index) in navs" :key="nav.id" @click="navItem(index)">
             <img class="nav-icon" :src="Number(nav.is_default)?nav.icon1:nav.icon2" alt="">
           </li>
@@ -109,7 +109,8 @@
         wawaList: [], //房间列表
         listPage: 1, //显示页码
         isShowRank: false, //是否展示排行榜
-        isNavWrapperTop: false //是否吸顶导航
+        isNavWrapperTop: false, //是否吸顶导航
+        navlength:0,
       };
     },
     watch: {
@@ -165,6 +166,12 @@
       async _getCategory() {
         let result = await api.getCategory();
         result = result.data;
+        console.log('111111111111111111111111111',result.length);
+        if(result.length===1){
+          this.navlength=result.length;
+        }else{
+          this.navlength=0;
+        }
         result.forEach((item, index) => {
           if (Number(item.is_default)) {
             this.navIndex = index;
@@ -235,7 +242,11 @@
       onScroll(pos) {
         if (pos.top > this.homeHeight + this.swiperHeight + this.btnWrapper) {
           //添加class
-          this.isNavWrapperTop = true;
+          if(this.navlength==1){
+            this.isNavWrapperTop = false;
+          }else{
+            this.isNavWrapperTop = true;
+          }
         } else {
           //删除class
           this.isNavWrapperTop = false;
@@ -340,7 +351,7 @@
       ListHome,
       RankList,
       SwiperList,
-    }
+    },
   };
 </script>
 

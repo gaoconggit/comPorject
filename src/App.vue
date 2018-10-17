@@ -84,8 +84,8 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
         set_noticeCenter: "SET_NOTICE_CENTER",
       }),
       _getToken() {
-        let token = getCookie('wawaji_token') || "05045c4b1cc059fcdd284a0eec5acafe";
-        let uid = getStore("wawaji_uid") || "100196";
+        let token = getCookie('wawaji_token') || "c5ca780bff3b97c2dcd24e37daf17429";
+        let uid = getStore("wawaji_uid") || "100188";
         this.set_uid(uid);
         this.set_token(token);
         this._getBaseInfo();
