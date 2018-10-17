@@ -162,11 +162,12 @@ export default {
     return this.getAxiosAction(url);
   },
   //微信登录
-  loginWeChat(code) {
+  loginWeChat(code, channel) {
     let url = `${apiData.public}Login.weixinLogin`;
     let formData = new FormData();
     formData.append('code', code);
     formData.append('usercode', 0);
+    formData.append('channel', channel);
     return this.postAxiosAction(url, formData, true);
   },
   //发送心跳

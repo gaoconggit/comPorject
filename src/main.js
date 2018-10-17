@@ -60,7 +60,7 @@ const router = new VueRouter({
   }
 });
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production") {//微信登录
   router.beforeEach((to, form, next) => {
     if (getQueryString('code') || getQueryString('token')) {
       if (!getCookie('wawaji_token')) {
@@ -69,10 +69,13 @@ if (process.env.NODE_ENV === "production") {
       }
     }
     if (!getCookie('wawaji_code') && !getCookie('wawaji_token')) {
+      if (getQueryString('channel')) {
+        setStore('wawaji_channel', getQueryString('channel'));
+      }
       window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${encodeURIComponent(URL)}&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect`;
     } else {
       if (getCookie('wawaji_token') === "null" || !getCookie('wawaji_token')) {
-        api.loginWeChat(getCookie('wawaji_code'))
+        api.loginWeChat(getCookie('wawaji_code'), getStore('wawaji_channel'))
           .then((res) => {
             console.log(res);
             if (res.code == 1) {
@@ -280,12 +283,4 @@ Vue.prototype._initIM = function () {
 new Vue({
   router,
   store,
-  created() {
-  },
-  method: {
-    ...mapMutations(['SET_USERINFO'])
-  },
-  compute: {
-    ...mapState(['userInfo'])
-  },
 }).$mount('#app');
