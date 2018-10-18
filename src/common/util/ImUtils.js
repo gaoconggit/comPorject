@@ -39,7 +39,7 @@ export const getQueryString = (key) => {
  * 设置cookie
  */
 
-export const setCookie = (c_name, value, expiredays = 6) => {
+export const setCookie = (c_name, value, expiredays = 2) => {
   const exdate = new Date();
   exdate.setHours(exdate.getHours() + expiredays);
   document.cookie = c_name + "=" + encodeURIComponent(value) + ((expiredays == null) ? "" : ";expires=" + exdate.toGMTString());

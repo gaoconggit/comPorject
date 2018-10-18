@@ -4,7 +4,7 @@
 * */
 
 import axios from "axios";
-import {baseUrl} from "../config/config";
+import {baseUrl, VERSION} from "../config/config";
 import {showToast} from "../common/util/Utils";
 import store from '../store';
 
@@ -168,16 +168,18 @@ export default {
     formData.append('code', code);
     formData.append('usercode', 0);
     formData.append('channel', channel);
-    formData.append('version', '2.3.0');
+    formData.append('version', VERSION);
     return this.postAxiosAction(url, formData, true);
   },
   //发送心跳
-  postOnline() {
+  postOnline(channel) {
     let url = `${apiData.usercode}`;
     let formData = new FormData();
     formData.append("api_name", "online");
     formData.append("token", state.token);
     formData.append("uid", state.uid);
+    formData.append("channel", channel);
+    formData.append('version', VERSION);
     return this.postAxiosAction(url, formData);
   },
   //充值接口调用

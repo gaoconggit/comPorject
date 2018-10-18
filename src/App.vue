@@ -23,7 +23,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
 <script>
   import {mapGetters, mapMutations} from "vuex";
   import api from "api/BaseService";
-  import {delCookie, escape2Html, getCookie, getStore, removeStore, setStore} from "./common/util/ImUtils";
+  import {delCookie, escape2Html, getCookie, getStore, removeStore, setCookie, setStore} from "./common/util/ImUtils";
   import {SDK_APPID, ACCOUNT_TYPE} from "./config/config";
   import {updateBaseInfo} from "./common/util/Utils";
 
@@ -84,8 +84,11 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
         set_noticeCenter: "SET_NOTICE_CENTER",
       }),
       _getToken() {
-        let token = getCookie('wawaji_token') || "c5ca780bff3b97c2dcd24e37daf17429";
-        let uid = getStore("wawaji_uid") || "100188";
+        /*document.cookie = "";
+        setCookie('wawaji_token', '9eb5c6488f1feebc62ee29f9ffdfa06f');
+        setStore('wawaji_uid', 516459);*/
+        let token = getCookie('wawaji_token');
+        let uid = getStore("wawaji_uid");
         this.set_uid(uid);
         this.set_token(token);
         this._getBaseInfo();
@@ -107,7 +110,7 @@ childNodes无效性如果非得获取“伪子元素”，要使用content属性
 
       //发送心跳
       _postOnline() {
-        api.postOnline();
+        api.postOnline(getStore('wawaji_channel'));
       },
     },
     computed: {...mapGetters(['noticeCenter'])},

@@ -898,8 +898,11 @@
       if (this.yx_chenggong) {
         this.yx_chenggong.stop();
       }
+      this.player.destroy();
+      this.player = null;
     },
     destroyed() {
+      this.player.destroy();
       this.player = null;
       clearInterval(this.timer);
       this.timer = null;

@@ -10,7 +10,7 @@ Vue.use(ToastPlugin);
 let vm = new Vue();
 
 /*不足两位补零*/
-function Zerofill(num) {
+function zerofill(num) {
   return num > 9 ? num : '0' + num;
 }
 
@@ -41,17 +41,17 @@ export function getTimeDate(val, isYear = false) {
     varMinutes = varTime.getMinutes();
   
   if (isYear) {
-    return `${Zerofill(varYear)}-${Zerofill(varMonth)}-${Zerofill(varDate)} ${Zerofill(varHours)}:${Zerofill(varMinutes)}`;
+    return `${zerofill(varYear)}-${zerofill(varMonth)}-${zerofill(varDate)} ${zerofill(varHours)}:${zerofill(varMinutes)}`;
   }
   
   if (nowYear === varYear) {
-    return `${Zerofill(varMonth)}-${Zerofill(varDate)} ${Zerofill(varHours)}:${Zerofill(varMinutes)}`;
+    return `${zerofill(varMonth)}-${zerofill(varDate)} ${zerofill(varHours)}:${zerofill(varMinutes)}`;
   } else if (nowYear === varYear && nowMonth === varMonth) {
-    return `${Zerofill(varMonth)}-${Zerofill(varDate)} ${Zerofill(varHours)}:${Zerofill(varMinutes)}`;
+    return `${zerofill(varMonth)}-${zerofill(varDate)} ${zerofill(varHours)}:${zerofill(varMinutes)}`;
   } else if (nowYear === varYear && nowMonth === varMonth && nowDate === varDate) {
-    return `${Zerofill(varHours)}:${Zerofill(varMinutes)}`;
+    return `${zerofill(varHours)}:${zerofill(varMinutes)}`;
   } else {
-    return `${Zerofill(varYear)}-${Zerofill(varMonth)}-${Zerofill(varDate)} ${Zerofill(varHours)}:${Zerofill(varMinutes)}`;
+    return `${zerofill(varYear)}-${zerofill(varMonth)}-${zerofill(varDate)} ${zerofill(varHours)}:${zerofill(varMinutes)}`;
   }
 }
 
@@ -61,10 +61,10 @@ export function secondTime(time) {
   let nTime = new Date(time).getTime();
   
   let t = (nTime - nowTime) > 0 ? nTime - nowTime : 0;//倒计时总数
-  let d = Zerofill(Math.floor(t / (60 * 60 * 24 * 1000)));//天
-  let h = Zerofill(Math.floor(t / (60 * 60 * 1000) % 24));//时
-  let m = Zerofill(Math.floor(t / (60 * 1000) % 60));//分
-  let s = Zerofill(Math.floor(t / 1000 % 60));//秒
+  let d = zerofill(Math.floor(t / (60 * 60 * 24 * 1000)));//天
+  let h = zerofill(Math.floor(t / (60 * 60 * 1000) % 24));//时
+  let m = zerofill(Math.floor(t / (60 * 1000) % 60));//分
+  let s = zerofill(Math.floor(t / 1000 % 60));//秒
   
   return {t, d, h, m, s};
 }
@@ -98,13 +98,13 @@ export function formatSeconds(value) {
   let result = '';
   
   if (day > 0) {
-    result = "" + Zerofill(parseInt(hour)) + "时";
+    result = "" + zerofill(parseInt(hour)) + "时";
     result = "" + parseInt(day) + "天" + result;
     
     return result;
   } else {
-    result = "" + Zerofill(parseInt(minute)) + "分";
-    result = "" + Zerofill(parseInt(hour)) + "时" + result;
+    result = "" + zerofill(parseInt(minute)) + "分";
+    result = "" + zerofill(parseInt(hour)) + "时" + result;
     
     return result;
   }

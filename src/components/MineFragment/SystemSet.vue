@@ -10,7 +10,7 @@
       <x-switch class="switch" title="音效开关" :value="sound" @on-change="setSound"></x-switch>
     </group>
     <group>
-      <cell class="switch" title="当前版本" value="2.2.0"></cell>
+      <cell class="switch" title="当前版本" :value="version"></cell>
     </group>
   </div>
 </template>
@@ -21,6 +21,7 @@
   import TitleBar from "@/common/TitleBar";
   import {showToast, updateBaseInfo} from "../../common/util/Utils";
   import api from "../../api/BaseService";
+  import {VERSION} from "../../config/config";
 
   export default {
     name: "SystemSet",
@@ -86,6 +87,9 @@
     },
     computed: {
       ...mapGetters(['userInfo']),
+      version() {
+        return VERSION;
+      }
     },
     components: {TitleBar, Group, XSwitch, Cell}
   }
