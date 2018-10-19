@@ -60,8 +60,9 @@ const router = new VueRouter({
   }
 });
 
-if (process.env.NODE_ENV === "production") {//微信登录
+if (process.env.NODE_ENV === "production") {
   router.beforeEach((to, form, next) => {
+    /*微信登录*/
     if (getQueryString('code') || getQueryString('token')) {
       if (!getCookie('wawaji_token')) {
         setCookie('wawaji_code', getQueryString('code'));
@@ -99,6 +100,39 @@ if (process.env.NODE_ENV === "production") {//微信登录
         next();
       }
     }
+    
+    /*游客登录*/
+    /*delCookie('wawaji_token');
+    window.localStorage.setItem('wawaji_uid', '');
+    if (getCookie('wawaji_token') === "null" || !getCookie('wawaji_token')) {
+      if (getQueryString('channel')) {
+        setStore('wawaji_channel', getQueryString('channel'));
+      }
+      let device = '000000' + Date.now();
+      api.loginTour(device)
+        .then((res) => {
+          if (res.code == 1) {
+            store.commit('SET_TOKEN', res.data.token);
+            store.commit('SET_UID', res.data.id);
+            store.commit('SET_USER_INFO', res.data);
+            setStore('wawaji_tim_uid', res.data.tim_uid);
+            setStore('wawaji_tim_sig', res.data.user_sig);
+            next();
+          } else {
+            delCookie('wawaji_code');
+            delCookie('wawaji_token');
+            removeStore('wawaji_userInfo')
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          alert('登录失败');
+          next();
+        });
+    } else {
+      console.log('已登录');
+      next();
+    }*/
   })
 }
 

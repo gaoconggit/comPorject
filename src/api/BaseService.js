@@ -155,7 +155,7 @@ export default {
       })
     })
   },
-
+  
   //微信公众号分享获取签名
   getSignature(sendUrl) {
     let url = `${apiData.public}Order.getSignature&token=${state.token}&uid=${state.uid}&url=${sendUrl}`;
@@ -169,6 +169,14 @@ export default {
     formData.append('usercode', 0);
     formData.append('channel', channel);
     formData.append('version', VERSION);
+    return this.postAxiosAction(url, formData, true);
+  },
+  //游客登录
+  loginTour(device, channel = '0000') {
+    let url = `${apiData.public}Login.touristLogin`;
+    let formData = new FormData();
+    formData.append('device', device);
+    formData.append('channel', channel);
     return this.postAxiosAction(url, formData, true);
   },
   //发送心跳
@@ -771,7 +779,7 @@ export default {
     formData.append('token', state.token);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //领取vip宝箱奖励
   VipBoxReward(er) {
     let url = apiData.public + "vip.vipBoxReward";
@@ -781,7 +789,7 @@ export default {
     formData.append('level', er);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //用户资料
   RoomUserData(id) {
     let url = apiData.mywawa;
@@ -791,7 +799,7 @@ export default {
     formData.append('token', state.token);
     return this.postAxiosAction(url, formData);
   },
-
+  
   //观众娃娃列表
   spectatorDolls(id, page = 1, size = 10) {
     let url = apiData.mywawa;

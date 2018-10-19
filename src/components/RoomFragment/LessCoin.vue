@@ -33,8 +33,8 @@
       },
       invitationCodeGo() {
         this.$emit('close-less-coin');
-        // this.$router.push({path:''})
-        console.log('我的邀请码路由');
+        this.$router.push('/invitation')
+        // console.log('我的邀请码路由');
       },
       rechargeGo() {
         this.$emit('close-less-coin');

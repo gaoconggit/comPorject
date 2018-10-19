@@ -25,6 +25,9 @@
       console.log(2)
       window.postMessageXzww = (d) => {
         console.log('ready', d)
+        if(d === 'recharge'){
+          this.$router.push('/recharge');
+        }
         window.dispatchEvent(new Event(d));
       }
 

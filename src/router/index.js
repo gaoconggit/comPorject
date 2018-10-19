@@ -19,6 +19,7 @@ const MineIndex = ()=>import('../components/MineFragment/MineIndex');
 const CoinsIndex = ()=>import('../components/CoinsRecharge/CoinsIndex');
 
 const RoomIndex = ()=>import('../components/RoomFragment/RoomIndex');
+const RoomDemo = ()=>import('../components/RoomFragment/RoomDemo');
 const FrameContent = ()=>import('../common/FrameContent');
 const VipContent = ()=>import('../components/MineFragment/VipContent');
 const MailIndex = ()=>import('../components/MailFragment/MailIndex');
@@ -64,7 +65,8 @@ export default [{
     },// 如果此路由需要微信授权请设置为true,默认为false
     {path: '/my', name: '我的中心', component: MineIndex, meta: {keepAlive: true}},
     {path: '/recharge', name: '充值中心', component: CoinsIndex},
-    {path: '/room', name: '娃娃机房间', component: RoomIndex},
+    {path: '/room', name: '娃娃机房间', component: RoomIndex},//正式房间
+    // {path: '/room', name: '娃娃机房间', component: RoomDemo},//测试房间
     {path: '/niu', name: '扭蛋房间', component: NiuDanRoom},
     {path: '/details', name: '内容详情', component: FrameContent, meta: {keepAlive: true}},
     {path: '/vip', name: 'VIP会员俱乐部', component: VipContent},
