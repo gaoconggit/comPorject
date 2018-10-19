@@ -872,5 +872,17 @@ export default {
     formData.append('uid', state.uid);
     formData.append('goods_id', id);
     return this.postAxiosAction(url, formData);
+  },
+  //物流信息
+  LogisticsInformation(waybillno,kdname,kdno){
+    let url = `${apiData.public}Waybill.kdInfo`;
+    let formData = new FormData();
+    formData.append('token', state.token);
+    formData.append('uid', state.uid);
+    formData.append('waybillno', waybillno);
+    formData.append('kdname',kdname);
+    formData.append('kdno',kdno);
+    return this.postAxiosAction(url, formData);
   }
+
 }

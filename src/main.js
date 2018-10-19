@@ -61,6 +61,7 @@ const router = new VueRouter({
 });
 
 if (process.env.NODE_ENV === "production") {
+  /*判断是否登录再决定跳转到登录页面*/
   router.beforeEach((to, form, next) => {
     /*微信登录*/
     if (getQueryString('code') || getQueryString('token')) {
@@ -213,7 +214,7 @@ Vue.prototype._initIM = function () {
     'identifierNick': "null", //当前用户昵称，选填
     'userSig': getStore("wawaji_tim_sig"), //当前用户身份凭证，必须是字符串类型，选填
   };
-  
+
   //监听事件
   const listeners = {
     "jsonpCallback": () => {
@@ -224,7 +225,7 @@ Vue.prototype._initIM = function () {
     "onGroupSystemNotifys": () => {
     }, //监听（多终端同步）群系统消息事件，必填
   };
-  
+
   webim.login(loginInfo, listeners, {'isLogOn': false},
     function (identifierNick) {
       console.log('登录成功');
@@ -235,7 +236,7 @@ Vue.prototype._initIM = function () {
       console.log("error:", err.ErrorInfo);
     }
   );
-  
+
   function applyJoinBigGroup(groupId) {
     let options = {
       'GroupId': groupId//群id
@@ -248,7 +249,7 @@ Vue.prototype._initIM = function () {
       }
     );
   }
-  
+
   function onBigGroupMsgNotify(msgList) {
     for (let i = msgList.length - 1; i >= 0; i--) { //遍历消息，按照时间从后往前
       const msg = msgList[i];
@@ -260,7 +261,7 @@ Vue.prototype._initIM = function () {
       // showMsg(msg);
     }
   }
-  
+
   function webTimMsgNotify(msg) {
     try {
       if (msg) {
@@ -294,7 +295,7 @@ Vue.prototype._initIM = function () {
       console.log("消息处理失败", e)
     }
   }
-  
+
   function listenToNotice(data) {
     console.log(data);
     _this.$store.commit('SET_NOTICE_CENTER', {
@@ -302,7 +303,7 @@ Vue.prototype._initIM = function () {
       title: data.title,
       avatar: data.avatar_thumb
     })
-    
+
     setTimeout(() => {
       _this.$store.commit('SET_NOTICE_CENTER', {
         show: false,

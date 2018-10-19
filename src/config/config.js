@@ -13,8 +13,10 @@ let imageUrl = '';//图片地址
 
 if (process.env.NODE_ENV === 'development') {
   // baseUrl = "http://wawaji.whxyzx.cn/wawaji/";
+  /*开发地址*/
   baseUrl = "https://wwjapi.whxyzx.cn/wawaji/";
 } else if (process.env.NODE_ENV === 'production') {
+  /*请求线上地址*/
   baseUrl = "https://wwjapi.whxyzx.cn/wawaji/";
 }
 

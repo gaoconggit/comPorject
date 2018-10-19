@@ -2,34 +2,34 @@
  * VER 1.7.1
  */
 (function (global, factory) {
-  
+
   global["Long"] = factory();
-  
+
 })(window, function () {
   "use strict";
-  
+
   function Long(low, high, unsigned) {
     this.low = low | 0;
     this.high = high | 0;
     this.unsigned = !!unsigned;
   }
-  
+
   Long.prototype.__isLong__;
-  
+
   Object.defineProperty(Long.prototype, "__isLong__", {
     value: true,
     enumerable: false,
     configurable: false
   });
-  
+
   function isLong(obj) {
     return (obj && obj["__isLong__"]) === true;
   }
-  
+
   Long.isLong = isLong;
   var INT_CACHE = {};
   var UINT_CACHE = {};
-  
+
   function fromInt(value, unsigned) {
     var obj, cachedObj, cache;
     if (unsigned) {
@@ -56,9 +56,9 @@
       return obj;
     }
   }
-  
+
   Long.fromInt = fromInt;
-  
+
   function fromNumber(value, unsigned) {
     if (isNaN(value) || !isFinite(value))
       return unsigned ? UZERO : ZERO;
@@ -77,16 +77,16 @@
       return fromNumber(-value, unsigned).neg();
     return fromBits((value % TWO_PWR_32_DBL) | 0, (value / TWO_PWR_32_DBL) | 0, unsigned);
   }
-  
+
   Long.fromNumber = fromNumber;
-  
+
   function fromBits(lowBits, highBits, unsigned) {
     return new Long(lowBits, highBits, unsigned);
   }
-  
+
   Long.fromBits = fromBits;
   var pow_dbl = Math.pow; // Used 4 times (4*8 to 15+4)
-  
+
   function fromString(str, unsigned, radix) {
     if (str.length === 0)
       throw Error('empty string');
@@ -102,7 +102,7 @@
     radix = radix || 10;
     if (radix < 2 || 36 < radix)
       throw RangeError('radix');
-    
+
     var p;
     if ((p = str.indexOf('-')) > 0)
       throw Error('interior hyphen');
@@ -110,7 +110,7 @@
       return fromString(str.substring(1), unsigned, radix).neg();
     }
     var radixToPower = fromNumber(pow_dbl(radix, 8));
-    
+
     var result = ZERO;
     for (var i = 0; i < str.length; i += 8) {
       var size = Math.min(8, str.length - i),
@@ -126,9 +126,9 @@
     result.unsigned = unsigned;
     return result;
   }
-  
+
   Long.fromString = fromString;
-  
+
   function fromValue(val) {
     if (val /* is compatible */ instanceof Long)
       return val;
@@ -139,7 +139,7 @@
     // Throws for non-objects, converts non-instanceof Long:
     return fromBits(val.low, val.high, val.unsigned);
   }
-  
+
   Long.fromValue = fromValue;
   var TWO_PWR_16_DBL = 1 << 16;
   var TWO_PWR_24_DBL = 1 << 24;
@@ -172,7 +172,7 @@
       return ((this.high >>> 0) * TWO_PWR_32_DBL) + (this.low >>> 0);
     return this.high * TWO_PWR_32_DBL + (this.low >>> 0);
   };
-  
+
   LongPrototype.toString = function toString(radix) {
     radix = radix || 10;
     if (radix < 2 || 36 < radix)
@@ -255,7 +255,7 @@
     return !this.eq(/* validates */ other);
   };
   LongPrototype.neq = LongPrototype.notEquals;
-  
+
   /**
    * Tests if this Long's value is less than the specified's.
    * @param {!Long|number|string} other Other value
@@ -264,7 +264,7 @@
   LongPrototype.lessThan = function lessThan(other) {
     return this.comp(/* validates */ other) < 0;
   };
-  
+
   /**
    * Tests if this Long's value is less than the specified's. This is an alias of {@link Long#lessThan}.
    * @function
@@ -272,7 +272,7 @@
    * @returns {boolean}
    */
   LongPrototype.lt = LongPrototype.lessThan;
-  
+
   /**
    * Tests if this Long's value is less than or equal the specified's.
    * @param {!Long|number|string} other Other value
@@ -281,7 +281,7 @@
   LongPrototype.lessThanOrEqual = function lessThanOrEqual(other) {
     return this.comp(/* validates */ other) <= 0;
   };
-  
+
   /**
    * Tests if this Long's value is less than or equal the specified's. This is an alias of {@link Long#lessThanOrEqual}.
    * @function
@@ -289,7 +289,7 @@
    * @returns {boolean}
    */
   LongPrototype.lte = LongPrototype.lessThanOrEqual;
-  
+
   /**
    * Tests if this Long's value is greater than the specified's.
    * @param {!Long|number|string} other Other value
@@ -298,7 +298,7 @@
   LongPrototype.greaterThan = function greaterThan(other) {
     return this.comp(/* validates */ other) > 0;
   };
-  
+
   /**
    * Tests if this Long's value is greater than the specified's. This is an alias of {@link Long#greaterThan}.
    * @function
@@ -306,7 +306,7 @@
    * @returns {boolean}
    */
   LongPrototype.gt = LongPrototype.greaterThan;
-  
+
   /**
    * Tests if this Long's value is greater than or equal the specified's.
    * @param {!Long|number|string} other Other value
@@ -315,7 +315,7 @@
   LongPrototype.greaterThanOrEqual = function greaterThanOrEqual(other) {
     return this.comp(/* validates */ other) >= 0;
   };
-  
+
   /**
    * Tests if this Long's value is greater than or equal the specified's. This is an alias of {@link Long#greaterThanOrEqual}.
    * @function
@@ -323,7 +323,7 @@
    * @returns {boolean}
    */
   LongPrototype.gte = LongPrototype.greaterThanOrEqual;
-  
+
   /**
    * Compares this Long's value with the specified's.
    * @param {!Long|number|string} other Other value
@@ -347,7 +347,7 @@
     // Both are positive if at least one is unsigned
     return (other.high >>> 0) > (this.high >>> 0) || (other.high === this.high && (other.low >>> 0) > (this.low >>> 0)) ? -1 : 1;
   };
-  
+
   /**
    * Compares this Long's value with the specified's. This is an alias of {@link Long#compare}.
    * @function
@@ -356,7 +356,7 @@
    *  if the given one is greater
    */
   LongPrototype.comp = LongPrototype.compare;
-  
+
   /**
    * Negates this Long's value.
    * @returns {!Long} Negated Long
@@ -366,14 +366,14 @@
       return MIN_VALUE;
     return this.not().add(ONE);
   };
-  
+
   /**
    * Negates this Long's value. This is an alias of {@link Long#negate}.
    * @function
    * @returns {!Long} Negated Long
    */
   LongPrototype.neg = LongPrototype.negate;
-  
+
   /**
    * Returns the sum of this and the specified Long.
    * @param {!Long|number|string} addend Addend
@@ -382,19 +382,19 @@
   LongPrototype.add = function add(addend) {
     if (!isLong(addend))
       addend = fromValue(addend);
-    
+
     // Divide each number into 4 chunks of 16 bits, and then sum the chunks.
-    
+
     var a48 = this.high >>> 16;
     var a32 = this.high & 0xFFFF;
     var a16 = this.low >>> 16;
     var a00 = this.low & 0xFFFF;
-    
+
     var b48 = addend.high >>> 16;
     var b32 = addend.high & 0xFFFF;
     var b16 = addend.low >>> 16;
     var b00 = addend.low & 0xFFFF;
-    
+
     var c48 = 0,
       c32 = 0,
       c16 = 0,
@@ -412,7 +412,7 @@
     c48 &= 0xFFFF;
     return fromBits((c16 << 16) | c00, (c48 << 16) | c32, this.unsigned);
   };
-  
+
   /**
    * Returns the difference of this and the specified Long.
    * @param {!Long|number|string} subtrahend Subtrahend
@@ -423,7 +423,7 @@
       subtrahend = fromValue(subtrahend);
     return this.add(subtrahend.neg());
   };
-  
+
   /**
    * Returns the difference of this and the specified Long. This is an alias of {@link Long#subtract}.
    * @function
@@ -431,7 +431,7 @@
    * @returns {!Long} Difference
    */
   LongPrototype.sub = LongPrototype.subtract;
-  
+
   /**
    * Returns the product of this and the specified Long.
    * @param {!Long|number|string} multiplier Multiplier
@@ -448,7 +448,7 @@
       return multiplier.isOdd() ? MIN_VALUE : ZERO;
     if (multiplier.eq(MIN_VALUE))
       return this.isOdd() ? MIN_VALUE : ZERO;
-    
+
     if (this.isNegative()) {
       if (multiplier.isNegative())
         return this.neg().mul(multiplier.neg());
@@ -456,24 +456,24 @@
         return this.neg().mul(multiplier).neg();
     } else if (multiplier.isNegative())
       return this.mul(multiplier.neg()).neg();
-    
+
     // If both longs are small, use float multiplication
     if (this.lt(TWO_PWR_24) && multiplier.lt(TWO_PWR_24))
       return fromNumber(this.toNumber() * multiplier.toNumber(), this.unsigned);
-    
+
     // Divide each long into 4 chunks of 16 bits, and then add up 4x4 products.
     // We can skip products that would overflow.
-    
+
     var a48 = this.high >>> 16;
     var a32 = this.high & 0xFFFF;
     var a16 = this.low >>> 16;
     var a00 = this.low & 0xFFFF;
-    
+
     var b48 = multiplier.high >>> 16;
     var b32 = multiplier.high & 0xFFFF;
     var b16 = multiplier.low >>> 16;
     var b00 = multiplier.low & 0xFFFF;
-    
+
     var c48 = 0,
       c32 = 0,
       c16 = 0,
@@ -500,7 +500,7 @@
     c48 &= 0xFFFF;
     return fromBits((c16 << 16) | c00, (c48 << 16) | c32, this.unsigned);
   };
-  
+
   /**
    * Returns the product of this and the specified Long. This is an alias of {@link Long#multiply}.
    * @function
@@ -508,7 +508,7 @@
    * @returns {!Long} Product
    */
   LongPrototype.mul = LongPrototype.multiply;
-  
+
   /**
    * Returns this Long divided by the specified. The result is signed if this Long is signed or
    *  unsigned if this Long is unsigned.
@@ -563,7 +563,7 @@
         return UONE;
       res = UZERO;
     }
-    
+
     // Repeat the following until the remainder is less than other:  find a
     // floating-point that approximates remainder / other *from below*, add this
     // into the result, and subtract it from the remainder.  It is critical that
@@ -574,12 +574,12 @@
       // Approximate the result of division. This may be a little greater or
       // smaller than the actual value.
       approx = Math.max(1, Math.floor(rem.toNumber() / divisor.toNumber()));
-      
+
       // We will tweak the approximate result by changing it in the 48-th digit or
       // the smallest non-fractional digit, whichever is larger.
       var log2 = Math.ceil(Math.log(approx) / Math.LN2),
         delta = (log2 <= 48) ? 1 : pow_dbl(2, log2 - 48),
-        
+
         // Decrease the approximation until it is smaller than the remainder.  Note
         // that if it is too large, the product overflows and is negative.
         approxRes = fromNumber(approx),
@@ -589,18 +589,18 @@
         approxRes = fromNumber(approx, this.unsigned);
         approxRem = approxRes.mul(divisor);
       }
-      
+
       // We know the answer can't be zero... and actually, zero would cause
       // infinite recursion since we would make no progress.
       if (approxRes.isZero())
         approxRes = ONE;
-      
+
       res = res.add(approxRes);
       rem = rem.sub(approxRem);
     }
     return res;
   };
-  
+
   /**
    * Returns this Long divided by the specified. This is an alias of {@link Long#divide}.
    * @function
@@ -608,7 +608,7 @@
    * @returns {!Long} Quotient
    */
   LongPrototype.div = LongPrototype.divide;
-  
+
   /**
    * Returns this Long modulo the specified.
    * @param {!Long|number|string} divisor Divisor
@@ -619,7 +619,7 @@
       divisor = fromValue(divisor);
     return this.sub(this.div(divisor).mul(divisor));
   };
-  
+
   /**
    * Returns this Long modulo the specified. This is an alias of {@link Long#modulo}.
    * @function
@@ -627,7 +627,7 @@
    * @returns {!Long} Remainder
    */
   LongPrototype.mod = LongPrototype.modulo;
-  
+
   /**
    * Returns the bitwise NOT of this Long.
    * @returns {!Long}
@@ -635,7 +635,7 @@
   LongPrototype.not = function not() {
     return fromBits(~this.low, ~this.high, this.unsigned);
   };
-  
+
   /**
    * Returns the bitwise AND of this Long and the specified.
    * @param {!Long|number|string} other Other Long
@@ -646,7 +646,7 @@
       other = fromValue(other);
     return fromBits(this.low & other.low, this.high & other.high, this.unsigned);
   };
-  
+
   /**
    * Returns the bitwise OR of this Long and the specified.
    * @param {!Long|number|string} other Other Long
@@ -657,7 +657,7 @@
       other = fromValue(other);
     return fromBits(this.low | other.low, this.high | other.high, this.unsigned);
   };
-  
+
   /**
    * Returns the bitwise XOR of this Long and the given one.
    * @param {!Long|number|string} other Other Long
@@ -668,7 +668,7 @@
       other = fromValue(other);
     return fromBits(this.low ^ other.low, this.high ^ other.high, this.unsigned);
   };
-  
+
   /**
    * Returns this Long with bits shifted to the left by the given amount.
    * @param {number|!Long} numBits Number of bits
@@ -684,7 +684,7 @@
     else
       return fromBits(0, this.low << (numBits - 32), this.unsigned);
   };
-  
+
   /**
    * Returns this Long with bits shifted to the left by the given amount. This is an alias of {@link Long#shiftLeft}.
    * @function
@@ -692,7 +692,7 @@
    * @returns {!Long} Shifted Long
    */
   LongPrototype.shl = LongPrototype.shiftLeft;
-  
+
   /**
    * Returns this Long with bits arithmetically shifted to the right by the given amount.
    * @param {number|!Long} numBits Number of bits
@@ -708,7 +708,7 @@
     else
       return fromBits(this.high >> (numBits - 32), this.high >= 0 ? 0 : -1, this.unsigned);
   };
-  
+
   /**
    * Returns this Long with bits arithmetically shifted to the right by the given amount. This is an alias of {@link Long#shiftRight}.
    * @function
@@ -716,7 +716,7 @@
    * @returns {!Long} Shifted Long
    */
   LongPrototype.shr = LongPrototype.shiftRight;
-  
+
   /**
    * Returns this Long with bits logically shifted to the right by the given amount.
    * @param {number|!Long} numBits Number of bits
@@ -739,7 +739,7 @@
         return fromBits(high >>> (numBits - 32), 0, this.unsigned);
     }
   };
-  
+
   /**
    * Returns this Long with bits logically shifted to the right by the given amount. This is an alias of {@link Long#shiftRightUnsigned}.
    * @function
@@ -747,7 +747,7 @@
    * @returns {!Long} Shifted Long
    */
   LongPrototype.shru = LongPrototype.shiftRightUnsigned;
-  
+
   /**
    * Converts this Long to signed.
    * @returns {!Long} Signed long
@@ -757,7 +757,7 @@
       return this;
     return fromBits(this.low, this.high, false);
   };
-  
+
   /**
    * Converts this Long to unsigned.
    * @returns {!Long} Unsigned long
@@ -767,7 +767,7 @@
       return this;
     return fromBits(this.low, this.high, true);
   };
-  
+
   /**
    * Converts this Long to its byte representation.
    * @param {boolean=} le Whether little or big endian, defaults to big endian
@@ -776,7 +776,7 @@
   LongPrototype.toBytes = function (le) {
     return le ? this.toBytesLE() : this.toBytesBE();
   }
-  
+
   /**
    * Converts this Long to its little endian byte representation.
    * @returns {!Array.<number>} Little endian byte representation
@@ -789,7 +789,7 @@
       hi & 0xff, (hi >>> 8) & 0xff, (hi >>> 16) & 0xff, (hi >>> 24) & 0xff
     ];
   }
-  
+
   /**
    * Converts this Long to its big endian byte representation.
    * @returns {!Array.<number>} Big endian byte representation
@@ -803,7 +803,7 @@
       lo & 0xff
     ];
   }
-  
+
   return Long;
 });
 
@@ -821,7 +821,7 @@ if (typeof Array.prototype.forEach != 'function') {
 function newWebIm() {
   var msgCache = {};
   var webim = { // namespace object webim
-    
+
     /* function init
      *   sdk登录
      * params:
@@ -851,7 +851,7 @@ function newWebIm() {
      */
     login: function (loginInfo, listeners, options) {
     },
-    
+
     /* function syncMsgs
      *   拉取最新C2C消息
      *   一般不需要使用方直接调用, SDK底层会自动同步最新消息并通知使用方, 一种有用的调用场景是用户手动触发刷新消息
@@ -864,8 +864,8 @@ function newWebIm() {
      */
     syncMsgs: function (cbOk, cbErr) {
     },
-    
-    
+
+
     /* function getC2CHistoryMsgs
      * 拉取C2C漫游消息
      * params:
@@ -877,7 +877,7 @@ function newWebIm() {
      */
     getC2CHistoryMsgs: function (options, cbOk, cbErr) {
     },
-    
+
     /* function syncGroupMsgs
      * 拉取群漫游消息
      * params:
@@ -889,7 +889,7 @@ function newWebIm() {
      */
     syncGroupMsgs: function (options, cbOk, cbErr) {
     },
-    
+
     /* function sendMsg
      *   发送一条消息
      * params:
@@ -901,7 +901,7 @@ function newWebIm() {
      */
     sendMsg: function (msg, cbOk, cbErr) {
     },
-    
+
     /* function logout
      *   sdk登出
      * params:
@@ -912,7 +912,7 @@ function newWebIm() {
      */
     logout: function (cbOk, cbErr) {
     },
-    
+
     /* function setAutoRead
      * 设置会话自动已读上报标志
      * params:
@@ -924,7 +924,7 @@ function newWebIm() {
      */
     setAutoRead: function (selSess, isOn, isResetAll) {
     },
-    
+
     /* function getProfilePortrait
      *   拉取资料（搜索用户）
      * params:
@@ -935,7 +935,7 @@ function newWebIm() {
      */
     getProfilePortrait: function (options, cbOk, cbErr) {
     },
-    
+
     /* function setProfilePortrait
      *   设置个人资料
      * params:
@@ -946,7 +946,7 @@ function newWebIm() {
      */
     setProfilePortrait: function (options, cbOk, cbErr) {
     },
-    
+
     /* function applyAddFriend
      *   申请添加好友
      * params:
@@ -957,7 +957,7 @@ function newWebIm() {
      */
     applyAddFriend: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getPendency
      *   拉取好友申请
      * params:
@@ -968,7 +968,7 @@ function newWebIm() {
      */
     getPendency: function (options, cbOk, cbErr) {
     },
-    
+
     /* function deletePendency
      *   删除好友申请
      * params:
@@ -979,7 +979,7 @@ function newWebIm() {
      */
     deletePendency: function (options, cbOk, cbErr) {
     },
-    
+
     /* function responseFriend
      *   响应好友申请
      * params:
@@ -990,7 +990,7 @@ function newWebIm() {
      */
     responseFriend: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getAllFriend
      *   拉取我的好友
      * params:
@@ -1001,7 +1001,7 @@ function newWebIm() {
      */
     getAllFriend: function (options, cbOk, cbErr) {
     },
-    
+
     /* function deleteFriend
      *   删除好友
      * params:
@@ -1012,7 +1012,7 @@ function newWebIm() {
      */
     deleteFriend: function (options, cbOk, cbErr) {
     },
-    
+
     /* function addBlackList
      *   增加黑名单
      * params:
@@ -1023,7 +1023,7 @@ function newWebIm() {
      */
     addBlackList: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getBlackList
      *   删除黑名单
      * params:
@@ -1034,7 +1034,7 @@ function newWebIm() {
      */
     getBlackList: function (options, cbOk, cbErr) {
     },
-    
+
     /* function deleteBlackList
      *   我的黑名单
      * params:
@@ -1045,7 +1045,7 @@ function newWebIm() {
      */
     deleteBlackList: function (options, cbOk, cbErr) {
     },
-    
+
     /* function uploadPic
      *   上传图片
      * params:
@@ -1057,7 +1057,7 @@ function newWebIm() {
      */
     uploadPic: function (options, cbOk, cbErr) {
     },
-    
+
     /* function createGroup
      *   创建群
      * params:
@@ -1069,7 +1069,7 @@ function newWebIm() {
      */
     createGroup: function (options, cbOk, cbErr) {
     },
-    
+
     /* function applyJoinGroup
      *   申请加群
      * params:
@@ -1081,7 +1081,7 @@ function newWebIm() {
      */
     applyJoinGroup: function (options, cbOk, cbErr) {
     },
-    
+
     /* function handleApplyJoinGroup
      *   处理申请加群(同意或拒绝)
      * params:
@@ -1093,7 +1093,7 @@ function newWebIm() {
      */
     handleApplyJoinGroup: function (options, cbOk, cbErr) {
     },
-    
+
     /* function deleteApplyJoinGroupPendency
      *   删除加群申请
      * params:
@@ -1105,8 +1105,8 @@ function newWebIm() {
      */
     deleteApplyJoinGroupPendency: function (options, cbOk, cbErr) {
     },
-    
-    
+
+
     /* function quitGroup
      *  主动退群
      * params:
@@ -1118,7 +1118,7 @@ function newWebIm() {
      */
     quitGroup: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getGroupPublicInfo
      *   读取群公开资料-高级接口
      * params:
@@ -1130,7 +1130,7 @@ function newWebIm() {
      */
     getGroupPublicInfo: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getGroupInfo
      *   读取群详细资料-高级接口
      * params:
@@ -1142,7 +1142,7 @@ function newWebIm() {
      */
     getGroupInfo: function (options, cbOk, cbErr) {
     },
-    
+
     /* function modifyGroupBaseInfo
      *   修改群基本资料
      * params:
@@ -1154,7 +1154,7 @@ function newWebIm() {
      */
     modifyGroupBaseInfo: function (options, cbOk, cbErr) {
     },
-    
+
     /* function destroyGroup
      *  解散群
      * params:
@@ -1166,7 +1166,7 @@ function newWebIm() {
      */
     destroyGroup: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getJoinedGroupListHigh
      *   获取我的群组-高级接口
      * params:
@@ -1178,7 +1178,7 @@ function newWebIm() {
      */
     getJoinedGroupListHigh: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getGroupMemberInfo
      *   获取群组成员列表
      * params:
@@ -1190,7 +1190,7 @@ function newWebIm() {
      */
     getGroupMemberInfo: function (options, cbOk, cbErr) {
     },
-    
+
     /* function addGroupMember
      *   邀请好友加群
      * params:
@@ -1202,7 +1202,7 @@ function newWebIm() {
      */
     addGroupMember: function (options, cbOk, cbErr) {
     },
-    
+
     /* function modifyGroupMember
      *   修改群成员资料（角色或者群消息提类型示）
      * params:
@@ -1214,7 +1214,7 @@ function newWebIm() {
      */
     modifyGroupMember: function (options, cbOk, cbErr) {
     },
-    
+
     /* function forbidSendMsg
      *   设置群成员禁言时间
      * params:
@@ -1226,7 +1226,7 @@ function newWebIm() {
      */
     forbidSendMsg: function (options, cbOk, cbErr) {
     },
-    
+
     /* function deleteGroupMember
      *   删除群成员
      * params:
@@ -1238,7 +1238,7 @@ function newWebIm() {
      */
     deleteGroupMember: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getPendencyGroup
      *   获取群组未决列表
      * params:
@@ -1250,7 +1250,7 @@ function newWebIm() {
      */
     getPendencyGroup: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getPendencyReport
      *   好友未决已读上报
      * params:
@@ -1262,7 +1262,7 @@ function newWebIm() {
      */
     getPendencyReport: function (options, cbOk, cbErr) {
     },
-    
+
     /* function getPendencyGroupRead
      *   群组未决已读上报
      * params:
@@ -1274,7 +1274,7 @@ function newWebIm() {
      */
     getPendencyGroupRead: function (options, cbOk, cbErr) {
     },
-    
+
     /* function sendCustomGroupNotify
      *   发送自定义群通知
      * params:
@@ -1286,7 +1286,7 @@ function newWebIm() {
      */
     sendCustomGroupNotify: function (options, cbOk, cbErr) {
     },
-    
+
     /* class webim.Msg
      *   一条消息的描述类, 消息发送、接收的API中都会涉及此类型的对象
      * properties:
@@ -1333,7 +1333,7 @@ function newWebIm() {
      */
     Msg: function (sess, isSend, seq, random, time, fromAccount, subType, fromAccountNick) { /*Class constructor*/
     },
-    
+
     /* singleton object MsgStore
      * webim.MsgStore是消息数据的Model对象(参考MVC概念), 它提供接口访问当前存储的会话和消息数据
      * 下面说明下会话数据类型: Session
@@ -1372,7 +1372,7 @@ function newWebIm() {
       sessCount: function () {
         return 0;
       },
-      
+
       /* function sessByTypeId
          *   根据会话类型和会话ID取得相应会话
          * params:
@@ -1395,7 +1395,7 @@ function newWebIm() {
       delSessByTypeId: function (type, id) {
         return true;
       },
-      
+
       /* function resetCookieAndSyncFlag
          *   重置上一次读取新c2c消息Cookie和是否继续拉取标记
          * return:
@@ -1403,12 +1403,12 @@ function newWebIm() {
          */
       resetCookieAndSyncFlag: function () {
       },
-      
+
       downloadMap: {}
     }
-    
+
   };
-  
+
   /* webim API implementation
  */
   (function (webim) {
@@ -1418,11 +1418,11 @@ function newWebIm() {
       'APPID': '537048168', //web im sdk 版本 APPID
       'PLAATFORM': "10" //发送请求时判断其是来自web端的请求
     };
-    
+
     //是否启用正式环境，默认启用
     var isAccessFormaEnvironment = true;
     // var isAccessFormaEnvironment = false;
-    
+
     //后台接口主机
     var SRV_HOST = {
       'FORMAL': {
@@ -1434,12 +1434,12 @@ function newWebIm() {
         'PIC': 'https://pic.tim.qq.com'
       }
     };
-    
+
     //浏览器版本信息
     var BROWSER_INFO = {};
     //是否为ie9（含）以下
     var lowerBR = false;
-    
+
     //服务名称
     var SRV_NAME = {
       'OPEN_IM': 'openim', //私聊（拉取未读c2c消息，长轮询，c2c消息已读上报等）服务名
@@ -1454,7 +1454,7 @@ function newWebIm() {
       'DEL_CHAT': 'recentcontact', //删除会话
       'WEB_IM': 'webim'
     };
-    
+
     //不同服务对应的版本号
     var SRV_NAME_VER = {
       'openim': 'v4',
@@ -1468,7 +1468,7 @@ function newWebIm() {
       'imopenstat': 'v4',
       'webim': 'v3'
     };
-    
+
     //不同的命令名对应的上报类型ID，用于接口质量上报
     var CMD_EVENT_ID_MAP = {
       'login': 1, //登录
@@ -1479,33 +1479,33 @@ function newWebIm() {
       'send_group_msg': 19, //群聊
       'sendmsg': 20 //私聊
     };
-    
+
     //聊天类型
     var SESSION_TYPE = {
       'C2C': 'C2C', //私聊
       'GROUP': 'GROUP' //群聊
     };
-    
+
     //最近联系人类型
     var RECENT_CONTACT_TYPE = {
       'C2C': 1, //好友
       'GROUP': 2 //群
     };
-    
+
     //消息最大长度（字节）
     var MSG_MAX_LENGTH = {
       'C2C': 12000, //私聊消息
       'GROUP': 8898 //群聊
     };
-    
+
     //后台接口返回类型
     var ACTION_STATUS = {
       'OK': 'OK', //成功
       'FAIL': 'FAIL' //失败
     };
-    
+
     var ERROR_CODE_CUSTOM = 99999; //自定义后台接口返回错误码
-    
+
     //消息元素类型
     var MSG_ELEMENT_TYPE = {
       'TEXT': 'TIMTextElem', //文本
@@ -1517,7 +1517,7 @@ function newWebIm() {
       'LOCATION': 'TIMLocationElem', //地理位置
       'GROUP_TIP': 'TIMGroupTipElem' //群提示消息,只支持显示
     };
-    
+
     //图片类型
     var IMAGE_TYPE = {
       'ORIGIN': 1, //原图
@@ -1533,26 +1533,26 @@ function newWebIm() {
       BMP: 0x4,
       UNKNOWN: 0xff
     };
-    
+
     //上传资源包类型
     var UPLOAD_RES_PKG_FLAG = {
       'RAW_DATA': 0, //原始数据
       'BASE64_DATA': 1 //base64编码数据
     };
-    
+
     //下载文件配置
     var DOWNLOAD_FILE = {
       'BUSSINESS_ID': '10001', //下载文件业务ID
       'AUTH_KEY': '617574686b6579', //下载文件authkey
       'SERVER_IP': '182.140.186.147' //下载文件服务器IP
     };
-    
+
     //下载文件类型
     var DOWNLOAD_FILE_TYPE = {
       "SOUND": 2106, //语音
       "FILE": 2107 //普通文件
     };
-    
+
     //上传资源类型
     var UPLOAD_RES_TYPE = {
       "IMAGE": 1, //图片
@@ -1560,13 +1560,13 @@ function newWebIm() {
       "SHORT_VIDEO": 3, //短视频
       "SOUND": 4 //语音，PTT
     };
-    
+
     //版本号，用于上传图片或文件接口
     var VERSION_INFO = {
       'APP_VERSION': '2.1', //应用版本号
       'SERVER_VERSION': 1 //服务端版本号
     };
-    
+
     //长轮询消息类型
     var LONG_POLLINNG_EVENT_TYPE = {
       "C2C": 1 //新的c2c消息通知
@@ -1587,7 +1587,7 @@ function newWebIm() {
       ,
       "C2C_EVENT": 10
     };
-    
+
     //c2c消息子类型
     var C2C_MSG_SUB_TYPE = {
       "COMMON": 0 //普通消息
@@ -1597,7 +1597,7 @@ function newWebIm() {
       "READED": 92, //已读消息同步
       "KICKEDOUT": 96
     };
-    
+
     //群消息子类型
     var GROUP_MSG_SUB_TYPE = {
       "COMMON": 0, //普通消息
@@ -1605,14 +1605,14 @@ function newWebIm() {
       "TIP": 2, //提示消息
       "REDPACKET": 3 //红包消息
     };
-    
+
     //群消息优先级类型
     var GROUP_MSG_PRIORITY_TYPE = {
       "REDPACKET": 1, //红包消息
       "COMMON": 2, //普通消息
       "LOVEMSG": 3 //点赞消息
     };
-    
+
     //群提示消息类型
     var GROUP_TIP_TYPE = {
       "JOIN": 1, //加入群组
@@ -1623,7 +1623,7 @@ function newWebIm() {
       "MODIFY_GROUP_INFO": 6, //修改群资料
       "MODIFY_MEMBER_INFO": 7 //修改群成员信息
     };
-    
+
     //群提示消息-群资料变更类型
     var GROUP_TIP_MODIFY_GROUP_INFO_TYPE = {
       "FACE_URL": 1, //修改群头像URL
@@ -1632,7 +1632,7 @@ function newWebIm() {
       "NOTIFICATION": 4, //修改群公告
       "INTRODUCTION": 5 //修改群简介
     };
-    
+
     //群系统消息类型
     var GROUP_SYSTEM_TYPE = {
       "JOIN_GROUP_REQUEST": 1, //申请加群请求（只有管理员会收到）
@@ -1650,7 +1650,7 @@ function newWebIm() {
       "CUSTOM": 255, //用户自定义通知(默认全员接收)
       "INVITED_JOIN_GROUP_REQUEST_AGREE": 12, //邀请加群(被邀请者需同意)
     };
-    
+
     //好友系统通知子类型
     var FRIEND_NOTICE_TYPE = {
       "FRIEND_ADD": 1, //好友表增加
@@ -1662,18 +1662,18 @@ function newWebIm() {
       "PENDENCY_REPORT": 7, //未决已读上报
       "FRIEND_UPDATE": 8 //好友数据更新
     };
-    
+
     //资料系统通知子类型
     var PROFILE_NOTICE_TYPE = {
       "PROFILE_MODIFY": 1 //资料修改
     };
-    
+
     //腾讯登录服务错误码（用于托管模式）
     var TLS_ERROR_CODE = {
       'OK': 0, //成功
       'SIGNATURE_EXPIRATION': 11 //用户身份凭证过期
     };
-    
+
     //长轮询连接状态
     var CONNECTION_STATUS = {
       'INIT': -1, //初始化
@@ -1681,78 +1681,78 @@ function newWebIm() {
       'RECONNECT': 1, //连接恢复正常
       'OFF': 9999 //连接已断开,可能是用户网络问题，或者长轮询接口报错引起的
     };
-    
+
     var UPLOAD_PIC_BUSSINESS_TYPE = { //图片业务类型
       'GROUP_MSG': 1, //私聊图片
       'C2C_MSG': 2, //群聊图片
       'USER_HEAD': 3, //用户头像
       'GROUP_HEAD': 4 //群头像
     };
-    
+
     var FRIEND_WRITE_MSG_ACTION = { //好友输入消息状态
       'ING': 14, //正在输入
       'STOP': 15 //停止输入
     };
-    
+
     //ajax默认超时时间，单位：毫秒
     var ajaxDefaultTimeOut = 15000;
-    
+
     //大群长轮询接口返回正常时，延时一定时间再发起下一次请求
     var OK_DELAY_TIME = 1000;
-    
+
     //大群长轮询接口发生错误时，延时一定时间再发起下一次请求
     var ERROR_DELAY_TIME = 5000;
-    
+
     //群提示消息最多显示人数
     var GROUP_TIP_MAX_USER_COUNT = 10;
-    
+
     //长轮询连接状态
     var curLongPollingStatus = CONNECTION_STATUS.INIT;
-    
+
     //当长轮询连接断开后，是否已经回调过
     var longPollingOffCallbackFlag = false;
-    
+
     //当前长轮询返回错误次数
     var curLongPollingRetErrorCount = 0;
-    
+
     //长轮询默认超时时间，单位：毫秒
     var longPollingDefaultTimeOut = 60000;
-    
+
     //长轮询返回错误次数达到一定值后，发起新的长轮询请求间隔时间，单位：毫秒
     var longPollingIntervalTime = 5000;
-    
+
     //没有新消息时，长轮询返回60008错误码是正常的
     var longPollingTimeOutErrorCode = 60008;
-    
+
     //多实例登录被kick的错误码
     var longPollingKickedErrorCode = 91101;
-    
+
     var LongPollingId = null;
-    
+
     //当前大群长轮询返回错误次数
     var curBigGroupLongPollingRetErrorCount = 0;
-    
+
     //最大允许长轮询返回错误次数
     var LONG_POLLING_MAX_RET_ERROR_COUNT = 10;
-    
+
     //上传重试累计
     var Upload_Retry_Times = 0;
     //最大上传重试
     var Upload_Retry_Max_Times = 20;
-    
+
     //ie7/8/9采用jsonp方法解决ajax跨域限制
     var jsonpRequestId = 0; //jsonp请求id
     //最新jsonp请求返回的json数据
     var jsonpLastRspData = null;
     //兼容ie7/8/9,jsonp回调函数
     var jsonpCallback = null;
-    
+
     var uploadResultIframeId = 0; //用于上传图片的iframe id
-    
+
     var ipList = []; //文件下载地址
     var authkey = null; //文件下载票据
     var expireTime = null; //文件下载票据超时时间
-    
+
     //错误码
     var ERROR = {};
     //当前登录用户
@@ -1774,15 +1774,15 @@ function newWebIm() {
     var curSeq = 0; //消息seq
     var tempC2CMsgList = []; //新c2c消息临时缓存
     var tempC2CHistoryMsgList = []; //漫游c2c消息临时缓存
-    
+
     var maxApiReportItemCount = 20; //一次最多上报条数
     var apiReportItems = []; //暂存api接口质量上报数据
     var onLongPullingNotify = null;
-    
+
     var Resources = {
       downloadMap: {}
     };
-    
+
     //表情标识字符和索引映射关系对象，用户可以自定义
     var emotionDataIndexs = {
       "[惊讶]": 0,
@@ -1821,12 +1821,12 @@ function newWebIm() {
       "[嘘]": 33,
       "[晕]": 34
     };
-    
+
     //表情对象，用户可以自定义
     var emotions = {};
     //工具类
     var tool = new function () {
-      
+
       //格式化时间戳
       //format格式如下：
       //yyyy-MM-dd hh:mm:ss 年月日时分秒(默认格式)
@@ -1857,7 +1857,7 @@ function newWebIm() {
         }
         return formatTime;
       };
-      
+
       //根据群类型英文名转换成中文名
       this.groupTypeEn2Ch = function (type_en) {
         var type_ch = null;
@@ -2020,8 +2020,8 @@ function newWebIm() {
         }
         return total;
       };
-      
-      
+
+
       //防止XSS攻击
       this.xssFilter = function (val) {
         val = val.toString();
@@ -2031,7 +2031,7 @@ function newWebIm() {
         //val = val.replace(/'/g, "&#039;");
         return val;
       };
-      
+
       //去掉头尾空白符
       this.trimStr = function (str) {
         if (!str) return '';
@@ -2146,8 +2146,8 @@ function newWebIm() {
           'ver': -1
         };
       };
-      
-      
+
+
       this.replaceObject = function (keyMap, json) {
         for (var a in json) {
           if (keyMap[a]) {
@@ -2165,22 +2165,22 @@ function newWebIm() {
         }
         return json;
       }
-      
+
     };
-    
+
     //日志对象
     var log = new function () {
-      
+
       var on = true;
-      
+
       this.setOn = function (onFlag) {
         on = onFlag;
       };
-      
+
       this.getOn = function () {
         return on;
       };
-      
+
       this.error = function (logStr) {
         try {
           on && console.error(logStr);
@@ -2228,7 +2228,7 @@ function newWebIm() {
     var createRandom = function () {
       return Math.round(Math.random() * 4294967296);
     };
-    
+
     //获取ajax请求对象
     var getXmlHttp = function () {
       var xmlhttp = null;
@@ -2249,9 +2249,9 @@ function newWebIm() {
     }
     //发起ajax请求
     var ajaxRequest = function (meth, url, req, timeout, content_type, isLongPolling, cbOk, cbErr) {
-      
+
       var xmlHttpObj = getXmlHttp();
-      
+
       var error, errInfo;
       if (!xmlHttpObj) {
         errInfo = "创建请求失败";
@@ -2263,7 +2263,7 @@ function newWebIm() {
       //保存ajax请求对象
       xmlHttpObjSeq++;
       xmlHttpObjMap[xmlHttpObjSeq] = xmlHttpObj;
-      
+
       xmlHttpObj.open(meth, url, true);
       xmlHttpObj.onreadystatechange = function () {
         if (xmlHttpObj.readyState == 4) {
@@ -2305,7 +2305,7 @@ function newWebIm() {
       if (xmlHttpObj.overrideMimeType) {
         // xmlHttpObj.overrideMimeType("application/json;charset=utf-8");
       }
-      
+
       xmlHttpObj.send(req);
     }
     //发起ajax请求（json格式数据）
@@ -2329,19 +2329,19 @@ function newWebIm() {
         if (isNeedCallBack) {
           var errInfo = "请登录";
           var error = tool.getReturnError(errInfo, -4);
-          
+
           if (cbErr) cbErr(error);
         }
         return false;
       }
       return true;
     };
-    
+
     //检查是否访问正式环境
     var isAccessFormalEnv = function () {
       return isAccessFormaEnvironment;
     };
-    
+
     //根据不同的服务名和命令，获取对应的接口地址
     var getApiUrl = function (srvName, cmd, cbOk, cbErr) {
       var srvHost = SRV_HOST;
@@ -2350,11 +2350,11 @@ function newWebIm() {
       } else {
         srvHost = SRV_HOST.TEST.COMMON;
       }
-      
+
       //if (srvName == SRV_NAME.RECENT_CONTACT) {
       //    srvHost = SRV_HOST.TEST.COMMON;
       //}
-      
+
       if (srvName == SRV_NAME.PIC) {
         if (isAccessFormalEnv()) {
           srvHost = SRV_HOST.FORMAL.PIC;
@@ -2362,10 +2362,10 @@ function newWebIm() {
           srvHost = SRV_HOST.TEST.PIC;
         }
       }
-      
+
       var url = srvHost + '/' + SRV_NAME_VER[srvName] + '/' + srvName + '/' + cmd + '?websdkappid=' + SDK.APPID + "&v=" + SDK.VERSION + "&platform=" + SDK.PLAATFORM;
       ;
-      
+
       if (isLogin()) {
         if (cmd == 'login' || cmd == 'accesslayer') {
           url += '&identifier=' + encodeURIComponent(ctx.identifier) + '&usersig=' + ctx.userSig;
@@ -2385,7 +2385,7 @@ function newWebIm() {
       url += '&sdkappid=' + ctx.sdkAppID + '&accounttype=' + ctx.accountType + '&apn=' + ctx.apn + '&reqtime=' + unixtime();
       return url;
     };
-    
+
     //获取语音下载url
     var getSoundDownUrl = function (uuid, senderId) {
       var soundUrl = null;
@@ -2396,7 +2396,7 @@ function newWebIm() {
       }
       return soundUrl;
     };
-    
+
     //获取文件下载地址
     var getFileDownUrl = function (uuid, senderId, fileName) {
       var fileUrl = null;
@@ -2408,7 +2408,7 @@ function newWebIm() {
       Resources.downloadMap["uuid_" + uuid] = fileUrl;
       return fileUrl;
     };
-    
+
     //获取文件下载地址
     var getFileDownUrlV2 = function (uuid, senderId, fileName, downFlag, receiverId, busiId, type) {
       var options = {
@@ -2445,8 +2445,8 @@ function newWebIm() {
         log.error("获取下载地址失败", options.uuid)
       });
     };
-    
-    
+
+
     //重置ajax请求
     var clearXmlHttpObjMap = function () {
       //遍历xmlHttpObjMap{}
@@ -2460,12 +2460,12 @@ function newWebIm() {
       xmlHttpObjSeq = 0;
       xmlHttpObjMap = {};
     };
-    
+
     //重置sdk全局变量
     var clearSdk = function () {
-      
+
       clearXmlHttpObjMap();
-      
+
       //当前登录用户
       ctx = {
         sdkAppID: null,
@@ -2478,28 +2478,28 @@ function newWebIm() {
         apn: 1
       };
       opt = {};
-      
+
       curSeq = 0;
-      
+
       //ie8,9采用jsonp方法解决ajax跨域限制
       jsonpRequestId = 0; //jsonp请求id
       //最新jsonp请求返回的json数据
       jsonpLastRspData = null;
-      
+
       apiReportItems = [];
-      
+
       MsgManager.clear();
       MsgStore.clear();
-      
+
       //重置longpollingId
       LongPollingId = null;
     };
-    
+
     //登录
     var _login = function (loginInfo, listeners, options, cbOk, cbErr) {
-      
+
       clearSdk();
-      
+
       if (options) opt = options;
       if (opt.isAccessFormalEnv == false) {
         log.error("请切换为正式环境！！！！");
@@ -2517,7 +2517,7 @@ function newWebIm() {
          emotionDataIndexs=opt.emotionDataIndexs;
          webim.EmotionDataIndexs= emotionDataIndexs;
          }*/
-      
+
       if (!loginInfo) {
         if (cbErr) {
           cbErr(tool.getReturnError("loginInfo is empty", -6));
@@ -2536,7 +2536,7 @@ function newWebIm() {
           return;
         }
       }
-      
+
       if (loginInfo.identifier) {
         ctx.identifier = loginInfo.identifier.toString();
       }
@@ -2551,7 +2551,7 @@ function newWebIm() {
       }
       ctx.sdkAppID = loginInfo.sdkAppID;
       ctx.accountType = loginInfo.accountType;
-      
+
       if (ctx.identifier && ctx.userSig) { //带登录态
         proto_accesslayer(function () {
           //登录
@@ -2579,7 +2579,7 @@ function newWebIm() {
         );
       }
     };
-    
+
     //初始化浏览器信息
     var initBrowserInfo = function () {
       //初始化浏览器类型
@@ -2591,7 +2591,7 @@ function newWebIm() {
         }
       }
     };
-    
+
     //接口质量上报
     var reportApiQuality = function (cmd, errorCode, errorInfo) {
       if (cmd == 'longpolling' && (errorCode == longPollingTimeOutErrorCode || errorCode == longPollingKickedErrorCode)) { //longpolling 返回60008错误可以视为正常,可以不上报
@@ -2610,16 +2610,16 @@ function newWebIm() {
         } else if (ctx.userSig) {
           uniqKey = ctx.userSig.substring(0, 10) + "_" + reportTime + "_" + createRandom();
         }
-        
+
         if (uniqKey) {
-          
+
           var rptEvtItem = {
             "UniqKey": uniqKey,
             "EventId": eventId,
             "ReportTime": reportTime,
             "MsgCmdErrorCode": msgCmdErrorCode
           };
-          
+
           if (cmd == 'login') {
             var loginApiReportItems = [];
             loginApiReportItems.push(rptEvtItem);
@@ -2654,11 +2654,11 @@ function newWebIm() {
               );
             }
           }
-          
+
         }
       }
     };
-    
+
     var proto_accesslayer = function (callback) {
       ConnManager.apiCall(SRV_NAME.WEB_IM, "accesslayer", {}, function (data) {
         if (data.ErrorCode === 0 && data.WebImAccessLayer === 1) {
@@ -2759,7 +2759,7 @@ function newWebIm() {
     var proto_sendMsg = function (msg, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
       var msgInfo = null;
-      
+
       switch (msg.sess.type()) {
         case SESSION_TYPE.C2C:
           msgInfo = {
@@ -2802,7 +2802,7 @@ function newWebIm() {
         default:
           break;
       }
-      
+
       for (var i in msg.elems) {
         var elem = msg.elems[i];
         var msgContent = null;
@@ -2865,11 +2865,11 @@ function newWebIm() {
             continue;
             break;
         }
-        
+
         if (msg.PushInfoBoolean) {
           msgInfo.OfflinePushInfo = msg.PushInfo; //当android终端进程被杀掉时才走push，IOS退到后台即可
         }
-        
+
         msgInfo.MsgBody.push({
           'MsgType': msgType,
           'MsgContent': msgContent
@@ -2889,12 +2889,12 @@ function newWebIm() {
       if (!checkLogin(cbErr, true)) return;
       ConnManager.apiCall(SRV_NAME.OPEN_IM, "longpolling", options, cbOk, cbErr, longPollingDefaultTimeOut, true);
     };
-    
+
     //长轮询接口(拉取直播聊天室新消息)
     var proto_bigGroupLongPolling = function (options, cbOk, cbErr, timeout) {
       ConnManager.apiCall(SRV_NAME.BIG_GROUP_LONG_POLLING, "get_msg", options, cbOk, cbErr, timeout);
     };
-    
+
     //拉取未读c2c消息接口
     var proto_getMsgs = function (cookie, syncFlag, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -2903,7 +2903,7 @@ function newWebIm() {
           'SyncFlag': syncFlag
         },
         function (resp) {
-          
+
           if (resp.MsgList && resp.MsgList.length) {
             for (var i in resp.MsgList) {
               tempC2CMsgList.push(resp.MsgList[i]);
@@ -2937,15 +2937,15 @@ function newWebIm() {
         }
       }, cbOk, cbErr);
     };
-    
+
     //删除c2c消息
     var proto_deleteC2CMsg = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.OPEN_IM, "deletemsg", options,
         cbOk, cbErr);
     };
-    
+
     //拉取c2c历史消息接口
     var proto_getC2CHistoryMsgs = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -2956,7 +2956,7 @@ function newWebIm() {
           var rspMsgCount = resp.MaxCnt;
           var msgKey = resp.MsgKey;
           var lastMsgTime = resp.LastMsgTime;
-          
+
           if (resp.MsgList && resp.MsgList.length) {
             for (var i in resp.MsgList) {
               tempC2CHistoryMsgList.push(resp.MsgList[i]);
@@ -2973,7 +2973,7 @@ function newWebIm() {
               };
             }
           }
-          
+
           if (netxOptions) { //继续拉取
             proto_getC2CHistoryMsgs(netxOptions, cbOk, cbErr);
           } else {
@@ -2984,7 +2984,7 @@ function newWebIm() {
         },
         cbErr);
     };
-    
+
     //群组接口
     //创建群组
     //协议参考：https://www.qcloud.com/doc/product/269/1615
@@ -2997,7 +2997,7 @@ function newWebIm() {
         'Name': options.Name
       };
       var member_list = [];
-      
+
       //Array 选填  初始群成员列表，最多500个。成员信息字段详情参见：群成员资料。
       for (var i = 0; i < options.MemberList.length; i++) {
         member_list.push({
@@ -3040,7 +3040,7 @@ function newWebIm() {
       ConnManager.apiCall(SRV_NAME.GROUP, "create_group", opt,
         cbOk, cbErr);
     };
-    
+
     //创建群组-高级接口
     //协议参考：https://www.qcloud.com/doc/product/269/1615
     var proto_createGroupHigh = function (options, cbOk, cbErr) {
@@ -3048,16 +3048,16 @@ function newWebIm() {
       ConnManager.apiCall(SRV_NAME.GROUP, "create_group", options,
         cbOk, cbErr);
     };
-    
+
     //修改群组基本资料
     //协议参考：https://www.qcloud.com/doc/product/269/1620
     var proto_modifyGroupBaseInfo = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "modify_group_base_info", options,
         cbOk, cbErr);
     };
-    
+
     //申请加群
     var proto_applyJoinGroup = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3069,7 +3069,7 @@ function newWebIm() {
         },
         cbOk, cbErr);
     };
-    
+
     //申请加入大群
     var BigGroupId;
     var proto_applyJoinBigGroup = function (options, cbOk, cbErr) {
@@ -3101,15 +3101,15 @@ function newWebIm() {
           if (cbOk) cbOk(resp);
         },
         function (err) {
-          
+
           if (cbErr) cbErr(err);
         });
     };
-    
+
     //处理加群申请(同意或拒绝)
     var proto_handleApplyJoinGroupPendency = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "handle_apply_join_group", {
           'GroupId': options.GroupId,
           'Applicant_Account': options.Applicant_Account,
@@ -3136,11 +3136,11 @@ function newWebIm() {
         }
       );
     };
-    
+
     //获取群组未决列表
     var proto_getPendencyGroup = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "get_pendency", {
           'StartTime': options.StartTime,
           'Limit': options.Limit,
@@ -3148,31 +3148,31 @@ function newWebIm() {
         },
         cbOk,
         function (err) {
-        
+
         }
       );
     };
-    
-    
+
+
     //群组未决已经上报
     var proto_getPendencyGroupRead = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "report_pendency", {
           'ReportTime': options.ReportTime,
           'From_Account': ctx.identifier
         },
         cbOk,
         function (err) {
-        
+
         }
       );
     };
-    
+
     //处理被邀请进群申请(同意或拒绝)
     var proto_handleInviteJoinGroupRequest = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "handle_invite_join_group", {
           'GroupId': options.GroupId,
           'Inviter_Account': options.Inviter_Account,
@@ -3184,21 +3184,21 @@ function newWebIm() {
         },
         cbOk,
         function (err) {
-        
+
         }
       );
     };
-    
+
     //主动退群
     var proto_quitGroup = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "quit_group", {
           'GroupId': options.GroupId
         },
         cbOk, cbErr);
     };
-    
+
     //退出大群
     var proto_quitBigGroup = function (options, cbOk, cbErr) {
       var srvName;
@@ -3212,7 +3212,7 @@ function newWebIm() {
           'GroupId': options.GroupId
         },
         function (resp) {
-          
+
           MsgStore.delSessByTypeId(SESSION_TYPE.GROUP, options.GroupId);
           //重置当前再请求中的ajax
           //clearXmlHttpObjMap();
@@ -3226,11 +3226,11 @@ function newWebIm() {
     var proto_searchGroupByName = function (options, cbOk, cbErr) {
       ConnManager.apiCall(SRV_NAME.GROUP, "search_group", options, cbOk, cbErr);
     };
-    
+
     //获取群组公开资料
     var proto_getGroupPublicInfo = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "get_group_public_info", {
           'GroupIdList': options.GroupIdList,
           'ResponseFilter': {
@@ -3256,16 +3256,16 @@ function newWebIm() {
           } else if (cbOk) {
             cbOk(resp);
           }
-          
+
         },
         cbErr);
     };
-    
+
     //获取群组详细资料--高级
     //请求协议参考：https://www.qcloud.com/doc/product/269/1616
     var proto_getGroupInfo = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       var opt = {
         'GroupIdList': options.GroupIdList,
         'ResponseFilter': {
@@ -3282,12 +3282,12 @@ function newWebIm() {
       ConnManager.apiCall(SRV_NAME.GROUP, "get_group_info", opt,
         cbOk, cbErr);
     };
-    
+
     //获取群组成员-高级接口
     //协议参考：https://www.qcloud.com/doc/product/269/1617
     var proto_getGroupMemberInfo = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "get_group_member_info", {
           'GroupId': options.GroupId,
           'Offset': options.Offset,
@@ -3298,13 +3298,13 @@ function newWebIm() {
         },
         cbOk, cbErr);
     };
-    
-    
+
+
     //增加群组成员
     //协议参考：https://www.qcloud.com/doc/product/269/1621
     var proto_addGroupMember = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "add_group_member", {
           'GroupId': options.GroupId,
           'Silence': options.Silence,
@@ -3347,7 +3347,7 @@ function newWebIm() {
     //协议参考：https://www.qcloud.com/doc/product/269/1622
     var proto_deleteGroupMember = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "delete_group_member", {
           'GroupId': options.GroupId,
           'Silence': options.Silence,
@@ -3360,7 +3360,7 @@ function newWebIm() {
     //协议参考：https://www.qcloud.com/doc/product/269/1624
     var proto_destroyGroup = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "destroy_group", {
           'GroupId': options.GroupId
         },
@@ -3376,7 +3376,7 @@ function newWebIm() {
     //协议参考：https://www.qcloud.com/doc/product/269/1625
     var proto_getJoinedGroupListHigh = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "get_joined_group_list", {
           'Member_Account': options.Member_Account,
           'Limit': options.Limit,
@@ -3393,7 +3393,7 @@ function newWebIm() {
     //协议参考：https://www.qcloud.com/doc/product/269/1626
     var proto_getRoleInGroup = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "get_role_in_group", {
           'GroupId': options.GroupId,
           'User_Account': options.User_Account
@@ -3404,7 +3404,7 @@ function newWebIm() {
     //协议参考：https://www.qcloud.com/doc/product/269/1627
     var proto_forbidSendMsg = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       ConnManager.apiCall(SRV_NAME.GROUP, "forbid_send_msg", {
           'GroupId': options.GroupId,
           'Members_Account': options.Members_Account,
@@ -3412,14 +3412,14 @@ function newWebIm() {
         },
         cbOk, cbErr);
     };
-    
+
     //发送自定义群系统通知
     var proto_sendCustomGroupNotify = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
       ConnManager.apiCall(SRV_NAME.GROUP, "send_group_system_notification", options,
         cbOk, cbErr);
     };
-    
+
     //拉取群消息接口
     var proto_getGroupMsgs = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3440,7 +3440,7 @@ function newWebIm() {
         cbOk, cbErr);
     };
     //end
-    
+
     //好友接口
     //处理好友接口返回的错误码
     var convertErrorEn2ZhFriend = function (resp) {
@@ -3461,7 +3461,7 @@ function newWebIm() {
           var failCount = errorAccount[i];
           for (var j in resp.ResultItem) {
             if (resp.ResultItem[j].To_Account == failCount) {
-              
+
               var resultCode = resp.ResultItem[j].ResultCode;
               resp.ResultItem[j].ResultInfo = "[" + resultCode + "]" + resp.ResultItem[j].ResultInfo;
               resp.ErrorInfo += resp.ResultItem[j].ResultInfo + "\n";
@@ -3508,7 +3508,7 @@ function newWebIm() {
     //删除会话
     var proto_deleteChat = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
-      
+
       if (options.chatType == 1) {
         ConnManager.apiCall(SRV_NAME.DEL_CHAT, "delete", {
             'From_Account': ctx.identifier,
@@ -3523,9 +3523,9 @@ function newWebIm() {
             'ToGroupid': options.To_Account
           },
           cbOk, cbErr);
-        
+
       }
-      
+
     };
     //获取好友申请
     var proto_getPendency = function (options, cbOk, cbErr) {
@@ -3555,7 +3555,7 @@ function newWebIm() {
           "From_Account": ctx.identifier,
           "PendencyType": options.PendencyType,
           "To_Account": options.To_Account
-          
+
         },
         function (resp) {
           var newResp = convertErrorEn2ZhFriend(resp);
@@ -3595,7 +3595,7 @@ function newWebIm() {
         },
         cbOk, cbErr);
     };
-    
+
     //资料接口
     //查看个人资料
     var proto_getProfilePortrait = function (options, cbOk, cbErr) {
@@ -3644,7 +3644,7 @@ function newWebIm() {
         },
         cbErr);
     };
-    
+
     //设置个人资料
     var proto_setProfilePortrait = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3663,7 +3663,7 @@ function newWebIm() {
           if (cbOk) cbOk(resp);
         }, cbErr);
     };
-    
+
     //增加黑名单
     var proto_addBlackList = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3680,7 +3680,7 @@ function newWebIm() {
           }
         }, cbErr);
     };
-    
+
     //删除黑名单
     var proto_deleteBlackList = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3697,7 +3697,7 @@ function newWebIm() {
           }
         }, cbErr);
     };
-    
+
     //我的黑名单
     var proto_getBlackList = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3709,7 +3709,7 @@ function newWebIm() {
         },
         cbOk, cbErr);
     };
-    
+
     //获取最近联系人
     var proto_getRecentContactList = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3719,7 +3719,7 @@ function newWebIm() {
         },
         cbOk, cbErr);
     };
-    
+
     //上传图片或文件
     var proto_uploadPic = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
@@ -3750,20 +3750,20 @@ function newWebIm() {
         },
         cbOk, cbErr);
     };
-    
+
     //获取语音和文件下载IP和authkey
     var proto_getIpAndAuthkey = function (cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
       ConnManager.apiCall(SRV_NAME.OPEN_IM, "authkey", {}, cbOk, cbErr);
     };
-    
+
     //接口质量上报
     var proto_reportApiQuality = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
       ConnManager.apiCall(SRV_NAME.IM_OPEN_STAT, "web_report", options, cbOk, cbErr);
     };
-    
-    
+
+
     var proto_getLongPollingId = function (options, cbOk, cbErr) {
       if (!checkLogin(cbErr, true)) return;
       ConnManager.apiCall(SRV_NAME.OPEN_IM, "getlongpollingid", {},
@@ -3771,13 +3771,13 @@ function newWebIm() {
           cbOk && cbOk(resp);
         }, cbErr);
     }
-    
-    
+
+
     var proto_applyDownload = function (options, cbOk, cbErr) {
       //把下载地址push到map中
       ConnManager.apiCall(SRV_NAME.PIC, "apply_download", options, cbOk, cbErr);
     }
-    
+
     //end
     initBrowserInfo();
     // singleton object ConnManager
@@ -3853,13 +3853,13 @@ function newWebIm() {
           cbval = 'jsonpRequest' + reqId, // the 'callback' value
           script = document.createElement('script'),
           loaded = 0;
-        
+
         window[cbval] = jsonpCallback;
         script.type = 'text/javascript';
         url = url + "&" + cbkey + "=" + cbval + "&jsonpbody=" + encodeURIComponent(JSON.stringify(data));
         script.src = url;
         script.async = true;
-        
+
         if (typeof script.onreadystatechange !== 'undefined') {
           // need this for IE due to out-of-order onreadystatechange(), binding script
           // execution to an event listener gives us control over when the script
@@ -3867,7 +3867,7 @@ function newWebIm() {
           script.event = 'onclick';
           script.htmlFor = script.id = '_jsonpRequest_' + reqId;
         }
-        
+
         script.onload = script.onreadystatechange = function () {
           if ((this.readyState && this.readyState !== 'complete' && this.readyState !== 'loaded') || loaded) {
             return false;
@@ -3893,7 +3893,7 @@ function newWebIm() {
           document.body.removeChild(script);
           loaded = 1;
         };
-        
+
         // Add the script to the DOM head
         document.body.appendChild(script);
       };
@@ -3980,7 +3980,7 @@ function newWebIm() {
       this.toAccount = toAccount;
       this.lastedMsgTime = lastedMsgTime;
     }
-    
+
     var calcUniqId = function (num1, num2) {
       var str1 = parseInt(num1).toString(2) + '00000000000000000000000000000000';
       var str2 = parseInt(num2).toString(2);
@@ -4022,8 +4022,8 @@ function newWebIm() {
           this.uniqueId = calcUniqId(this.time, this.random);
           break;
       }
-      
-      
+
+
     };
     Msg.prototype.getSession = function () {
       return this.sess;
@@ -4093,12 +4093,12 @@ function newWebIm() {
       }
       return html;
     };
-    
+
     // 暴力点 直接添加，内部的配置不细写
     Msg.prototype.setOfflinePushInfo = function (offlinePushInfo) {
       this.offlinePushInfo = offlinePushInfo;
     };
-    
+
     // class Msg.Elem
     Msg.Elem = function (type, value) {
       this.type = type;
@@ -4115,7 +4115,7 @@ function newWebIm() {
       html = this.content.toHtml();
       return html;
     };
-    
+
     // class Msg.Elem.Text
     Msg.Elem.Text = function (text) {
       this.text = tool.xssFilter(text);
@@ -4126,7 +4126,7 @@ function newWebIm() {
     Msg.Elem.Text.prototype.toHtml = function () {
       return this.text;
     };
-    
+
     // class Msg.Elem.Face
     Msg.Elem.Face = function (index, data) {
       this.index = index;
@@ -4151,7 +4151,7 @@ function newWebIm() {
         return this.data;
       }
     };
-    
+
     // 地理位置消息 class Msg.Elem.Location
     Msg.Elem.Location = function (longitude, latitude, desc) {
       this.latitude = latitude; //纬度
@@ -4170,7 +4170,7 @@ function newWebIm() {
     Msg.Elem.Location.prototype.toHtml = function () {
       return '经度=' + this.longitude + ',纬度=' + this.latitude + ',描述=' + this.desc;
     };
-    
+
     //图片消息
     // class Msg.Elem.Images
     Msg.Elem.Images = function (imageId, format) {
@@ -4195,7 +4195,7 @@ function newWebIm() {
         oriImage = smallImage;
       }
       return "<img src='" + smallImage.getUrl() + "#" + bigImage.getUrl() + "#" + oriImage.getUrl() + "' style='CURSOR: hand' id='" + this.getImageId() + "' bigImgUrl='" + bigImage.getUrl() + "' onclick='imageClick(this)' />";
-      
+
     };
     Msg.Elem.Images.prototype.getImageId = function () {
       return this.UUID;
@@ -4240,7 +4240,7 @@ function newWebIm() {
     Msg.Elem.Images.Image.prototype.getUrl = function () {
       return this.url;
     };
-    
+
     // class Msg.Elem.Sound
     Msg.Elem.Sound = function (uuid, second, size, senderId, receiverId, downFlag, chatType) {
       this.uuid = uuid; //文件id
@@ -4250,7 +4250,7 @@ function newWebIm() {
       this.receiverId = receiverId; //接收方id
       this.downFlag = downFlag; //下载标志位
       this.busiId = chatType == SESSION_TYPE.C2C ? 2 : 1; //busi_id ( 1：群    2:C2C)
-      
+
       //根据不同情况拉取数据
       //是否需要申请下载地址  0:到架平申请  1:到cos申请  2:不需要申请, 直接拿url下载
       if (downFlag !== undefined && busiId !== undefined) {
@@ -4280,7 +4280,7 @@ function newWebIm() {
       }
       return '<audio id="uuid_' + this.uuid + '" src="' + this.downUrl + '" controls="controls" onplay="onChangePlayAudio(this)" preload="none"></audio>';
     };
-    
+
     // class Msg.Elem.File
     Msg.Elem.File = function (uuid, name, size, senderId, receiverId, downFlag, chatType) {
       this.uuid = uuid; //文件id
@@ -4289,7 +4289,7 @@ function newWebIm() {
       this.senderId = senderId; //发送者
       this.receiverId = receiverId; //接收方id
       this.downFlag = downFlag; //下载标志位
-      
+
       this.busiId = chatType == SESSION_TYPE.C2C ? 2 : 1; //busi_id ( 1：群    2:C2C)
       //根据不同情况拉取数据
       //是否需要申请下载地址  0:到架平申请  1:到cos申请  2:不需要申请, 直接拿url下载
@@ -4327,7 +4327,7 @@ function newWebIm() {
       }
       return '<a href="javascript" onclick="webim.onDownFile("' + this.uuid + '")" title="点击下载文件" ><i class="glyphicon glyphicon-file">&nbsp;' + this.name + '(' + fileSize + unitStr + ')</i></a>';
     };
-    
+
     // class Msg.Elem.GroupTip 群提示消息对象
     Msg.Elem.GroupTip = function (opType, opUserId, groupId, groupName, userIdList, userinfo) {
       this.opType = opType; //操作类型
@@ -4427,8 +4427,8 @@ function newWebIm() {
           }
           text += "的管理员资格";
           break;
-        
-        
+
+
         case GROUP_TIP_TYPE.MODIFY_GROUP_INFO: //群资料变更
           text += this.opUserId + "修改了群资料：";
           for (var m in this.groupInfoList) {
@@ -4456,7 +4456,7 @@ function newWebIm() {
             }
           }
           break;
-        
+
         case GROUP_TIP_TYPE.MODIFY_MEMBER_INFO: //群成员资料变更(禁言时间)
           text += this.opUserId + "修改了群成员资料:";
           for (var m in this.memberInfoList) {
@@ -4478,7 +4478,7 @@ function newWebIm() {
             }
           }
           break;
-        
+
         case GROUP_TIP_TYPE.READED: //消息已读
           /**/
           Log.info("消息已读同步")
@@ -4489,7 +4489,7 @@ function newWebIm() {
       }
       return text;
     };
-    
+
     // class Msg.Elem.GroupTip.GroupInfo，变更的群资料信息对象
     Msg.Elem.GroupTip.GroupInfo = function (type, value) {
       this.type = type; //群资料信息类型
@@ -4501,7 +4501,7 @@ function newWebIm() {
     Msg.Elem.GroupTip.GroupInfo.prototype.getValue = function () {
       return this.value;
     };
-    
+
     // class Msg.Elem.GroupTip.MemberInfo，变更的群成员资料信息对象
     Msg.Elem.GroupTip.MemberInfo = function (userId, shutupTime) {
       this.userId = userId; //群成员id
@@ -4513,7 +4513,7 @@ function newWebIm() {
     Msg.Elem.GroupTip.MemberInfo.prototype.getShutupTime = function () {
       return this.shutupTime;
     };
-    
+
     // 自定义消息类型 class Msg.Elem.Custom
     Msg.Elem.Custom = function (data, desc, ext) {
       this.data = data; //数据
@@ -4532,7 +4532,7 @@ function newWebIm() {
     Msg.Elem.Custom.prototype.toHtml = function () {
       return this.data;
     };
-    
+
     // singleton object MsgStore
     var MsgStore = new function () {
       var sessMap = {}; //跟所有用户或群的聊天记录MAP
@@ -4541,7 +4541,7 @@ function newWebIm() {
       //C2C
       this.cookie = ""; //上一次拉取新c2c消息的cookie
       this.syncFlag = 0; //上一次拉取新c2c消息的是否继续拉取标记
-      
+
       var visitSess = function (visitor) {
         for (var i in sessMap) {
           visitor(sessMap[i]);
@@ -4568,7 +4568,7 @@ function newWebIm() {
         }
         return dup;
       };
-      
+
       this.sessMap = function () {
         return sessMap;
       };
@@ -4593,7 +4593,7 @@ function newWebIm() {
         this.cookie = "";
         this.syncFlag = 0;
       };
-      
+
       //切换将当前会话的自动读取消息标志为isOn,重置其他会话的自动读取消息标志为false
       this.setAutoRead = function (selSess, isOn, isResetAll) {
         if (isResetAll)
@@ -4604,7 +4604,7 @@ function newWebIm() {
           selSess._impl.isAutoRead = isOn; //
           if (isOn) { //是否调用已读上报接口
             selSess._impl.unread = 0;
-            
+
             if (selSess._impl.type == SESSION_TYPE.C2C) { //私聊消息已读上报
               var tmpC2CMsgReadedItem = [];
               tmpC2CMsgReadedItem.push(new C2CMsgReadedItem(selSess._impl.id, selSess._impl.time));
@@ -4626,17 +4626,17 @@ function newWebIm() {
               proto_groupMsgReaded(tmpOpt,
                 function (resp) {
                   log.info("groupMsgReaded success");
-                  
+
                 },
                 function (err) {
                   log.error("groupMsgReaded failed:" + err.ErrorInfo);
-                  
+
                 });
             }
           }
         }
       };
-      
+
       this.c2CMsgReaded = function (opts, cbOk, cbErr) {
         var tmpC2CMsgReadedItem = [];
         tmpC2CMsgReadedItem.push(new C2CMsgReadedItem(opts.To_Account, opts.LastedMsgTime));
@@ -4656,7 +4656,7 @@ function newWebIm() {
             }
           });
       };
-      
+
       this.addSession = function (sess) {
         sessMap[sess._impl.skey] = sess;
       };
@@ -4690,9 +4690,9 @@ function newWebIm() {
     };
     // singleton object MsgManager
     var MsgManager = new function () {
-      
+
       var onMsgCallback = null; //新消息(c2c和group)回调
-      
+
       var onGroupInfoChangeCallback = null; //群资料变化回调
       //收到新群系统消息回调列表
       var onGroupSystemNotifyCallbacks = {
@@ -4722,21 +4722,21 @@ function newWebIm() {
         "7": null,
         "8": null
       };
-      
+
       var onProfileSystemNotifyCallbacks = {
         "1": null
       };
-      
+
       var onKickedEventCall = null;
-      
+
       var onMsgReadCallback = null;
-      
+
       //普通长轮询
       var longPollingOn = false; //是否开启普通长轮询
       var isLongPollingRequesting = false; //是否在长轮询ing
       var notifySeq = 0; //c2c通知seq
       var noticeSeq = 0; //群消息seq
-      
+
       //大群长轮询
       var onBigGroupMsgCallback = null; //大群消息回调
       var bigGroupLongPollingOn = false; //是否开启长轮询
@@ -4750,14 +4750,14 @@ function newWebIm() {
       };
       ;
       var onAppliedDownloadUrl = null;
-      
-      
+
+
       var getLostGroupMsgCount = 0; //补拉丢失的群消息次数
       //我的群当前最大的seq
       var myGroupMaxSeqs = {}; //用于补拉丢失的群消息
-      
+
       var groupSystemMsgsCache = {}; //群组系统消息缓存,用于判重
-      
+
       //设置长轮询开关
       //isOn=true 开启
       //isOn=false 停止
@@ -4767,14 +4767,14 @@ function newWebIm() {
       this.getLongPollingOn = function () {
         return longPollingOn;
       };
-      
+
       //重置长轮询变量
       this.resetLongPollingInfo = function () {
         longPollingOn = false;
         notifySeq = 0;
         noticeSeq = 0;
       };
-      
+
       //设置大群长轮询开关
       //isOn=true 开启
       //isOn=false 停止
@@ -4792,7 +4792,7 @@ function newWebIm() {
         bigGroupLongPollingKey = null;
         bigGroupLongPollingMsgMap = {};
       };
-      
+
       //设置群消息数据条数
       this.setBigGroupLongPollingMsgMap = function (groupId, count) {
         var bigGroupLongPollingMsgCount = bigGroupLongPollingMsgMap[groupId];
@@ -4803,10 +4803,10 @@ function newWebIm() {
           bigGroupLongPollingMsgMap[groupId] = count;
         }
       };
-      
+
       //重置
       this.clear = function () {
-        
+
         onGroupInfoChangeCallback = null;
         onGroupSystemNotifyCallbacks = {
           "1": null, //申请加群请求（只有管理员会收到）
@@ -4842,21 +4842,21 @@ function newWebIm() {
         longPollingOn = false;
         notifySeq = 0; //c2c新消息通知seq
         noticeSeq = 0; //group新消息seq
-        
+
         //重置大群长轮询参数
         onBigGroupMsgCallback = null;
         bigGroupLongPollingOn = false;
         bigGroupLongPollingStartSeq = 0;
         bigGroupLongPollingKey = null;
         bigGroupLongPollingMsgMap = {};
-        
+
         groupSystemMsgsCache = {};
-        
+
         ipList = []; //文件下载地址
         authkey = null; //文件下载票据
         expireTime = null; //票据超时时间
       };
-      
+
       //初始化文件下载ip和票据
       var initIpAndAuthkey = function (cbOk, cbErr) {
         proto_getIpAndAuthkey(function (resp) {
@@ -4871,7 +4871,7 @@ function newWebIm() {
           }
         );
       };
-      
+
       //初始化我的群当前最大的seq，用于补拉丢失的群消息
       var initMyGroupMaxSeqs = function (cbOk, cbErr) {
         var opts = {
@@ -4893,9 +4893,9 @@ function newWebIm() {
               var curMaxSeq = resp.GroupIdList[i].NextMsgSeq - 1;
               myGroupMaxSeqs[group_id] = curMaxSeq;
             }
-            
+
             if (cbOk) cbOk(resp);
-            
+
           },
           function (err) {
             log.error("initMyGroupMaxSeqs failed:" + err.ErrorInfo);
@@ -4903,7 +4903,7 @@ function newWebIm() {
           }
         );
       };
-      
+
       //补拉群消息
       var getLostGroupMsgs = function (groupId, reqMsgSeq, reqMsgNumber) {
         getLostGroupMsgCount++;
@@ -4917,7 +4917,7 @@ function newWebIm() {
         log.warn("第" + getLostGroupMsgCount + "次补齐群消息,参数=" + JSON.stringify(tempOpts));
         MsgManager.syncGroupMsgs(tempOpts);
       };
-      
+
       //更新群当前最大消息seq
       var updateMyGroupCurMaxSeq = function (groupId, msgSeq) {
         //更新myGroupMaxSeqs中的群最大seq
@@ -4930,7 +4930,7 @@ function newWebIm() {
           myGroupMaxSeqs[groupId] = msgSeq;
         }
       };
-      
+
       //添加群消息列表
       var addGroupMsgList = function (msgs, new_group_msgs) {
         for (var p in msgs) {
@@ -4950,7 +4950,7 @@ function newWebIm() {
         }
         return new_group_msgs;
       };
-      
+
       //处理收到的群普通和提示消息
       var handlerOrdinaryAndTipC2cMsgs = function (eventType, groupMsgArray) {
         var groupMsgMap = {}; //保存收到的C2c消息信息（群号，最小，最大消息seq，消息列表）
@@ -4958,7 +4958,7 @@ function newWebIm() {
         var minGroupMsgSeq = 99999999;
         var maxGroupMsgSeq = -1;
         for (var j in groupMsgArray) {
-          
+
           var groupMsgs = groupMsgMap[groupMsgArray[j].ToGroupId];
           if (!groupMsgs) {
             groupMsgs = groupMsgMap[groupMsgArray[j].ToGroupId] = {
@@ -4981,7 +4981,7 @@ function newWebIm() {
             groupMsgMap[groupMsgArray[j].ToGroupId].max = groupMsgArray[j].MsgSeq;
           }
         }
-        
+
         for (var groupId in groupMsgMap) {
           var tempCount = groupMsgMap[groupId].max - groupMsgMap[groupId].min + 1; //收到的新的群消息数
           var curMaxMsgSeq = myGroupMaxSeqs[groupId]; //获取本地保存的群最大消息seq
@@ -5017,9 +5017,9 @@ function newWebIm() {
           MsgStore.updateTimeline();
         }
         if (onMsgCallback && new_group_msgs.length) onMsgCallback(new_group_msgs);
-        
+
       };
-      
+
       //处理收到的群普通和提示消息
       var handlerOrdinaryAndTipGroupMsgs = function (eventType, groupMsgArray) {
         var groupMsgMap = {}; //保存收到的群消息信息（群号，最小，最大消息seq，消息列表）
@@ -5027,7 +5027,7 @@ function newWebIm() {
         var minGroupMsgSeq = 99999999;
         var maxGroupMsgSeq = -1;
         for (var j in groupMsgArray) {
-          
+
           var groupMsgs = groupMsgMap[groupMsgArray[j].ToGroupId];
           if (!groupMsgs) {
             groupMsgs = groupMsgMap[groupMsgArray[j].ToGroupId] = {
@@ -5050,7 +5050,7 @@ function newWebIm() {
             groupMsgMap[groupMsgArray[j].ToGroupId].max = groupMsgArray[j].MsgSeq;
           }
         }
-        
+
         for (var groupId in groupMsgMap) {
           var tempCount = groupMsgMap[groupId].max - groupMsgMap[groupId].min + 1; //收到的新的群消息数
           var curMaxMsgSeq = myGroupMaxSeqs[groupId]; //获取本地保存的群最大消息seq
@@ -5086,9 +5086,9 @@ function newWebIm() {
           MsgStore.updateTimeline();
         }
         if (onMsgCallback && new_group_msgs.length) onMsgCallback(new_group_msgs);
-        
+
       };
-      
+
       //处理新的群提示消息
       var handlerGroupTips = function (groupTips) {
         var new_group_msgs = [];
@@ -5110,7 +5110,7 @@ function newWebIm() {
         }
         if (onMsgCallback && new_group_msgs.length) onMsgCallback(new_group_msgs);
       };
-      
+
       //处理新的群系统消息
       //isNeedValidRepeatMsg 是否需要判重
       var handlerGroupSystemMsgs = function (groupSystemMsgs, isNeedValidRepeatMsg) {
@@ -5138,7 +5138,7 @@ function newWebIm() {
             }
             groupSystemMsgsCache[key] = true;
           }
-          
+
           var notify = {
             "SrcFlag": 0,
             "ReportType": reportType,
@@ -5182,7 +5182,7 @@ function newWebIm() {
               log.error("未知群系统消息类型：reportType=" + reportType);
               break;
           }
-          
+
           if (isNeedValidRepeatMsg) {
             //注释只收取一种通知
             // if (reportType == GROUP_SYSTEM_TYPE.JOIN_GROUP_REQUEST) {
@@ -5209,8 +5209,8 @@ function newWebIm() {
           }
         } //loop
       };
-      
-      
+
+
       //处理新的好友系统通知
       //isNeedValidRepeatMsg 是否需要判重
       var handlerFriendSystemNotices = function (friendSystemNotices, isNeedValidRepeatMsg) {
@@ -5255,7 +5255,7 @@ function newWebIm() {
               log.error("未知好友系统通知类型：friendNotice=" + JSON.stringify(friendNotice));
               break;
           }
-          
+
           if (isNeedValidRepeatMsg) {
             if (type == FRIEND_NOTICE_TYPE.PENDENCY_ADD) {
               //回调
@@ -5267,7 +5267,7 @@ function newWebIm() {
           }
         } //loop
       };
-      
+
       //处理新的资料系统通知
       //isNeedValidRepeatMsg 是否需要判重
       var handlerProfileSystemNotices = function (profileSystemNotices, isNeedValidRepeatMsg) {
@@ -5291,7 +5291,7 @@ function newWebIm() {
               log.error("未知资料系统通知类型：profileNotice=" + JSON.stringify(profileNotice));
               break;
           }
-          
+
           if (isNeedValidRepeatMsg) {
             if (type == PROFILE_NOTICE_TYPE.PROFILE_MODIFY) {
               //回调
@@ -5303,7 +5303,7 @@ function newWebIm() {
           }
         } //loop
       };
-      
+
       //处理新的群系统消息(用于直播大群长轮询)
       var handlerGroupSystemMsg = function (groupTip) {
         var groupReportTypeMsg = groupTip.MsgBody;
@@ -5356,16 +5356,16 @@ function newWebIm() {
         }
         //回调
         if (onGroupSystemNotifyCallbacks[reportType]) onGroupSystemNotifyCallbacks[reportType](notify);
-        
+
       };
-      
+
       //处理C2C EVENT 消息通道Array
       var handlerC2cNotifyMsgArray = function (arr) {
         for (var i = 0, l = arr.length; i < l; i++) {
           handlerC2cEventMsg(arr[i]);
         }
       }
-      
+
       //处理C2C EVENT 消息通道Item
       var handlerC2cEventMsg = function (notify) {
         var subType = notify.SubMsgType;
@@ -5390,11 +5390,11 @@ function newWebIm() {
           }
         }
       };
-      
+
       //长轮询
       this.longPolling = function (cbOk, cbErr) {
-        
-        
+
+
         var opts = {
           'Timeout': longPollingDefaultTimeOut / 1000,
           'Cookie': {
@@ -5413,7 +5413,7 @@ function newWebIm() {
             doPolling();
           });
         }
-        
+
         function doPolling() {
           proto_longPolling(opts, function (resp) {
             for (var i in resp.EventArray) {
@@ -5481,8 +5481,8 @@ function newWebIm() {
           });
         }
       };
-      
-      
+
+
       //大群 长轮询
       this.bigGroupLongPolling = function (cbOk, cbErr) {
         var GroupId = BigGroupId;
@@ -5492,15 +5492,15 @@ function newWebIm() {
           'HoldTime': bigGroupLongPollingHoldTime, //客户端长轮询的超时时间，单位是秒
           'Key': bigGroupLongPollingKey //客户端加入群组后收到的的Key
         };
-        
+
         proto_bigGroupLongPolling(opts, function (resp) {
           if (GroupId != BigGroupId) return;
-          
+
           var msgObjList = [];
           bigGroupLongPollingStartSeq = resp.NextSeq;
           bigGroupLongPollingHoldTime = resp.HoldTime;
           bigGroupLongPollingKey = resp.Key;
-          
+
           if (resp.RspMsgList && resp.RspMsgList.length > 0) {
             var msgCount = 0,
               msgInfo, event, msg;
@@ -5538,7 +5538,7 @@ function newWebIm() {
               if (msgInfo.IsPlaceMsg || !msgInfo.From_Account || !msgInfo.MsgBody || msgInfo.MsgBody.length == 0) {
                 continue;
               }
-              
+
               event = msgInfo.Event; //群消息类型
               switch (event) {
                 case LONG_POLLINNG_EVENT_TYPE.GROUP_COMMON: //群普通消息
@@ -5576,13 +5576,13 @@ function newWebIm() {
             'ErrorInfo': 'connection is ok...'
           };
           ConnManager.callBack(successInfo);
-          
+
           if (cbOk) cbOk(msgObjList);
           else if (onBigGroupMsgCallback) onBigGroupMsgCallback(msgObjList); //返回新消息
-          
+
           //重新启动长轮询
           bigGroupLongPollingOn && MsgManager.bigGroupLongPolling();
-          
+
         }, function (err) {
           //
           if (err.ErrorCode != longPollingTimeOutErrorCode) {
@@ -5609,10 +5609,10 @@ function newWebIm() {
             ConnManager.callBack(errInfo);
           }
           if (cbErr) cbErr(err);
-          
+
         }, bigGroupLongPollingHoldTime * 1000);
       };
-      
+
       //更新连接状态
       var updatecLongPollingStatus = function (errObj) {
         if (errObj.ErrorCode == 0 || errObj.ErrorCode == longPollingTimeOutErrorCode) {
@@ -5673,7 +5673,7 @@ function newWebIm() {
           }
         }
       };
-      
+
       //处理收到的普通C2C消息
       var handlerOrdinaryAndTipC2cMsgs = function (eventType, C2cMsgArray) {
         //处理c2c消息
@@ -5681,7 +5681,7 @@ function newWebIm() {
         var msgInfos = [];
         msgInfos = C2cMsgArray; //返回的消息列表
         // MsgStore.cookie = resp.Cookie;//cookies，记录当前读到的最新消息位置
-        
+
         for (var i in msgInfos) {
           var msgInfo = msgInfos[i];
           var isSendMsg, id, headUrl;
@@ -5782,7 +5782,7 @@ function newWebIm() {
                   }
                 } catch (e) {
                 }
-                
+
                 msgType = MSG_ELEMENT_TYPE.CUSTOM;
                 msgContent = new Msg.Elem.Custom(
                   msgBody.MsgContent.Data,
@@ -5797,7 +5797,7 @@ function newWebIm() {
             }
             msg.elems.push(new Msg.Elem(msgType, msgContent));
           }
-          
+
           if (msg.elems.length > 0 && MsgStore.addMsg(msg, true)) {
             notifyInfo.push(msg);
           }
@@ -5808,12 +5808,12 @@ function newWebIm() {
           if (onMsgCallback) onMsgCallback(notifyInfo);
         }
       };
-      
+
       //发起新的长轮询请求
       var startNextLongPolling = function () {
         longPollingOn && MsgManager.longPolling();
       };
-      
+
       //处理未决的加群申请消息列表
       var handlerApplyJoinGroupSystemMsgs = function (eventArray) {
         for (var i in eventArray) {
@@ -5831,7 +5831,7 @@ function newWebIm() {
           }
         }
       };
-      
+
       //拉取c2c消息(包含加群未决消息，需要处理)
       this.syncMsgs = function (cbOk, cbErr) {
         var notifyInfo = [];
@@ -5845,7 +5845,7 @@ function newWebIm() {
           //处理c2c消息
           msgInfos = resp.MsgList; //返回的消息列表
           MsgStore.cookie = resp.Cookie; //cookies，记录当前读到的最新消息位置
-          
+
           for (var i in msgInfos) {
             var msgInfo = msgInfos[i];
             var isSendMsg, id, headUrl;
@@ -5948,7 +5948,7 @@ function newWebIm() {
                     }
                   } catch (e) {
                   }
-                  
+
                   msgType = MSG_ELEMENT_TYPE.CUSTOM;
                   msgContent = new Msg.Elem.Custom(
                     msgBody.MsgContent.Data,
@@ -5963,32 +5963,32 @@ function newWebIm() {
               }
               msg.elems.push(new Msg.Elem(msgType, msgContent));
             }
-            
+
             if (msg.elems.length > 0 && MsgStore.addMsg(msg, true)) {
               notifyInfo.push(msg);
             }
           } // for loop
-          
+
           //处理加群未决申请消息
           handlerApplyJoinGroupSystemMsgs(resp.EventArray);
-          
+
           if (notifyInfo.length > 0)
             MsgStore.updateTimeline();
           if (cbOk) cbOk(notifyInfo);
           else if (notifyInfo.length > 0) {
             if (onMsgCallback) onMsgCallback(notifyInfo);
           }
-          
+
         }, function (err) {
           log.error("getMsgs failed:" + err.ErrorInfo);
           if (cbErr) cbErr(err);
         });
       };
-      
-      
+
+
       //拉取C2C漫游消息
       this.getC2CHistoryMsgs = function (options, cbOk, cbErr) {
-        
+
         if (!options.Peer_Account) {
           if (cbErr) {
             cbErr(tool.getReturnError("Peer_Account is empty", -13));
@@ -6078,9 +6078,9 @@ function newWebIm() {
                   }
                   break;
                 case MSG_ELEMENT_TYPE.SOUND:
-                  
+
                   // var soundUrl = getSoundDownUrl(msgBody.MsgContent.UUID, msgInfo.From_Account);
-                  
+
                   if (msgBody.MsgContent) {
                     msgContent = new Msg.Elem.Sound(
                       msgBody.MsgContent.UUID,
@@ -6107,7 +6107,7 @@ function newWebIm() {
                 case MSG_ELEMENT_TYPE.FILE + " ":
                   msgType = MSG_ELEMENT_TYPE.FILE;
                   // var fileUrl = getFileDownUrl(msgBody.MsgContent.UUID, msgInfo.From_Account, msgBody.MsgContent.FileName);
-                  
+
                   if (msgBody.MsgContent) {
                     msgContent = new Msg.Elem.File(
                       msgBody.MsgContent.UUID,
@@ -6130,7 +6130,7 @@ function newWebIm() {
                     msgBody.MsgContent.Desc,
                     msgBody.MsgContent.Ext
                   );
-                  
+
                   break;
                 default:
                   msgType = MSG_ELEMENT_TYPE.TEXT;
@@ -6142,10 +6142,10 @@ function newWebIm() {
             MsgStore.addMsg(msg);
             msgObjList.push(msg);
           } // for loop
-          
+
           MsgStore.updateTimeline();
           if (cbOk) {
-            
+
             var newResp = {
               'Complete': resp.Complete,
               'MsgCount': msgObjList.length,
@@ -6156,13 +6156,13 @@ function newWebIm() {
             sess.isFinished(resp.Complete);
             cbOk(newResp);
           }
-          
+
         }, function (err) {
           log.error("getC2CHistoryMsgs failed:" + err.ErrorInfo);
           if (cbErr) cbErr(err);
         });
       };
-      
+
       //拉群历史消息
       //不传cbOk 和 cbErr，则会调用新消息回调函数
       this.syncGroupMsgs = function (options, cbOk, cbErr) {
@@ -6185,7 +6185,7 @@ function newWebIm() {
           var group_id = resp.GroupId; //返回的群id
           var msgInfos = resp.RspMsgList; //返回的消息列表
           var isFinished = resp.IsFinished;
-          
+
           if (msgInfos == null || msgInfos === undefined) {
             if (cbOk) {
               cbOk([]);
@@ -6210,13 +6210,13 @@ function newWebIm() {
           else if (notifyInfo.length > 0) {
             if (onMsgCallback) onMsgCallback(notifyInfo);
           }
-          
+
         }, function (err) {
           log.error("getGroupMsgs failed:" + err.ErrorInfo);
           if (cbErr) cbErr(err);
         });
       };
-      
+
       //处理群消息(普通消息+提示消息)
       //isSyncGroupMsgs 是否主动拉取群消息标志
       //isAddMsgFlag 是否需要保存到MsgStore，如果需要，这里会存在判重逻辑
@@ -6238,7 +6238,7 @@ function newWebIm() {
         if (msgInfo.GroupInfo) {
           if (msgInfo.GroupInfo.From_AccountNick) {
             fromAccountNick = msgInfo.GroupInfo.From_AccountNick;
-            
+
           }
           if (msgInfo.GroupInfo.From_AccountHeadurl) {
             fromAccountHeadurl = msgInfo.GroupInfo.From_AccountHeadurl;
@@ -6278,7 +6278,7 @@ function newWebIm() {
           } else if (msgInfo.MsgPriority == GROUP_MSG_PRIORITY_TYPE.LOVEMSG) {
             subType = GROUP_MSG_SUB_TYPE.LOVEMSG;
           }
-          
+
         }
         var msg = new Msg(sess, isSendMsg, msgInfo.MsgSeq, msgInfo.MsgRandom, msgInfo.MsgTimeStamp, msgInfo.From_Account, subType, fromAccountNick, fromAccountHeadurl);
         var msgBody = null;
@@ -6341,7 +6341,7 @@ function newWebIm() {
             case MSG_ELEMENT_TYPE.FILE + " ":
               msgType = MSG_ELEMENT_TYPE.FILE;
               var fileUrl = getFileDownUrl(msgBody.MsgContent.UUID, msgInfo.From_Account, msgBody.MsgContent.FileName);
-              
+
               if (msgBody.MsgContent) {
                 msgContent = new Msg.Elem.File(
                   msgBody.MsgContent.UUID,
@@ -6425,12 +6425,12 @@ function newWebIm() {
                   tempIsCallbackFlag = true;
                   tempNewGroupInfo.GroupIntroduction = msgGroupNewInfo.GroupIntroduction;
                 }
-                
+
                 //回调群资料变化通知方法
                 if (isSyncGroupMsgs == false && tempIsCallbackFlag && onGroupInfoChangeCallback) {
                   onGroupInfoChangeCallback(tempNewGroupInfo);
                 }
-                
+
               } else if (GROUP_TIP_TYPE.MODIFY_MEMBER_INFO == opType) { //群成员变更
                 var memberInfos = msgBody.MsgContent.MsgMemberInfo;
                 for (var n in memberInfos) {
@@ -6458,11 +6458,11 @@ function newWebIm() {
           }
           msg.elems.push(new Msg.Elem(msgType, msgContent));
         }
-        
+
         if (isAddMsgFlag == false) { //不需要保存消息
           return msg;
         }
-        
+
         if (MsgStore.addMsg(msg, true)) {
           msg.extraInfo = msgInfo.GroupInfo.MsgFrom_AccountExtraInfo
           return msg;
@@ -6470,20 +6470,20 @@ function newWebIm() {
           return null;
         }
       };
-      
+
       //初始化
       this.init = function (listeners, cbOk, cbErr) {
         if (!listeners.onMsgNotify) {
           log.warn('listeners.onMsgNotify is empty');
         }
         onMsgCallback = listeners.onMsgNotify;
-        
+
         if (listeners.onBigGroupMsgNotify) {
           onBigGroupMsgCallback = listeners.onBigGroupMsgNotify;
         } else {
           log.warn('listeners.onBigGroupMsgNotify is empty');
         }
-        
+
         if (listeners.onC2cEventNotifys) {
           onC2cEventCallbacks = listeners.onC2cEventNotifys;
         } else {
@@ -6519,13 +6519,13 @@ function newWebIm() {
         } else {
           log.warn('listeners.onKickedEventCall is empty');
         }
-        
+
         if (listeners.onAppliedDownloadUrl) {
           onAppliedDownloadUrl = listeners.onAppliedDownloadUrl;
         } else {
           log.warn('listeners.onAppliedDownloadUrl is empty');
         }
-        
+
         if (!ctx.identifier || !ctx.userSig) {
           if (cbOk) {
             var success = {
@@ -6537,7 +6537,7 @@ function newWebIm() {
           }
           return;
         }
-        
+
         //初始化
         initMyGroupMaxSeqs(
           function (resp) {
@@ -6560,7 +6560,7 @@ function newWebIm() {
               }, cbErr);
           }, cbErr);
       };
-      
+
       //发消息（私聊或群聊）
       this.sendMsg = function (msg, cbOk, cbErr) {
         proto_sendMsg(msg, function (resp) {
@@ -6582,13 +6582,13 @@ function newWebIm() {
         });
       };
     };
-    
+
     //上传文件
     var FileUploader = new function () {
       this.fileMd5 = null;
       //获取文件MD5
       var getFileMD5 = function (file, cbOk, cbErr) {
-        
+
         //FileReader pc浏览器兼容性
         //Feature   Firefox (Gecko) Chrome  Internet Explorer   Opera   Safari
         //Basic support 3.6 7   10                      12.02   6.0.2
@@ -6609,14 +6609,14 @@ function newWebIm() {
             return;
           }
         }
-        
+
         var chunkSize = 2 * 1024 * 1024; //分块大小，2M
         var chunks = Math.ceil(file.size / chunkSize); //总块数
         var currentChunk = 0; //当前块数
         var spark = new SparkMD5(); //获取MD5对象
-        
+
         fileReader.onload = function (e) { //数据加载完毕事件
-          
+
           var binaryStr = "";
           var bytes = new Uint8Array(e.target.result);
           var length = bytes.byteLength;
@@ -6634,9 +6634,9 @@ function newWebIm() {
             }
           }
         };
-        
+
         //分片读取文件
-        
+
         function loadNext() {
           var start = currentChunk * chunkSize,
             end = start + chunkSize >= file.size ? file.size : start + chunkSize;
@@ -6645,9 +6645,9 @@ function newWebIm() {
           //readAsBinaryString ie浏览器不兼容此方法
           //fileReader.readAsBinaryString(blobSlice.call(file, start, end));
           fileReader.readAsArrayBuffer(b); //ie，chrome，firefox等主流浏览器兼容此方法
-          
+
         }
-        
+
         loadNext(); //开始读取
       };
       //提交上传图片表单(用于低版本IE9以下)
@@ -6660,7 +6660,7 @@ function newWebIm() {
         var iframeName = "uploadResultIframe_" + iframeNum;
         var toAccount = options.To_Account;
         var businessType = options.businessType;
-        
+
         var form = document.getElementById(formId);
         if (!form) {
           errInfo = "获取表单对象为空: formId=" + formId + "(formId非法)";
@@ -6668,7 +6668,7 @@ function newWebIm() {
           if (cbErr) cbErr(error);
           return;
         }
-        
+
         var fileObj = document.getElementById(fileId);
         if (!fileObj) {
           errInfo = "获取文件对象为空: fileId=" + fileId + "(没有选择文件或者fileId非法)";
@@ -6678,13 +6678,13 @@ function newWebIm() {
         }
         //fileObj.type="file";//ie8下不起作用，必须由业务自己设置
         fileObj.name = "file";
-        
+
         var iframe = document.createElement("iframe");
         iframe.name = iframeName;
         iframe.id = iframeName;
         iframe.style.display = "none";
         document.body.appendChild(iframe);
-        
+
         var cmdName;
         if (isAccessFormalEnv()) {
           cmdName = 'pic_up';
@@ -6696,7 +6696,7 @@ function newWebIm() {
         form.method = 'post';
         //form.enctype='multipart/form-data';//ie8下不起作用，必须由业务自己设置
         form.target = iframeName;
-        
+
         function createFormInput(name, value) {
           var tempInput = document.createElement("input");
           tempInput.type = "hidden";
@@ -6704,7 +6704,7 @@ function newWebIm() {
           tempInput.value = value;
           form.appendChild(tempInput);
         }
-        
+
         createFormInput("App_Version", VERSION_INFO.APP_VERSION);
         createFormInput("From_Account", ctx.identifier);
         createFormInput("To_Account", toAccount);
@@ -6716,10 +6716,10 @@ function newWebIm() {
         createFormInput("Auth_Key", authkey);
         createFormInput("Server_Ver", VERSION_INFO.SERVER_VERSION.toString());
         createFormInput("File_Type", options.fileType);
-        
-        
+
+
         //检测iframe.contentWindow.name是否有值
-        
+
         function checkFrameName() {
           var resp;
           try {
@@ -6732,7 +6732,7 @@ function newWebIm() {
             iframe.src = "about:blank";
             iframe.parentNode.removeChild(iframe);
             iframe = null;
-            
+
             if (resp.ActionStatus == ACTION_STATUS.OK) {
               cbOk && cbOk(resp);
             } else {
@@ -6742,14 +6742,14 @@ function newWebIm() {
             setTimeout(checkFrameName, 100);
           }
         }
-        
+
         setTimeout(checkFrameName, 500);
-        
+
         form.submit(); //提交上传图片表单
       };
       //上传图片或文件(用于高版本浏览器，支持FileAPI)
       this.uploadFile = function (options, cbOk, cbErr) {
-        
+
         var file_upload = {
           //初始化
           init: function (options, cbOk, cbErr) {
@@ -6774,13 +6774,13 @@ function newWebIm() {
             me.fileMd5 = options.fileMd5; //文件MD5
             me.businessType = options.businessType; //图片或文件的业务类型，群消息:1; c2c消息:2; 个人头像：3; 群头像：4;
             me.fileType = options.fileType; //文件类型，不填为默认认为上传的是图片；1：图片；2：文件；3：短视频；4：PTT
-            
+
             me.cbOk = cbOk; //上传成功回调事件
             me.cbErr = cbErr; //上传失败回调事件
-            
+
             me.reader = new FileReader(); //读取文件对象
             me.blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice; //file的slice方法,不同浏览器不一样
-            
+
             me.reader.onloadstart = me.onLoadStart; //开始读取回调事件
             me.reader.onprogress = me.onProgress; //读取文件进度回调事件
             me.reader.onabort = me.onAbort; //停止读取回调事件
@@ -6835,7 +6835,7 @@ function newWebIm() {
                 'Timestamp': me.timestamp,
                 'Random': me.random
               };
-              
+
               //上传成功的成功回调
               var succCallback = function (resp) {
                 if (resp.IsFinish == 0) {
@@ -6846,7 +6846,7 @@ function newWebIm() {
                     me.loaded = me.total;
                   }
                 } else {
-                  
+
                   if (me.cbOk) {
                     var tempResp = {
                       'ActionStatus': resp.ActionStatus,
@@ -6908,7 +6908,7 @@ function newWebIm() {
             }
           }
         };
-        
+
         //读取文件MD5
         getFileMD5(options.file,
           function (fileMd5) {
@@ -6923,74 +6923,74 @@ function newWebIm() {
         );
       };
     };
-    
-    
+
+
     //web im 基础对象
-    
+
     //常量对象
-    
+
     //会话类型
     webim.SESSION_TYPE = SESSION_TYPE;
-    
+
     webim.MSG_MAX_LENGTH = MSG_MAX_LENGTH;
-    
+
     //c2c消息子类型
     webim.C2C_MSG_SUB_TYPE = C2C_MSG_SUB_TYPE;
-    
+
     //群消息子类型
     webim.GROUP_MSG_SUB_TYPE = GROUP_MSG_SUB_TYPE;
-    
+
     //消息元素类型
     webim.MSG_ELEMENT_TYPE = MSG_ELEMENT_TYPE;
-    
+
     //群提示消息类型
     webim.GROUP_TIP_TYPE = GROUP_TIP_TYPE;
-    
+
     //图片类型
     webim.IMAGE_TYPE = IMAGE_TYPE;
-    
+
     //群系统消息类型
     webim.GROUP_SYSTEM_TYPE = GROUP_SYSTEM_TYPE;
-    
+
     //好友系统通知子类型
     webim.FRIEND_NOTICE_TYPE = FRIEND_NOTICE_TYPE;
-    
+
     //群提示消息-群资料变更类型
     webim.GROUP_TIP_MODIFY_GROUP_INFO_TYPE = GROUP_TIP_MODIFY_GROUP_INFO_TYPE;
-    
+
     //浏览器信息
     webim.BROWSER_INFO = BROWSER_INFO;
-    
+
     //表情对象
     webim.Emotions = webim.EmotionPicData = emotions;
     //表情标识符和index Map
     webim.EmotionDataIndexs = webim.EmotionPicDataIndex = emotionDataIndexs;
-    
+
     //腾讯登录服务错误码(托管模式)
     webim.TLS_ERROR_CODE = TLS_ERROR_CODE;
-    
+
     //连接状态
     webim.CONNECTION_STATUS = CONNECTION_STATUS;
-    
+
     //上传图片业务类型
     webim.UPLOAD_PIC_BUSSINESS_TYPE = UPLOAD_PIC_BUSSINESS_TYPE;
-    
+
     //最近联系人类型
     webim.RECENT_CONTACT_TYPE = RECENT_CONTACT_TYPE;
-    
+
     //上传资源类型
     webim.UPLOAD_RES_TYPE = UPLOAD_RES_TYPE;
-    
-    
+
+
     /**************************************/
-    
+
     //类对象
     //
     //工具对象
     webim.Tool = tool;
     //控制台打印日志对象
     webim.Log = log;
-    
+
     //消息对象
     webim.Msg = Msg;
     //会话对象
@@ -7013,20 +7013,20 @@ function newWebIm() {
         return MsgStore.resetCookieAndSyncFlag();
       }
     };
-    
+
     webim.Resources = Resources;
-    
+
     /**************************************/
-    
+
     // webim API impl
     //
     //基本接口
     //登录
     webim.login = webim.init = function (loginInfo, listeners, opts, cbOk, cbErr) {
-      
+
       //初始化连接状态回调函数
       ConnManager.init(listeners.onConnNotify, cbOk, cbErr);
-      
+
       //设置ie9以下浏览器jsonp回调
       if (listeners.jsonpCallback) jsonpCallback = listeners.jsonpCallback;
       //登录
@@ -7038,14 +7038,14 @@ function newWebIm() {
     webim.logout = webim.offline = function (cbOk, cbErr) {
       return proto_logout('instance', cbOk, cbErr);
     };
-    
+
     //登出
     //这种登出方式，所有的实例都将不会收到消息推送，直到重新登录
     webim.logoutAll = function (cbOk, cbErr) {
       return proto_logout('all', cbOk, cbErr);
     };
-    
-    
+
+
     //消息管理接口
     //发消息接口（私聊和群聊）
     webim.sendMsg = function (msg, cbOk, cbErr) {
@@ -7063,22 +7063,22 @@ function newWebIm() {
     webim.syncGroupMsgs = function (options, cbOk, cbErr) {
       return MsgManager.syncGroupMsgs(options, cbOk, cbErr);
     };
-    
+
     //上报c2c消息已读
     webim.c2CMsgReaded = function (options, cbOk, cbErr) {
       return MsgStore.c2CMsgReaded(options, cbOk, cbErr);
     };
-    
+
     //上报群消息已读
     webim.groupMsgReaded = function (options, cbOk, cbErr) {
       return proto_groupMsgReaded(options, cbOk, cbErr);
     };
-    
+
     //设置聊天会话自动标记已读
     webim.setAutoRead = function (selSess, isOn, isResetAll) {
       return MsgStore.setAutoRead(selSess, isOn, isResetAll);
     };
-    
+
     //群组管理接口
     //
     //创建群
@@ -7097,27 +7097,27 @@ function newWebIm() {
     webim.handleApplyJoinGroupPendency = function (options, cbOk, cbErr) {
       return proto_handleApplyJoinGroupPendency(options, cbOk, cbErr);
     };
-    
+
     //获取群组未决列表
     webim.getPendencyGroup = function (options, cbOk, cbErr) {
       return proto_getPendencyGroup(options, cbOk, cbErr);
     };
-    
+
     //群未决已读上报
     webim.getPendencyGroupRead = function (options, cbOk, cbErr) {
       return proto_getPendencyGroupRead(options, cbOk, cbErr);
     };
-    
+
     //处理邀请进群申请(同意或拒绝)
     webim.handleInviteJoinGroupRequest = function (options, cbOk, cbErr) {
       return proto_handleInviteJoinGroupRequest(options, cbOk, cbErr);
     };
-    
+
     //删除加群申请
     webim.deleteApplyJoinGroupPendency = function (options, cbOk, cbErr) {
       return proto_deleteC2CMsg(options, cbOk, cbErr);
     };
-    
+
     //主动退群
     webim.quitGroup = function (options, cbOk, cbErr) {
       return proto_quitGroup(options, cbOk, cbErr);
@@ -7162,7 +7162,7 @@ function newWebIm() {
     webim.changeGroupOwner = function (options, cbOk, cbErr) {
       return proto_changeGroupOwner(options, cbOk, cbErr);
     };
-    
+
     //获取我的群组列表-高级接口
     webim.getJoinedGroupListHigh = function (options, cbOk, cbErr) {
       return proto_getJoinedGroupListHigh(options, cbOk, cbErr);
@@ -7179,7 +7179,7 @@ function newWebIm() {
     webim.sendCustomGroupNotify = function (options, cbOk, cbErr) {
       return proto_sendCustomGroupNotify(options, cbOk, cbErr);
     };
-    
+
     //进入大群
     webim.applyJoinBigGroup = function (options, cbOk, cbErr) {
       return proto_applyJoinBigGroup(options, cbOk, cbErr);
@@ -7188,7 +7188,7 @@ function newWebIm() {
     webim.quitBigGroup = function (options, cbOk, cbErr) {
       return proto_quitBigGroup(options, cbOk, cbErr);
     };
-    
+
     //资料关系链管理接口
     //
     //获取个人资料接口，可用于搜索用户
@@ -7243,12 +7243,12 @@ function newWebIm() {
     webim.getBlackList = function (options, cbOk, cbErr) {
       return proto_getBlackList(options, cbOk, cbErr);
     };
-    
+
     //获取最近会话
     webim.getRecentContactList = function (options, cbOk, cbErr) {
       return proto_getRecentContactList(options, cbOk, cbErr);
     };
-    
+
     //图片或文件服务接口
     //
     //上传文件接口（高版本浏览器）
@@ -7278,27 +7278,27 @@ function newWebIm() {
       };
       return proto_uploadPic(opt, cbOk, cbErr);
     };
-    
+
     //设置jsonp返回的值
     webim.setJsonpLastRspData = function (rspData) {
       jsonpLastRspData = typeof (rspData) == "string" ? JSON.parse(rspData) : rspData;
     };
-    
+
     //获取长轮询ID
     webim.getLongPollingId = function (options, cbOk, cbErr) {
       return proto_getLongPollingId(options, cbOk, cbErr);
     };
-    
+
     //获取下载地址
     webim.applyDownload = function (options, cbOk, cbErr) {
       return proto_applyDownload(options, cbOk, cbErr);
     };
-    
+
     //获取下载地址
     webim.onDownFile = function (uuid) {
       window.open(Resources.downloadMap["uuid_" + uuid]);
     };
-    
+
     //检查是否登录
     webim.checkLogin = function (cbErr, isNeedCallBack) {
       return checkLogin(cbErr, isNeedCallBack);
