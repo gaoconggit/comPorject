@@ -26,14 +26,7 @@
 4. 打包项目
    `npm run build` or `yarn run build`
    
-![](static/img/screen/sign.jpg | width=100 "签到")
-![](static/img/screen/notice.jpg "公告")
-![](static/img/screen/index.jpg "首页")
-![](static/img/screen/niu.jpg "扭蛋")
-![](static/img/screen/store.jpg "积分商城")
-![](static/img/screen/earn.jpg "赚金币")
-![](static/img/screen/mine.jpg "我的")
-![](static/img/screen/room.jpg "娃娃机房间")
+<img src="static/img/screen/sign.jpg" width="100" alt="签到"/>
 
 
 #### 后期准备 > mock假数据或练习后台制作数据
