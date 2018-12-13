@@ -26,13 +26,7 @@
 4. 打包项目
    `npm run build` or `yarn run build`
 
-<img src="static/img/screen/sign.jpg" width="375" alt="签到"/>
-<img src="static/img/screen/notice.jpg" width="375" alt="公告"/>
-<img src="static/img/screen/index.jpg" width="375" alt="首页"/>
-<img src="static/img/screen/niu.jpg" width="375" alt="扭蛋"/>
-<img src="static/img/screen/store.jpg" width="375" alt="积分商城"/>
-<img src="static/img/screen/earn.jpg" width="375" alt="赚金币"/>
-<img src="static/img/screen/mine.jpg" width="375" alt="我的"/>
-<img src="static/img/screen/room.jpg" width="375" alt="娃娃机房间"/>
+<img src="static/img/screen/sign.jpg" width="375" alt="签到"/><img src="static/img/screen/notice.jpg" width="375" alt="公告"/><img src="static/img/screen/index.jpg" width="375" alt="首页"/><img src="static/img/screen/niu.jpg" width="375" alt="扭蛋"/><img src="static/img/screen/store.jpg" width="375" alt="积分商城"/><img src="static/img/screen/earn.jpg" width="375" alt="赚金币"/>
+<img src="static/img/screen/mine.jpg" width="375" alt="我的"/><img src="static/img/screen/room.jpg" width="375" alt="娃娃机房间"/>
 
 #### 后期准备 > mock假数据或练习后台制作数据
