@@ -1,0 +1,217 @@
+﻿body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  color: #333;
+  font-size: 12px;
+  font-family: "Microsoft YaHei";
+  width: 100%;
+  height: 345px;
+  overflow: hidden;
+}
+
+ul, ol {
+  list-style-type: none;
+}
+
+select, input, img, select {
+  vertical-align: middle;
+}
+
+input {
+  font-size: 12px;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+a:hover {
+  color: #c00;
+  text-decoration: none;
+}
+
+.clear {
+  clear: both;
+}
+
+.bg-src {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.wrapper {
+  position: relative;
+  margin-top: 52%;
+  overflow: hidden;
+}
+
+/* 大转盘样式 */
+.turnplate {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  width: 360px;
+  height: 368px;
+  overflow: hidden;
+}
+
+.turnplate_bg {
+  width: 100%;
+  height: 100%;
+}
+
+.turnplate_bg .bg_img {
+  width: 100%;
+  height: 100%;
+}
+
+.pan {
+  position: absolute;
+  top: 17px;
+  left: 23px;
+  z-index: 1;
+}
+
+.turnplate canvas.item {
+  position: absolute;
+  top: -43px;
+  left: -37px;
+  /*-webkit-transform: scale(0.5);
+  -moz-transform: scale(0.5);
+  -ms-transform: scale(0.5);
+  -o-transform: scale(0.5);
+  transform: scale(0.5);*/
+  width: 422px;
+  height: 422px;
+  z-index: 10;
+}
+
+.start_btn {
+  position: absolute;
+  top: 116px;
+  left: 130px;
+  width: 84px;
+  height: 102px;
+}
+
+.turnplate img.pointer {
+  position: absolute;
+  width: 104px;
+  height: 116px;
+  z-index: 100;
+}
+
+.start_btn .start_text {
+  position: absolute;
+  top: 60px;
+  left: 6px;
+  width: 74px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #FFF;
+  z-index: 100;
+}
+
+.img-wrapper img {
+  width: 28px;
+  height: 34px;
+}
+
+.turnplate-pop {
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.turnplate-pop .pop-wrapper {
+  position: relative;
+  margin: 0 auto;
+  width: 250px;
+  height: 303px;
+  transform-origin: center center;
+  -webkit-transition: all 0.35s;
+  -moz-transition: all 0.35s;
+  -ms-transition: all 0.35s;
+  -o-transition: all 0.35s;
+  transition: all 0.35s;
+  -webkit-transform: scale3d(0, 0, 0);
+  -moz-transform: scale3d(0, 0, 0);
+  -ms-transform: scale3d(0, 0, 0);
+  -o-transform: scale3d(0, 0, 0);
+  transform: scale3d(0, 0, 0);
+}
+
+.turnplate-pop .close {
+  position: absolute;
+  top: 76px;
+  left: 234px;
+  width: 28px;
+  height: 28px;
+  z-index: 10;
+}
+
+.turnplate-pop .close img {
+  width: 100%;
+  height: 100%;
+}
+
+.turnplate-pop .win-wrap {
+  position: absolute;
+  top: 150px;
+  left: 50%;
+  width: 250px;
+  height: 303px;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.turnplate-pop .win-bg {
+  width: 100%;
+  height: 100%;
+}
+
+.turnplate-pop .pop-prize {
+  position: absolute;
+  top: 112px;
+  left: 50%;
+  margin: 0 auto;
+  width: 150px;
+  height: 150px;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  border-radius: 30px;
+  overflow: hidden;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.turnplate-pop .description {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  color: #FF98BC;
+}

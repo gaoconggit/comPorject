@@ -1,0 +1,54 @@
+/*主题颜色*/
+@mainColor: #ff8dac;
+@auxColor: #ffc5d1;
+@whiteColor: #FFF;
+@grayColor: #888;
+@lightGrayColor: #EDEDED;
+@warnColor: #FF1A17;
+@secondColor: #F44355;
+@catchText: #00FF05;
+@bgOpacity: rgba(0, 0, 0, 0.3);
+@redColor:#55c3f1;
+
+/*基本尺寸*/
+@titleBarHeight: 92px;
+@tabBarHeight: 96px;
+
+/*字体大小*/
+@mainFontSize: 32px;
+@subFontSize: 28px;
+@minFontSize: 24px;
+@maxFontSize: 36px;
+
+/*常用样式*/
+.over-ellip {
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.background-url(@url) {
+  background-image: url(@url);
+  -webkit-background-size: 100% 100%;
+  background-size: 100% 100%;
+}
+
+.img-spread {
+  & > img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/*清除浮动*/
+.clearfix {
+  *zoom: 1;
+  &::after, &::before {
+    content: "";
+    display: table;
+  }
+  &::after {
+    clear: both;
+  }
+}

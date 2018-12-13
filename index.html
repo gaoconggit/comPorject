@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--H5自适应-->
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+  <meta name="screen-orientation" content="portrait"/>
+  <!--删除默认的苹果工具栏和菜单栏，当我们需要显示工具栏和菜单栏时，这个行meta就不用加了，默认就是显示-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <!--格式检测  用于检测HTML里的一些格式的，那关于telephone的意思是就禁止了把数字转化为拨号链接！  因为有的iPhone会自动把一串数字转换成电话点击并拨打出去-->
+  <meta name="format-detection" content="telephone=no">
+  <!--全屏模式-->
+  <meta name="full-screen" content="yes">
+  <!--全屏控制  true强制全屏-->
+  <meta name="x5-fullscreen" content="true">
+  <!--初始化 可以从网上下载也可以自己添加-->
+  <meta name="keyword" content="抓娃娃,在线抓娃娃,掌上抓娃娃,娃娃机">
+  <title>掌上抓娃娃</title>
+  <link rel="stylesheet" href="static/css/reset.css">
+  <!--腾讯聊天用的插件  必须的-->
+  <script src="./static/js/webim.js" type="text/javascript"></script>
+  <!--腾讯聊天用的插件  必须的-->
+  <script src="./static/js/json2.js" type="text/javascript"></script>
+  <!--解决网页移动端的px vm的-->
+  <script src="./static/js/viewport-units-buggyfill.min.js"></script>
+  <!--兼容各种浏览器的播放器-->
+  <script src="./static/js/jsmpeg.min.js"></script>
+</head>
+<body ondragstart="return false">
+<script> window.onload = function () {
+  //移动端尺寸的兼容问题 init一般用于初始化
+  window.viewportUnitsBuggyfill.init({hacks: window.viewportUnitsBuggyfillHacks});
+}
+</script>
+<div id="app">
+  <!--路由，指向的意思
+      route，他是一条路由，单数
+      routes 是一组路由，把上面的每一天路由组合起来，形成一个数组
+      router 是一个机制，管理路由
+      定义了两个标签
+      <router-view>定义显示部分，就是点击后，匹配内容显示在什么地方
+      <router-link>定义了页面点击部分，有个一属性to ，定义点击之后，要到那去
+  -->
+  <router-view></router-view>
+</div>
+<!-- built files will be auto injected -->
+</body>
+</html>
