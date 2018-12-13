@@ -26,7 +26,7 @@
 4. 打包项目
    `npm run build` or `yarn run build`
    
-![](static/img/screen/sign.jpg "签到")
+![](static/img/screen/sign.jpg | width=100 "签到")
 ![](static/img/screen/notice.jpg "公告")
 ![](static/img/screen/index.jpg "首页")
 ![](static/img/screen/niu.jpg "扭蛋")
